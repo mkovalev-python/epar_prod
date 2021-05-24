@@ -1,0 +1,44 @@
+{% load compressed %}
+{% compressed_js 'user_list' %}
+<div class="widget tasklist">
+
+    <div class="widget-title"><h2>Ваша команда</h2></div>
+
+{#    <div class="row-fluid user-list-filer" style="display: none;">#}
+{#    	<div class="span4">#}
+{#        <select class="form-control">#}
+{#          <option>Выберите проект</option>#}
+{#          {% for p in projects %}#}
+{#          <option {% if p.id == user_list.currentProject %}selected{% endif %} value="{{ p.id }}">{{ p.name }}</option>#}
+{#          {% endfor %}#}
+{#        </select>#}
+{#        </div>#}
+{#    	<div class="span4">#}
+{#        <input type="text" placeholder="Введите имя" class="form-control"/>#}
+{#        </div>#}
+{#    	<div class="span4">#}
+{#        <select class="form-control">#}
+{#          <option>Выберите роль в проекте</option>#}
+{#          <option>Разработчик</option>#}
+{#          <option>Клиент</option>#}
+{#          <option>Менеджер</option>#}
+{#        </select>#}
+{#        </div>#}
+{#        <hr />#}
+{#    </div>#}
+
+    <div class="row-fluid user-list">
+        <div class="container-fluid clearfix">
+            {% for user in user_list.users %}
+                {% include 'partials/user/user_list_item.html' %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<style>
+
+    .user-block.pro {
+        border: 2px solid #aa7729;
+        border-radius: 6px;
+    }
+</style>

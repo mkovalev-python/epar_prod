@@ -1,0 +1,58 @@
+{% load floattags compressed %}
+{% compressed_js 'profile_edit' %}
+
+    <div class="widget clearfix">
+        <div class="widget-control">
+{#            <a href="#" class="w-collapse">Свернуть</a>#}
+{#            <a href="#" class="w-close">Закрыть</a>#}
+        </div>
+
+        <h3>Мои данные</h3>
+        <hr>
+        {{ c }}
+
+        <div class="col-xs-8">
+            <form method="post" action="" class="profile-edit form-horizontal" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for field in profile_edit.uform %}
+                    <div class="form-group">
+                        {{ field.errors }}
+                        <label class="col-xs-2 control-label">{{ field.label_tag }}</label>
+                        <div class="col-xs-10">
+                            {{ field }}
+                        </div>
+                    </div>
+                {% endfor %}
+                {% for field in profile_edit.form %}
+                    <div class="form-group">
+                        {{ field.errors }}
+                        <label class="col-xs-2 control-label">{{ field.label_tag }}</label>
+                        <div class="col-xs-10">
+                            {{ field }}
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="form-group">
+                    <label class="col-xs-2 control-label">Новый пароль</label>
+                    <div class="col-xs-10">
+                        <input type="password" value="" class="form-control" name="new_password" maxlength="30" autocomplete="new-password" >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-2 control-label">Повторите пароль</label>
+                    <div class="col-xs-10">
+                        <input type="password" value="" class="form-control" name="new_password_confirm" maxlength="30" autocomplete="new-password" >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-2 control-label"></label>
+                    <div class="col-xs-10">
+                        <input type="submit" value="Сохранить" class="btn badge-success">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-xs-4"></div>
+
+    </div>

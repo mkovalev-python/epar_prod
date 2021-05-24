@@ -1,0 +1,112 @@
+{% load jsonify compressed %}
+{% block scripts %}
+    {% compressed_js 'kanban' %}
+    {% compressed_css 'kanban' %}
+{% endblock %}
+<script src="/static/js/jquery.fancyform.min.js"></script>
+<script>
+    $(function () {
+        $("select").transformSelect({
+            base: "class" // Can be image or class, if class a span will be added
+        });
+    });
+    window.taskHtml = {{ tasklist.template|jsonify|safe }};
+</script>
+<div class="kanban">
+    {% for project in kanban.projects_data %}
+        <div class="widget inner">
+            <div class="project-row js-project-row" id="project_{{ project.id }}"
+                    {% if project.current_milestone %} data-milestone="{{ project.current_milestone.id }}"{% endif %}
+                 data-project="{{ project.id }}"
+                 data-use_colors="{% if project.use_colors %}true{%else%}false{%endif%}">
+                <div class="project-header js-project-header">
+                    <div class="widget-title row">
+                        <div class="col-sm-9">
+                            {% if project.milestones.all %}
+                                <div class="project-header-select">
+                                    <select class="js-select-milestone form-control form-control-mini">
+                                        {% for milestone in project.all_milestones %}
+                                            <option {% if project.current_milestone and project.current_milestone.id == milestone.id %}selected{% endif %} value="{{ milestone.id }}">
+                                                {{ milestone.name }}{% if milestone.date %} до {{ milestone.date|date:"d.m.Y" }}{% endif %}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            {% else %}
+                                <h2>Текущие задачи проекта</h2>
+                            {% endif %}
+                            <span style="margin-left: 10px; line-height: 3.5rem;">
+                            {% with project.current_milestone as milestone %}
+                                {% include 'milestones/milestone_details_string.html' %}
+                            {% endwith %}
+                            </span>
+                        </div>
+                        <div class="col-ms-3 text-right">
+                            <a href="/project/{{ project.id }}/#additional_settings" class="button green-bg button-mini">Настроить столбцы</a>
+                            {% if project.current_milestone %}
+                                <a href="#" class="js-get-xls-milestone button green-bg button-mini">Отчет (xls)</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+{#                {% if project.current_milestone and project.current_milestone.taskTimeAllResps %}#}
+{#                    <div class="kanban-progress-bars">#}
+{#                        <div class="kanban-progress-bars-left">Прошло времени: </div>#}
+{#                        <div class="kanban-progress-bars-right progress">#}
+{#                            <div class="progress-bar progress-bar-info" role="progressbar"#}
+{#                                 aria-valuenow="{{ project.current_milestone.elapsedTimeAllResps }}" aria-valuemin="0"#}
+{#                                 aria-valuemax="{{ project.current_milestone.allTimeAllResps }}"#}
+{#                                 style="width: {{ project.current_milestone.elapsedTimeAllRespsPercent }}%;">#}
+{#                                <span class="sr-only"></span>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        <div class="clearfix"></div>#}
+{#                        <div class="kanban-progress-bars-left">Закрыто (ч.): </div>#}
+{#                        <div class="kanban-progress-bars-right progress">#}
+{#                            <div class="progress-bar progress-bar-success" role="progressbar"#}
+{#                                 aria-valuenow="{{ project.current_milestone.closedTaskTimeAllResps }}" aria-valuemin="0"#}
+{#                                 aria-valuemax="{{ project.current_milestone.taskTimeAllResps }}"#}
+{#                                 style="width: {{ project.current_milestone.closedTaskTimeAllRespsPercent }}%;">#}
+{#                                <span class="sr-only"></span>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        <div style="clear: both"></div>#}
+{#                    </div>#}
+{#                {% endif %}#}
+                <div class="tasks-wrapper js-tasks-wrapper" rel="{{ project.id }}">
+                    <div class="kanban-table">
+                        <div class="kanban-table-row">
+                            {% for status in project.columns %}
+                                <div class="kanban-table-cell">
+                                    <div class="kanban-cell-width-fix"></div>
+                                    <div class="kanban-cell-title tasks-header tasks-{{status.code}}">{{ status.name }}</div>
+                                    <div class="kanban-cell-list js-tasks-{{ status.code }} js-tasks-column"
+                                        rel="{{ status.code }}" data-project="{{ project.id }}">
+
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% include 'kanban/templates/task_template.html' %}
+<script type="text/javascript">
+    var taskRespSummary = {};
+    {% for project in kanban.projects_data %}
+        {% for task_data in project.tasks %}
+            taskRespSummary['{{task_data.task.id}}'] = {{ task_data.responsibleList|jsonify|safe }};
+        {% endfor %}
+    {% endfor %}
+    window.taskHtml = $('<div></div>').append(
+            $('<div></div>').addClass('task task-wrapper-kanban').append($('.js-task-wrapper-template').html())
+    ).html();
+</script>
+<div class="js-burn-chart">
+
+</div>

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block wiking_js %}
+{% endblock %}
+
+{% block wiking_title %}
+    {% include 'partials/full_title.html' %}
+{% endblock %}
+
+{% block wiking_breadcrumbs %}
+    {% include 'partials/breadcrumbs.html' %}
+{% endblock %}
+
+{% block wiking_childs %}
+{% endblock %}
+
+{% block wiking_content %}
+    <form action="{{ article_path }}/set_revision/" method="POST">
+        {% csrf_token %}
+        <table class="table table-bordered table-striped table-hover">
+            <tr>
+                <th>Автор</th>
+                <th>Название</th>
+                <th>Комментарий</th>
+                <th>Версия</th>
+                <th>Дата создания</th>
+                <th>Просмотр</th>
+                <th>Выбрать</th>
+            </tr>
+            {% for revision in revisions %}
+                <tr>
+                    <td>
+                        <a href="{{ revision.author.get_profile.url }}">
+                            {{ revision.author.first_name }} {{ revision.author.last_name }}
+                        </a>
+                    </td>
+                    <td>{{ revision.title }}</td>
+                    <td>{{ revision.comment }}</td>
+                    <td>{{ revision.version }}</td>
+                    <td>{{ revision.created_at }}</td>
+                    <td>
+                        <button class="btn btn-default btn-xs js-show-revision" data-toggle="modal" data-target="#revision-preview">Просмотр</button>
+                        <div class="markdown" style="display:none">{{ revision.content }}</div>
+                    </td>
+                    <td><input type="radio" name="revision_id" value="{{ revision.id }}"
+                               {% if revision.id == article.head.id %}checked="checked"{% endif %}
+                            /></td>
+                </tr>
+            {% endfor %}
+        </table>
+        <p align="center">
+            <input type="submit" value="Сохранить" class="btn btn-success" />
+            <a href="{{ article_path }}" class="btn btn-default">Вернуться</a>
+        </p>
+    </form>
+    <nav>
+      <ul class="pager">
+        {% if prev_page %}
+            <li><a href="?page={{ prev_page }}">Позднее</a></li>
+        {% endif %}
+        {% if next_page %}
+            <li><a href="?page={{ next_page }}">Раньше</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+{% endblock %}
+{% block wiking_after %}
+    {% include 'partials/modal.html' %}
+    <script>
+        $(document).ready(function(){
+            $('#revision-preview').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var md = markdown.toHTML(button.next('.markdown').text());
+                var modal = $(this);
+                modal.find('.modal-body').html(md);
+            });
+        });
+    </script>
+{% endblock %}

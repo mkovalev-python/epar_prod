@@ -1,0 +1,56 @@
+{% load jsonify %}
+ <div class="user-block widget inner js-user span3" data-id="{{ user.id }}">
+
+            <div class="user-block-header clearfix">
+                <i class="statusImg"></i>
+                <div class="user-block-header-avatar">
+                    <a href="/user_detail/?id={{ user.id }}">
+                        <div class="avatar_container js-avatar-container" data-size="60" rel='{{ user.get_profile.avatar_rel|jsonify|safe }}'></div>
+                    </a>
+                    {% if user.get_profile.is_outsource %}
+                    <span class="pro-icon" href="/pro/">
+                        <i class="fa fa-star"></i>
+                    </span>
+                    {% endif %}
+                </div>
+                <div class="user-block-header-name-spec">
+                    <a href="/user_detail/?id={{ user.id }}">
+                        <b>{% if user.last_name %}{{ user.last_name }} {{ user.first_name }}{% else %}{{ user.username }}{% endif %}</b>
+                        {% if is_admin and user.profile.account_total%}
+                        <b style="color: #d9534f;">{{ user.profile.account_total }} - {{ user.feeSum }}</b>
+                        {% endif %}
+                    </a>
+                    <small class="small">
+                        {% if user.profile.specialties.count %}
+                        {% for spec in user.profile.specialties.all %}{% if not forloop.first %}, {% endif %}{{ spec.name }}{% endfor %}
+                        {% else %}
+                        {% for role in user.roles_in_projects %}{% if forloop.first %}{{ role }}{% endif %}{% endfor %}
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+
+
+
+    <div class="widget-body user-personal row-fluid clearfix">
+
+                    <div class="about-user-progress">
+                        <b>Открытых задач: <strong>{{ user.allTasksQty|default_if_none:'0' }}</strong></b>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-{% if user.overMaxTasks %}danger{% else %}success{% endif %}" style="width: {% widthratio user.allTasksQtyForDivision user_list.allTasksQty 1 %}%;"
+                                 aria-valuemax="100" aria-valuemin="0" aria-valuenow="{% widthratio user.allTasksQtyForDivision user_list.allTasksQty 1 %}" role="progressbar">
+                            </div>
+                        </div>
+                    </div>
+                    {% if user.last_login %}
+                    <p class="font-12 text-grey user-block-footer"><i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;&nbsp;Зашел {{ user.last_login|date:"d.m.Y h:i:s" }}</p>{% endif %}
+                    {% if user.startedTask %}
+                    <p><a class="startedTask" rel="tooltip" href="{{ user.startedTask.url }}"
+                              {% if user.bHaveAccessToStartedTask %}
+                              data-original-title="{{ user.startedTask.project.name }}: {{ user.startedTask.name }}"
+                              {% endif %}>Занят</a></p>
+                    {% endif %}
+
+    </div>
+
+</div>

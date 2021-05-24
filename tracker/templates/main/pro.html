@@ -1,0 +1,140 @@
+{% extends "main/base.html" %}
+{% load thumbnail get_settings compressed %}
+{% block content %}
+<style>
+        .premium-page {font-size: 15px; line-height: 22px; text-align: center; max-width: 900px; margin: 0 auto; padding-bottom: 50px;}
+        .premium-page h2 {
+            font-size: 50px;
+            font-weight: bold;
+            line-height: 50px;
+            margin: 0 0 25px;
+        }
+        .premium-page h3 {
+            font-size: 22px;
+            font-weight: normal;
+            line-height: 30px;
+            margin: 0 0 30px;
+        }
+        .premium-page ul.four {max-width: 900px; margin: 0 auto 40px; display: block;}
+        .premium-page ul.four li {
+            display: block;
+            padding: 0 20px;
+            width: 25%;
+            float: left;
+            font-size: 16px;
+            line-height: 22px;
+            text-align: center;
+        }
+        .premium-page ul.four li img {display: block; margin:0 auto 15px;}
+        .premium-page ul.four .four-li-text .green-text {display: block; margin-bottom: 5px;}
+
+        .premium-page ul.two {max-width: 650px; margin: 0 auto 40px; display: block;}
+
+        .premium-page ul.two li {
+            display: block;
+            padding: 0 20px;
+            width: 50%;
+            float: left;
+            font-size: 16px;
+            line-height: 22px;
+            text-align: center;
+        }
+        .premium-page ul.two li img {float: left; width: 128px;}
+
+        .premium-page hr {margin: 40px 0;}
+
+        .green-text {color: #144d49;}
+
+        .premium-img {display: table-cell; vertical-align: middle;}
+        .premium-text {display: table-cell; vertical-align: middle; padding-left: 10px;}
+
+
+        @media only screen and (max-width : 882px) {
+
+            .premium-page h2 {
+                font-size: 40px;
+                font-weight: bold;
+                line-height: 40px;
+                margin: 0 0 25px;
+            }
+
+            .premium-page h3 {
+                font-size: 18px;
+                font-weight: normal;
+                line-height: 24px;
+                margin: 0 0 20px;
+            }
+
+            .premium-page ul.four {margin-bottom: 0px;}
+            .premium-page ul.four li {
+                width: 50%;
+            }
+
+            .premium-page ul.four li .four-li-text {height: 100px;}
+
+        }
+
+
+        @media only screen and (max-width : 576px) {
+            .premium-page ul.four li {
+                width: 100%;
+            }
+
+            .premium-page ul.four li .four-li-text {height: 100px;}
+
+            .premium-page ul.two {margin-bottom: 0px;}
+            .premium-page ul.two li {
+                padding: 0;
+                width: 100%;
+                float: none;
+                margin-bottom: 20px;
+            }
+
+            .btn-lg {font-size: 16px;}
+
+        }
+    </style>
+<div class="premium-page">
+    <h2>Что такое <span class="green-text">премиум</span> аккаунт?</h2>
+    <h3>Премиум аккаунт дает возможность непрерывного <b class="green-text">роста</b><br>ваших <b class="green-text">доходов</b> в сервисе:</h3>
+
+    <ul class="four clearfix">
+        <li><img src="/static/images/rating.png">
+            <div class="four-li-text"><b class="green-text">Профессиональный рейтинг</b>добавляется к стоимости вашего часа</div></li>
+        <li><img src="/static/images/dostizheniya.png">
+            <div class="four-li-text"><b class="green-text">Награды и достижения</b>помогут увеличить заработок на проектах</div></li>
+        <li><img src="/static/images/invitations.png">
+            <div class="four-li-text"><b class="green-text">Приглашения в проекты</b>менеджеры Экспертная компания будут искать для вас работу</div></li>
+        <li><img src="/static/images/bonus.png">
+            <div class="four-li-text"><b class="green-text">Разовый <br />бонус 15%</b>к вашей ставке в виде рейтинга</div></li>
+    </ul>
+    {% if user.get_profile.is_outsource %}
+        <p>У вас уже есть премиум аккаунт</p>
+        <form name="robo" action="{{ form.target }}" method="POST">
+        {{ form.as_p }}
+        </form>
+        {% if fee %}
+        <p><a href="#" {% if fee >= 0 %}onclick="document.forms.robo.submit();" {% endif %} class="btn btn-lg btn-success ">Оплатить комиссию {{ fee }} руб.</a></p>
+        {% endif %}
+        <p><a href="#" class="red-text" onclick="alert({% if fee >= 0 %}'Отказаться от премиум аккаунта вы можете только оплатив текущую комиссию.'{% else %}'Отказаться от премиум аккаунта вы можете обратившись в техподдержку.'{% endif %})">Отказаться от премиум аккаунта</a></p>
+    {% else %}
+        <p><a href="#" class="btn btn-lg btn-success" onclick="alert('Подать заявку на премиум аккаунт вы можете обратившись в техподдержку.')">Подать заявку на премиум аккаунт</a></p>
+    {% endif %}
+    <hr>
+    <h3>Требования для получения премиум аккаунта</h3>
+    <ul class="two clearfix">
+        <li class="clearfix">
+            <div class="premium-img"><img src="/static/images/consultation.png"></div>
+            <div class="premium-text">Прохождение  технического собеседования</div>
+        </li>
+        <li class="clearfix">
+            <div class="premium-img"><img src="/static/images/comission.png"></div>
+            <div class="premium-text">10% комиссия от заработанных в проекте средств</div>
+        </li>
+    </ul>
+
+ 
+      
+  </div><!--widget-->
+</div><!--container-->
+{% endblock %}

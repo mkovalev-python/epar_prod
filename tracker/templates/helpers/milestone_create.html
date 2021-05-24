@@ -1,0 +1,49 @@
+<div class="modal fade" id="new-milestone" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content green-popup">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h2 class="modal-title" id="myModalLabel">Создание спринта</h2>
+      </div>
+      <form role="form" class="js-milestone-form" method="post">
+      {% csrf_token %}
+      <div class="modal-body">
+          <input type="hidden" name="milestone-project" value="" />
+          <div class="form-group">
+            <input type="text" name="milestone-name" class="form-control" placeholder="Введите название">
+          </div>
+          <div class="form-group choose-date" style="position:relative; z-index:9999">
+          	<input type="text" value="" name="milestone-date" placeholder="Формат даты дд.мм.ггг" class="form-control" style="position:relative; z-index:10000"> 
+            <a href="#" class="fa fa-calendar" style="z-index:10001"></a>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <input type="submit" name="create-milestone" class="btn btn-success js-create-milestone" value="Создать" />
+        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  $(document).ready(function(){
+    $('#new-milestone').on('show.bs.modal', function(e) {
+        var projectId = $(e.relatedTarget).data('project-id');
+        if (projectId) {
+          $(e.currentTarget).find('input[name="milestone-project"]').val(projectId);
+        }
+    });
+    $("input[name=milestone-date]").datetimepicker({
+        'dayOfWeekStart': 1,
+        'format': 'd.m.Y',
+        'lang':'ru',
+	    'todayButton':true,
+        'closeOnDateSelect': true,
+	    'timepicker': false
+    });
+
+    $('.fa-calendar').click(function(){
+      $(this).prev().focus().trigger('focus');
+    })
+  });
+</script>

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block wiking_js %}
+    {% include 'partials/create_page.html' %}
+{% endblock %}
+{% block wiking_title %}
+    {% if project %}
+        Википедия: {{ project.name }}
+    {% else %}
+        Википедия
+    {% endif %}
+{% endblock %}
+
+{% block wiking_breadcrumbs %}{% endblock %}
+
+{% block wiking_childs %}{% endblock %}
+
+{% block wiking_content %}
+    <div class="wiking-container">
+        <div class="wiking-list" role="group" aria-label="root">
+            {% if articles %}
+            <p>В вики проекта вы можете вести базу знаний для внутреннего использования. Доступ к вики открыт всем участникам проекта. Все изменения отражаются в версиях статей, вы всегда можете откатить любое изменение.</p>
+
+            <ul>
+                {% for article in articles %}
+                    {% if not article.deleted %}
+                        <li>
+                            <a href="{{ article.slug }}">
+                                <span class="wiking-list-item-title">{{ article.get_title }}</span>
+                                <span class="wiking-list-item-date-author"><span><i class="fa fa-user"></i> {{ article.get_author.last_name }} {{ article.get_author.first_name }}</span><span><i class="fa fa-pencil"></i> {{ article.head.created_at }}</span></span>                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+
+            {% if can_create %}
+            <p align="center"><a href="" class="btn btn-success" onclick="window.create_new_page();return false;"><i class="fa fa-plus"></i>&nbsp;&nbsp;Добавить страницу</a></p>
+            {% endif %}
+            {% else %}
+            <div class="hello-wiki">
+                <h2 align="center">Добро пожаловать в Wiki{% if project %} проекта <span class="green-color">{{ project.name }}</span>{% endif %}</h2>
+                <p class="indent">В вики проекта вы можете вести базу знаний для внутреннего использования. Доступ к вики открыт всем участникам проекта. Все изменения отражаются в версиях статей, вы всегда можете откатить любое изменение.</p>
+                <p align="center">
+                    <a href="#" class="btn btn-success btn-lg" onclick="window.create_new_page();return false;">
+                        <i class="fa fa-plus"></i>&nbsp;&nbsp;Добавить первую страницу</a>
+                </p>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+{% endblock %}

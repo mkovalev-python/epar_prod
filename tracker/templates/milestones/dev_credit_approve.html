@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    {% if is_approved %}
+        <title>Вы подтвердили правильность расчета спринта!</title>
+    {% else %}
+        <title>Вы не подтверждаете правильность расчета спринта!</title>
+    {% endif %}
+    <style>
+        body,html {height: 100%;}
+    </style>
+</head>
+<body>
+<div class="d-flex align-items-center flex-column justify-content-center h-100">
+    <h5>
+        {% if is_approved %}
+            Спасибо, Вы подтвердили правильность расчета спринта!
+        {% else %}
+            Спасибо, Вы не подтверждаете правильность расчета спринта!
+        {% endif %}
+    </h5>
+</div>
+</body>
+</html>

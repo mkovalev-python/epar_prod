@@ -1,0 +1,52 @@
+<div id="taskLine_#TASK_ID#" class="task clearfix" data-taskid="#TASK_ID#">
+    <div class="task-border clearfix js-drag-task">
+        <span class="task-id js-number-link">#TASK_NUMBER#</span><!-- ===== НОМЕР ЗАДАЧИ -->
+        <span class="task-drag task-name_status"></span><!-- ===== ПЕРЕТЯГИВАТЕЛЬ -->
+
+        <div class="task-title"><input class="js-task-checkbox task-checkbox" type="checkbox" name="#TASK_ID#"
+                                       id="taskid#TASK_ID#"/><label for="taskid#TASK_ID#"></label>
+            <a title="#LAST_MESSAGE#" class="js-name-link" href="#TASK_URL#">#TASK_NAME#</a>
+
+            <b class="red-text">#DEADLINE#</b>
+
+            <div class="to-do-buttons js-todo"></div>
+            <span class="task_add-subtask"><a class="show-subtasks add-subtask" rel="#TASK_ID#" onclick="return false;" href="#">
+
+                <span class="js-subNum">#ACTIVE_SUBTASK_QTY# </span><span class="fa fa-plus" title="Добавить подзадачу"></span></a></span><!-- ===== ДОБАВИТЬ ПОДЗАДАЧУ -->
+        </div><!-- ===== ИМЯ ЗАДАЧИ -->
+
+        <div class="task-info">
+
+            <div class="task-info-author"><span class="title-to-hide">Исполнитель:&nbsp;</span>
+                <span class="js_task_responsibles"><span class="dropdown"></span></span>
+            </div>
+            #FILE_LIST#
+            <div class="task-info-time task_play-wrap">
+            	<span class="dropdown">
+                    <span class="task-plantime-main" data-prop="planTimeMainOrg" data-title="СО"></span>
+                </span> |
+                <span class="dropdown">
+                    <span class="task-plantime-reg" data-prop="planTimeRegulator" data-title="РО"></span>
+                </span> |
+                <span class="dropdown">
+                    <span class="task-plantime" data-prop="planTime" data-title="ЭО"></span>
+                </span>
+
+            </div><!--task-info-time-->
+            <div class="task-info-control clearfix">
+                <span class="js-options_popup">
+                    <a class="btn_manage dropdown-toggle js-task_menu">
+                        <span class="fa fa-gear" title="Действия"></span>
+                    </a>
+                </span>
+                <a class="btn_manage task_manage_btn-done js-task_done">
+                    <span class="fa fa-check" title="Подтвердить расчет"></span>
+                </a>
+                <a class="btn_manage task_manage_btn-done js-task_approve">
+                    <span class="fa fa-check-circle" title="Согласовать расчет"></span>
+                </a>
+            </div><!--task-info-control-->
+        </div><!--task-info-->
+
+    </div>
+</div>

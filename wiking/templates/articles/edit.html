@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block wiking_title %}Редактирование статьи {{ article.get_title }}{% endblock %}
+{% block wiking_content %}
+    <script>
+        {% if not new_form %}
+            {% for field in form %}
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                        toastr.error('{{ field.label }}: {{ error }}');
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </script>
+    <form action="" method="post" class="form-horizontal">
+        {% csrf_token %}    
+        {% for field in form.hidden_fields %}
+            {{ field }}
+        {% endfor %}
+        {% for field in form.visible_fields %}
+            <div class="wiki-add-item-wrapper clearfix">
+                <div class="wiki-add-item-wrapper-left">
+                    <label for="test" class="control-label">{{ field.label }}</label>
+                </div>
+                <div class="wiki-add-item-wrapper-right">
+                    {{ field }}
+                </div>
+            </div>
+        {% endfor %}
+        <div class="wiki-add-item-wrapper clearfix">
+            <div class="wiki-add-item-wrapper-right-without">
+                {% block wiking_edit_buttons %}
+                    <input type="submit" value="Сохранить" class="btn btn-success" />
+                    <a href="{{ show_url }}" class="btn btn-danger" >Вернуться</a>
+                {% endblock %}
+            </div>
+        </div>
+    </form>
+{% endblock %}

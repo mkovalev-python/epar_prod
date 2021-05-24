@@ -1,0 +1,34 @@
+<div class="modal-dialog"> 
+    <div class="modal-content green-popup">
+       <div class="modal-header">
+            <button aria-hidden="true"  data-dismiss="modal" class="close" type="button">×</button>
+            <h2>Добавить ключ</h2>
+        </div>
+        <div class="modal-body">
+            <form action="/user_key_handle/add/" class="form-horizontal js-form-key" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-xs-3 control-label">Название:</label>
+                    <div class="col-xs-8 controls">
+                        <input id='key_name' class="form-control" type="text" name="key_name" value="" />
+                    </div>
+                    <div class="col-xs-1 hint">
+                        <a id="key_name_tooltip" data-toggle="tooltip" style="display:none" data-placement="bottom" title="" href="#"><i class="fa fa-exclamation-circle"></i></a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-3 control-label">Ключ:</label>
+                    <div class="col-xs-8 controls">
+                        <textarea name="key_data" id="key_data" cols="30" rows="5" class="form-control"></textarea>
+                    </div>
+                    <div class="col-xs-1 hint">
+                        <a id="key_data_tooltip" href="#" data-toggle="tooltip" style="display:none" data-placement="bottom" title=""><i class="fa fa-exclamation-circle"></i></a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-success js-submitKey">Сохранить</button>
+        </div>
+    </div>
+</div>

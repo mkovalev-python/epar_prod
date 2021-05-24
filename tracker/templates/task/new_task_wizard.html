@@ -1,0 +1,151 @@
+<div class="taskWizard js-taskWizard">
+    <div class="taskWizard-overlay overflow js-taskWizardClose"></div>
+    <div class="taskWizard-container popup">
+        <button type="button" class="close js-taskWizardClose">
+            <span aria-hidden="true">&times;</span><span class="sr-only">Закрыть</span>
+        </button>
+        <h3>Создать расчет</h3>
+        <div class="taskWizard-question-wrapper border-wrapper">
+            <div class="border">
+                <div class="taskWizard-question js-taskWizardContainer taskWizard-required">
+                    <div class="row">
+                        <div class="span5 taskWizard-question-title">Заголовок расчета:</div>
+                    </div>
+                    <div class="row">
+                        <div class="span5">
+                            <input class="form-control taskWizard-answer" value="" type="text" name="_taskWizardAnswers[]" required="required" />
+                            <span class="taskWizard-question-help help-block">
+                                Опишите в двух словах, что нужно сделать
+                            </span>
+                        </div>
+                        <div class="span5 taskWizard-error-text">
+                            <div class="alert alert-danger" role="alert">
+                                Нужно обязательно указать название задачи
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+                <div class="taskWizard-question js-taskWizardContainer">
+                    <div class="row">
+                        <div class="span5 taskWizard-question-title">Описание Расчета</div>
+                    </div>
+                    <div class="row">
+                        <div class="span5">
+                            <input data-label="Уже было реализовано: " class="form-control taskWizard-answer" value="" type="text" name="_taskWizardAnswers[]" />
+                            <input type="hidden" name="label[]" value="" />
+                            <span class="taskWizard-question-help help-block">
+                                Подробное описание задачи
+                            </span>
+                        </div>
+                    </div>
+                </div>
+{#                <div class="taskWizard-question js-taskWizardContainer">#}
+{#                    <div class="row">#}
+{#                        <div class="span5 taskWizard-question-title">Как и где это можно будет проверить?</div>#}
+{#                    </div>#}
+{#                    <div class="row">#}
+{#                        <div class="span5">#}
+{#                            <input class="form-control taskWizard-answer" value="" type="text" name="_taskWizardAnswers[]" />#}
+{#                            <input type="hidden" name="label[]" value="Где будет проверено: " />#}
+{#                            <span class="taskWizard-question-help help-block">#}
+{#                                Пожалуйста, приведите примеры того, что нужно сделать#}
+{#                            </span>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>  #}
+                <div class="row">
+                    <div class="span5">
+                        <input type="button" value="Назад" 
+                            class="btn btn-large btn-success taskWizard-button-prev js-taskWizardStepPrev" />
+                        <input type="button" value="Далее"
+                            class="btn btn-large btn-success taskWizard-button-next js-taskWizardStepNext" />
+                        <input type="button" value="Создать расчет"
+                            class="btn btn-large btn-success taskWizard-button-submit js-taskWizardSubmit" />
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>  
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="/static/js/libs/jquery.easyFormStepper.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    var animateError = function(input, step) {
+        var errorText = $(step).find('.taskWizard-error-text');
+        $(input).parent().addClass('has-error');
+        errorText.slideDown(150);
+        $(input).keyup(function(){
+            if($(this).val().length > 0) {
+                $(this).parent().removeClass('has-error');
+                errorText.slideUp(150);
+            }
+        });
+    };
+    $('.js-taskWizard').easyFormStepper({
+        questionContainer: ".js-taskWizardContainer",
+        buttonNextSelector: ".js-taskWizardStepNext",
+        buttonPrevSelector: ".js-taskWizardStepPrev",
+        buttonSubmitSelector: ".js-taskWizardSubmit",
+        buttonCancelSelector: ".js-taskWizardClose",
+        canSkipValidation: false,
+        onStart: function($element){
+            $element.find('.taskWizard-overlay').fadeIn(200);
+            $element.find('.taskWizard-container').fadeIn(250);
+        },
+        onStepStart: function(step, $element) {
+            $(step).find('input:eq(0)').trigger("focus");
+        },
+        onClose: function($element){
+            $element.find('.taskWizard-overlay').fadeOut(250, function(){
+                $element.remove();
+            });
+            $element.find('.taskWizard-container').fadeOut(200);  
+        },
+        onStepValidation: function(step, $element, submitted){
+            var $st = $(step).find('input');
+            if($st.attr('required') == 'required') {
+                if($st.val().length <= 0) {
+                    if(submitted) { animateError($st, step); }
+                    return false;
+                }
+            }
+            return true;
+        },
+        transition: function(step, newStep, fn) {
+            if(step && newStep) {
+                $(step).fadeOut(150, function(){
+                    $(newStep).fadeIn(150, fn);
+                });
+            }
+            else if(newStep) {
+                $(newStep).fadeIn(150, fn);
+            }
+        },
+        onSubmit: function(answers){
+            var parseWizard = function(aWizard){
+                var sWizard = "";
+                if(aWizard.length > 1) {
+                    for (var i = aWizard.length - 1; i > 0; i--) {
+                        sWizard = aWizard[i] + '<br/>' + sWizard 
+                    }
+                }
+                sWizard = aWizard[0] + '///' + sWizard;
+                return sWizard;
+            };
+            var sWizard = parseWizard(answers);
+            if($('input.task-create').length) {
+                $('input.task-create').val(sWizard);
+                $('button.task-create').trigger('click');
+            } else {
+                var data = {
+                    "action": "fastCreate",
+                    "task_name": sWizard,
+                    "project": {{ main.CURRENT_PROJECT.id }}
+                };
+                $.post('/task_handler', data);
+            }
+        }
+    });
+});
+</script>

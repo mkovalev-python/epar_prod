@@ -1,0 +1,62 @@
+<div class="commit-summary">
+    <ul>
+        {% for file in diff.files %}
+            <li class="commit-file-changes panel panel-default">
+                {% if file.summary.binary %}
+                    <div class="file-summary panel-heading binary-file">
+                        {% if file.summary.deleted %}
+                            <span class="commit-file-changes-binary-removed">Файл удален</span>
+                        {% elif file.summary.created %}
+                            <span class="commit-file-changes-binary-added">Файл добавлен</span>
+                        {% else %}
+                            <span class="commit-file-changes-binary-diff">Файл изменен</span>
+                        {% endif %}
+                        <span class="commit-file-path">{{ file.path }}</span>
+                    </div>
+                {% else %}
+                    <div class="file-summary panel-heading {% if file.lines %}js-show-file-diff{% endif %}">
+                        <span class="commit-file-changes-removed">-{{ file.summary.deleted }}</span>
+                        <span class="commit-file-changes-added">+{{ file.summary.created }}</span>
+                        <span class="commit-file-path">
+                            {{ file.path }}
+                            {% if file.error_qty %}
+                                 | Ошибок:
+                                <a href="#" onclick="if (event) event.stopPropagation(); return Sniffer.getErrors('{{ file.path }}', {{ author }}, {{ project }});" >
+                                    {{ file.error_qty }}
+                                </a>
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="commit-diff-changes panel-body">
+                        <div class="file-diff-scroll-wrapper">
+                            <div class="file-diff-table">
+                                {% for line in file.lines %}
+                                    <div class="diff-line commit-diff-line-{% if line.created %}created{% elif line.deleted %}deleted{% else %}same{% endif %}">
+                                        <div class="gutter">
+                                            <span class="pointer">&gt;</span>
+                                            <span class="commit-old-line-number">{{ line.old_number }}</span>
+                                            <span class="commit-new-line-number">{{ line.new_number }}</span>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                        <pre class="source">{{ line.text }}</pre>
+                                    </div>
+                                {% endfor %}
+                                {% if file.lines %}
+                                    <div class="diff-line commit-diff-line-separator">
+                                        <div class="gutter">
+                                            <span class="pointer">&gt;</span>
+                                            <span class="">...</span>
+                                            <span class="">...</span>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                        <pre class="source">&nbsp;</pre>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</div>

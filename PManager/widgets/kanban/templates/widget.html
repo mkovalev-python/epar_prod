@@ -1,0 +1,57 @@
+{% load jsonify compressed %}
+{% block scripts %}
+    {% compressed_js 'kanban' %}
+    {% compressed_css 'kanban' %}
+{% endblock %}
+
+
+<div class="kanban">
+<div style="position:relative" class="gantt" id="GanttChartDIV"></div>
+</div>
+<script>
+
+  var g = new JSGantt.GanttChart('g',document.getElementById('GanttChartDIV'), 'day');
+
+	g.setShowRes(0); // Show/Hide Responsible (0/1)
+	g.setShowDur(0); // Show/Hide Duration (0/1)
+	g.setShowComp(0); // Show/Hide % Complete(0/1)
+    g.setCaptionType('Resource');  // Set to Show Caption (None,Caption,Resource,Duration,Complete)
+
+
+
+  if( g ) {
+      {% for task in kanban.tasks %}
+
+    g.AddTaskItem(new JSGantt.TaskItem(
+        Number('{{ task.pId }}'), //pID
+        '{{ task.pName }}', //pName
+        '{{ task.pStart }}', //pStart3
+        '{{ task.pEnd }}', //pEnd
+        '{{ task.pColor }}', //pColor
+        '{{ task.pLink }}', //pLink
+        Number('{{ task.pMile }}'), //pMile(Важность)
+        '{{ task.pRes }}', //pRes(Ответственный)
+        Number('{{ task.pComp }}'), //pComp(Процент выполнения)
+        Number('{{ task.pGroup }}'), //pGroup
+        Number('{{ task.pParent }}'), //pParent
+        Number('{{ task.pOpen }}'), //pOpen
+        '{{ task.pParent }}', //pDepend
+        '{{ task.pcption }}' //pCaption
+    ));
+      {% endfor %}
+
+
+    g.Draw();
+    g.DrawDependencies();
+
+  }
+
+  else
+
+  {
+
+    alert("not defined");
+
+  }
+
+</script>

@@ -1,0 +1,96 @@
+{% load compressed %}
+{% compressed_js 'user_statistic' %}
+<style>
+    .statistic-filter_user-list > ul > li {
+        display: inline;
+    }
+</style>
+<div class="widget tasklist">
+    <h1>Статистика пользователей</h1>
+    <hr>
+    <form role="form" class="statistic-filter form-horizontal" action="" name="filter_form">
+        <table width="300" cellpadding="0" cellspacing="0" class="choose-date">
+            <tr>
+                <td valign="middle"><label for="date_from" class="col-sm-2 control-label" >С</label></td>
+                <td valign="middle"><input type="text" name="fromDate" value="{% if user_statistic.filterForm.fromDate.value %}{{ user_statistic.filterForm.fromDate.value }}{% else %}{{ user_statistic.week_ago }}{% endif %}" class="form-control datepicker" id="date_from" placeholder="C" /></td>
+            </tr>
+            <tr>
+                <td valign="middle"><label for="date_from" class="col-sm-2 control-label" >По</label></td>
+                <td valign="middle"><input type="text" name="toDate" value="{% if user_statistic.filterForm.toDate.value %}{{ user_statistic.filterForm.toDate.value }}{% else %}{{ user_statistic.now }}{% endif %}" class="form-control datepicker" id="date_to" placeholder="По" /></td>
+            </tr>
+        </table>
+        
+        <div class="statistic-filter_user-list">
+            {{ user_statistic.filterForm.aUserId }}
+        </div>
+        <hr>
+        <button type="submit" class="btn btn-success">Создать</button>
+        <input type="submit" name="xls_output" class="btn btn-success" value="Эксель" />
+        <button type="submit" onclick="document.location.href='/statistic/';return false;" class="btn btn-default">Отмена</button>
+    </form>
+    {% for user in user_statistic.users %}
+    <br />
+    <h3>{{ user.last_name }} {{ user.first_name }}</h3>
+    <hr />
+    <table class="table table-striped table-bordered">
+        <tr>
+            <th>
+                Дата
+            </th>
+            <th>
+                Позиция
+            </th>
+            <th>
+                Время
+            </th>
+            <th>
+                План
+            </th>
+            <th>
+                Результат
+            </th>
+            <th>
+                Дата закрытия
+            </th>
+            <th>
+                Комментариев&nbsp;({{ user.commentsQty }})
+            </th>
+            <th>
+                Файлов
+            </th>
+            <th>
+                На проверке
+            </th>
+            <th>
+                Закрыта&nbsp;({{ user.closedTaskQty }})
+            </th>
+        </tr>
+        {% for taskTime in user.taskTime %}
+            <tr>
+                <td>{{ taskTime.date|date:"d.m.Y H:i:s" }}</td>
+                <td><b>{{ taskTime.task.project.name }}: {% if taskTime.task.parentTask %}<a href="{{ taskTime.task.parentTask.url }}">{{ taskTime.task.parentTask.name }}</a> / {% endif %}<a href="{{ taskTime.task.url }}">{{ taskTime.task.name }}</a></b></td>
+                <td>{{ taskTime.timer }}</td>
+                <td>{% if taskTime.task.planTime %}{{ taskTime.task.planTime }}{% endif %}</td>
+                <td>{{ taskTime.timer.comment|safe }}</td>
+                <td>{% if taskTime.task.dateClose %}{{ taskTime.task.dateClose|date:"d.m.Y H:i:s" }}{% endif %}</td>
+                <td>{% if taskTime.comments_qty %}{{ taskTime.comments_qty }}{% endif %}</td>
+                <td>{{ taskTime.files_qty }}</td>
+                <td>{% if taskTime.task.status.code == 'ready' %}Да{% endif %}</td>
+                <td>{% if taskTime.task.closed %}Да{% endif %}</td>
+            </tr>
+        {% endfor %}
+            <tr>
+                <td><b>Итого</b></td>
+                <td></td>
+                <td><b>{% if user.allTime %}{{ user.allTime }}{% endif %}</b></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b>{% if user.all_comments_qty %}{{ user.all_comments_qty }}{% endif %}</b></td>
+                <td><b>{% if user.all_files_qty %}{{ user.all_files_qty }}{% endif %}</b></td>
+                <td></td>
+            </tr>
+    </table>
+    {% endfor %}
+</div>

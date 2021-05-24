@@ -1,0 +1,168 @@
+{% load jsonify compressed %}
+
+<script language="JavaScript" class="tmp_script">
+    var widget_file_list_file_tpl = {{ file_list.fileTemplate|jsonify|safe }};
+    var widget_file_list_arFiles = [];
+    {% for fileJson in file_list.files %}
+        widget_file_list_arFiles.push({{ fileJson|jsonify|safe }});
+    {% endfor %}
+    $(function() {
+       $('.js-file-search').keyup(function(){
+           var text = $(this).val(),
+               $jsSearchClear = $('.js-search-clear');
+           if (text) {
+               $jsSearchClear.show();
+           } else {
+               $jsSearchClear.hide();
+           }
+           fileList.search($(this).val());
+       });
+       $('.js-search-clear').click(function(){
+           $('.js-file-search').val('').trigger('keyup');
+           fileList.search('');
+           return false;
+       });
+    });
+</script>
+{% compressed_js 'file_list' %}
+
+    <div class="widget file_list">
+        <div class="widget-control">
+{#            <a href="#" class="w-collapse">Свернуть</a>#}
+{#            <a href="#" class="w-close">Закрыть</a>#}
+        </div>
+
+        <div class="widget-title"><h2>Файлы проекта</h2></div>
+
+
+        
+
+		<div class="file-adding-form" style="position:relative;">
+            <div class="filelist-file-upload" style="position: relative; display:block;">
+
+            </div>
+            <h3 class="file_upload_button">Перетащите файлы или нажмите сюда</h3>
+        </div>
+        
+        <div class="files-wrapper">
+            <div class="files-wrapper-packs">
+                <ul>
+                    <li class="separator">
+                        <a href="#root" class="js-dir-name js-root">{{ file_list.project.name }}</a>
+                        <ul class="js-dir-list">
+                            {% for category in file_list.tree %}
+                            <li>
+
+                            <a class="js-dir-name" href="#{{ category.id }}" data-id="{{ category.id }}"> {{ category.name }}</a><i title="Удалить папку" class="fa fa-trash delete-dir js-delete_dir" data-dir_id="{{ category.id }}" ></i>
+                            {% if category.children %}
+                                            <ul class="js-dir-list">
+                                                {% for child in category.children %}<li>
+                                                    <a class="js-dir-name" href="#{{ child.id }}" data-id="{{ child.id }}"> {{ child.name }}</a><i title="Удалить папку" class="fa fa-trash delete-dir js-delete_dir" data-dir_id="{{ child.id }}" ></i>
+                                                    {% if child.children %}
+
+                                                        <ul class="js-dir-list">
+                                                            {% for child2 in child.children %}<li>
+                                                                <a class="js-dir-name" href="#{{ child2.id }}" data-id="{{ child2.id }}"> {{ child2.name }}</a><i title="Удалить папку" class="fa fa-trash delete-dir js-delete_dir" data-dir_id="{{ child2.id }}" ></i>
+
+                                                            {% if child2.children %}
+
+                                                        <ul class="js-dir-list">
+                                                            {% for child3 in child2.children %}<li>
+                                                                <a class="js-dir-name" href="#{{ child3.id }}" data-id="{{ child3.id }}"> {{ child3.name }}</a><i title="Удалить папку" class="fa fa-trash delete-dir js-delete_dir" data-dir_id="{{ child3.id }}" ></i>
+                                                            {% if child3.children %}
+
+                                                        <ul class="js-dir-list">
+                                                            {% for child4 in child3.children %}<li>
+                                                                <a class="js-dir-name" href="#{{ child4.id }}" data-id="{{ child4.id }}"> {{ child4.name }}</a><i title="Удалить папку" class="fa fa-trash delete-dir js-delete_dir" data-dir_id="{{ child4.id }}" ></i>
+                                                            {% if child4.children %}
+
+                                                        <ul class="js-dir-list">
+                                                            {% for child5 in child4.children %}
+                                                                <a class="js-dir-name" href="#{{ child5.id }}" data-id="{{ child5.id }}"> {{ child5.name }}</a><i title="Удалить папку" class="fa fa-trash delete-dir js-delete_dir" data-dir_id="{{ child5.id }}" ></i>
+                                                            {% endfor %}
+                                                        </ul>
+
+                                                    {% endif %}
+                                                            </li>
+                                                            {% endfor %}
+                                                        </ul>
+
+                                                    {% endif %}
+                                                            </li>
+                                                            {% endfor %}
+                                                        </ul>
+
+                                                    {% endif %}
+                                                            </li>
+                                                            {% endfor %}
+                                                        </ul>
+
+                                                    {% endif %}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+
+                            </li>
+                             {% endfor %}
+                             <li class="open"><a href="#tasks" data-id="tasks" class="js-dir-name">Прикрепленные файлы</a></li>
+                        </ul>
+                    </li>
+                </ul>
+{#                <p class="files-wrapper-packs-buttons">#}
+{#                <button class="btn btn-default" type="button" id="create_new_folder">Создать папку&nbsp&nbsp;<i class="fa fa-folder"></i></button>#}
+{#                </p>#}
+            </div><!--files-wrapper-packs-->
+            <div class="files-wrapper-files">
+                <div class="files-wrapper-list-navi-wrapper">
+                    <div class="files-wrapper-list-navi js-breadcrumb">
+                        <a href="#">{{ file_list.project.name }}</a>
+                    </div>
+                    <div class="find-container" style="position: absolute; right: 3px; top: 3px;">
+                        <input type="text" class="js-file-search file-search form-control" placeholder="Поиск" name="search" />
+                        <a class="icon-remove fa fa-times js-search-clear"
+                           style="position: absolute; top: 10px; right: 10px;display: none;text-decoration: none;"></a>
+                    </div>
+                </div>
+                <div class="files-wrapper-list box">
+                    <ul class="js-file-list">
+                    </ul>
+                </div><!--files-wrapper-list-->
+                <div class="files-wrapper-info js-fileInfo">
+                        <div class="js-infoRow" style="display: none"><span>Имя:</span> <span class="js-file_name"></span></div>
+                        <div class="js-infoRow" style="display: none"><span>Формат:</span> <span class="js-file_type"></span></div>
+                        <div class="js-infoRow" style="display: none"><span>Дата создания:</span> <span class="js-file_date_create"></span></div>
+                        <div class="js-infoRow" style="display: none"><span>Размер:</span> <span class="js-file_size"></span></div>
+                        <div class="js-infoRow" style="display: none"><span>Разрешение:</span> <span class="js-file_resolution"></span></div>
+                        <div class="js-infoRow" style="display: none"><p><span>Превью:</span></p><a class="fnc" href="#" ><img src="" class="js-file_thumbnail" width="167"></a></div>
+                        <div class="js-fileVersionsBlock js-infoRow">
+                            <span>Версии:</span><br/>
+                            <ul class="js-fileVersionsList">
+    
+                            </ul>
+                        </div>   
+                </div><!--files-wrapper-info-->
+                <div class="files-wrapper-list-navi-wrapper-footer js-foot" style="display: none;">
+                    <div class="files-wrapper-list-navi-footer">                	
+                        <div class="files-wrapper-list-control js-fileButtonsGrp">                            
+            {#                 <button disabled="disabled" class="btn btn-warning js-replace_files" type="button">Скопировать&nbsp&nbsp;<i class="icon-share icon-white"></i></button>#}
+                                <button class="btn btn-success js-replaceFiles" type="button">Перенести&nbsp&nbsp;<i class="fa fa-share"></i></button>
+                                <button class="btn btn-danger js-deleteFiles" type="button">Удалить&nbsp&nbsp;<i class="fa fa-trash-o"></i></button>
+                        </div> 
+                    </div>
+                </div><!--files-wrapper-list-navi-wrapper-footer-->
+        	</div><!--files-wrapper-files-->
+  		</div>   <!--files-wrapper-->
+        
+        
+        
+    </div>
+
+{% compressed_js 'fileup' %}
+<style>
+    .delete-dir {
+        display: none;
+    }
+    a.active+.delete-dir {
+        display: inline;
+    }
+</style>

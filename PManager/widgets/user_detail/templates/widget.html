@@ -1,0 +1,779 @@
+{% load floattags jsonify compressed humanize thumbnail %}
+{% compressed_js 'user_detail' %}
+{% compressed_css 'user_detail' %}
+<script>
+    var global_user_id = {{ user_detail.user.id }};
+    window.taskHtml = {{ user_detail.taskTemplate|jsonify|safe }};
+    var USER_TIME_DATA = [
+          {% for vals in user_detail.timeGraph %}{State:'{{ vals.date }}',freq:{time:{{ vals.time }}, tasks:{{ vals.tasksClosed }}, commits:{{ vals.commits }}}}{% if not forloop.last %},{% endif %}{% endfor %}
+    ];
+</script>
+<div id="key-add" class="modal fade" role="dialog" aria-labelledby="keyAdd" aria-hidden="true">
+    {% include 'keys/form.html' %}
+</div>
+
+
+<div class="widget inner" id="user_detail">
+    <div class="widget-body">
+        <div class="user-header clearfix">
+            <div class="">
+                <div class="user-header-avatar">
+                    {% if not project.imagePath %}
+                        <a href="/profile/edit/?id={{ user_detail.user.id }}">
+                    {% endif %}
+                    <img src="{% if user_detail.profile.avatarSrc %}{{ user_detail.profile.avatarSrc }}{% else %}/static/images/no-photo.png{% endif %}">
+                    {% if not project.imagePath %}
+                        </a>
+                    {% endif %}
+                </div>
+
+                <div class="user-header-info clearfix">
+                    <div class="user-header-avatar">
+                        {% if not project.imagePath %}
+                            <a href="/profile/edit/?id={{ user_detail.user.id }}">
+                        {% endif %}
+                        <img src="{% if user_detail.profile.avatarSrc %}{{ user_detail.profile.avatarSrc }}{% else %}/static/images/no-photo.png{% endif %}">
+                        {% if not project.imagePath %}
+                            </a>
+                        {% endif %}
+                    </div>
+                    <div class="user-header-name">
+                        <h2 class="user-body-info-block-name">{{ user_detail.user.last_name }} {{ user_detail.user.first_name }}
+                            {% if user_detail.userIsEqualCurrentUser or user_detail.current_user_is_admin  %}
+                            <a href="/profile/edit/?id={{ user_detail.user.id }}" class="user-body-info-block-edit-icon">
+                                <i class="fa fa-cog" aria-hidden="true"></i>
+                            </a>
+                            {% endif %}
+                        </h2>
+
+                        {% if user_detail.current_user_is_admin %}
+                        <form method="POST" action="">
+                            {% csrf_token %}
+                            <input name="action" type="hidden" value="delete_user" />
+                            <input type="submit" class="js-delete-user button red-bg block margin-bottom-10" value="Удалить пользователя" /></form>
+                        {% endif %}
+                        {% if not user_detail.userIsEqualCurrentUser %}
+                        <a href="#add-project" class="button green-bg block js-add-project" role="tab" data-toggle="tab">Добавить в проект</a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="user-header-info-blocks clearfix hidden">
+                    <div class="user-body-info-block">
+                        <h3>Финансы</h3>
+                        <div class="user-body-info-block-balance">
+                            На счету:
+                            <span class="user-body-info-block-balance-sum dropdown">
+                                <a href="#" class="user-body-info-block-balance-sum-active" data-toggle="dropdown" data-target="#" title="Личные сообщения">82 863</a>
+                                <div class="dropdown-menu">
+                                    <ul class="user-body-info-block-balance-project-ul">
+                                        <li class="user-body-info-block-balance-project-ul-li">
+                                            <div class="user-body-info-block-balance-project-ul-li-title"><a href="">Экспертная компания</a></div>
+                                            <div class="user-body-info-block-balance-project-ul-li-desc clearfix">
+                                                <div class="user-body-info-block-balance-project-ul-li-desc-left"><b class="font-20">24794</b>&nbsp;&nbsp;&nbsp;ставка: <b class="text-green font-20">605,0</b></div>
+                                                <div class="user-body-info-block-balance-project-ul-li-desc-right"><a href="" class="user-body-info-block-balance-remove"><i class="fa fa-times" aria-hidden="true"></i></a></div>
+                                            </div>
+                                        </li>
+                                        <li class="user-body-info-block-balance-project-ul-li">
+                                            <div class="user-body-info-block-balance-project-ul-li-title"><a href="">finance.kari.com</a></div>
+                                            <div class="user-body-info-block-balance-project-ul-li-desc clearfix">
+                                                <div class="user-body-info-block-balance-project-ul-li-desc-left"><b class="font-20">24794</b>&nbsp;&nbsp;&nbsp;ставка: <b class="text-green font-20">605,0</b></div>
+                                                <div class="user-body-info-block-balance-project-ul-li-desc-right"><a href="" class="user-body-info-block-balance-remove"><i class="fa fa-times" aria-hidden="true"></i></a></div>
+                                            </div>
+                                        </li>
+                                        <li class="user-body-info-block-balance-project-ul-li">
+                                            <div class="user-body-info-block-balance-project-ul-li-title"><a href="">GetCollect</a></div>
+                                            <div class="user-body-info-block-balance-project-ul-li-desc clearfix">
+                                                <div class="user-body-info-block-balance-project-ul-li-desc-left"><b class="font-20">24794</b>&nbsp;&nbsp;&nbsp;ставка: <b class="text-green font-20">605,0</b></div>
+                                                <div class="user-body-info-block-balance-project-ul-li-desc-right"><a href="" class="user-body-info-block-balance-remove"><i class="fa fa-times" aria-hidden="true"></i></a></div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </span> баллов
+                        </div>
+                        <div class="user-body-info-block-balance">Мин. ставка: <span class="user-body-info-block-balance-sum">600</span> <span class="user-body-info-block-balance-bonus"><span class="user-body-info-block-balance-bonus-plus-minus">+</span> 5,0</span></div>
+                        <div class="user-body-info-block-desc">Цена часа для конкретного проекта может быть переопределена менеджером</div>
+                    </div>
+                    <div class="user-body-info-block">
+                    <h3 class="user-body-info-block-name dropdown add-smthng-dropdown">Навыки
+                        {% if user_detail.userIsEqualCurrentUser or user_detail.current_user_is_admin  %}
+                        <a href="" class="user-body-info-block-edit-icon" data-toggle="dropdown" data-target="#"><i class="fa fa-plus-circle" aria-hidden="true"></i></a>
+                        <div class="dropdown-menu" onclick="event.stopPropagation();return false;">
+                            <ul class="user-body-info-block-balance-project-ul">
+                                <li class="user-body-info-block-balance-project-ul-li ">
+                                    <div class="add-smthng-dropdown-input-wrapper clearfix dropdown js-specialties_search_wrapper">
+                                        <input type="text" name="additional_tags" data-user-id="{{ user_detail.user.id }}"
+                                               placeholder="Укажите свои навыки" id="skillsDropdown"
+                                               class="form-control js-save_specialty" autocomplete="off" >
+                                        <ul class="dropdown-menu js-search_specialties" role="dropdown"
+                                            aria-labelledby="skillsDropdown">
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </h3>
+                    <ul class="user-body-info-block-ul js-specialties">
+                        {% if user_detail.specialties %}
+                            {% for specialty in user_detail.specialties %}
+                                <li class="js-skill-item">
+                                    <div class="user-header-stat-line-progress-title clearfix">
+                                        <div class="user-header-stat-line-progress-title-text">{{ specialty.name }}
+                                            {% if user_detail.userIsEqualCurrentUser or user.is_superuser %}
+                                                    <a href="#" class="remove-icon js-delete_specialty" data-specialty="{{ specialty.id }}"><i class="fa fa-remove"></i></a>
+                                            {% endif %}
+                                        </div>
+                                        <div class="user-header-stat-line-progress-title-percent">
+                                            {% if specialty.weight %}{{ specialty.weight }}{% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="user-header-stat-line-progress-bar-2 progress">
+                                        <div class="progress-bar blue" style="width: {{ specialty.weightPercent }}%"></div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        {% endif %}
+                    </ul>
+                </div>
+                </div>
+                <div class="user-header-info-blocks clearfix">
+                    <div class="user-body-info-block">
+                        <h3 class="user-body-info-block-name add-smthng-dropdown">Контакты
+                            {% if user_detail.userIsEqualCurrentUser or user_detail.current_user_is_admin  %}
+                            <a href="/profile/edit/?id={{ user_detail.user.id }}" class="user-body-info-block-edit-icon"><i class="fa fa-cog" aria-hidden="true"></i></a>
+                            {% endif %}
+                        </h3>
+                        <ul class="user-body-info-block-ul">
+                            <li class="user-body-info-block-ul-li-with-icon"><i class="fa fa-envelope"></i>{{ user_detail.user.email }}</li>
+                            {% if user_detail.profile.skype %}<li class="user-body-info-block-ul-li-with-icon"><i class="fa fa-skype"></i>{{ user_detail.profile.skype }}</li>{% endif %}
+                        </ul>
+                    </div>
+                    <div class="user-body-info-block">
+                    <h3>Последняя активность</h3>
+                    <ul class="user-body-info-block-ul">
+                        <li class="user-body-info-block-ul-li-with-icon"><i class="fa fa-tasks" aria-hidden="true"></i>{{ user_detail.profile.last_activity_date|default_if_none:'' }}</li>
+                    </ul>
+                </div>
+                </div>
+
+            </div>
+            <div class="user-header-stat-employee">
+
+                <div class="user-header-stat-line clearfix">
+                    <div class="user-header-stat-line-icon"><i class="fa fa-bar-chart" aria-hidden="true"></i></div>
+                    <div class="user-header-stat-line-item">
+                        <b class="user-header-stat-line-item-title">Коэффициент корректности</b>
+                        <b class="user-header-stat-line-item-text">{% if user_detail.competence > 0 %}+ {% endif %}{{ user_detail.competence }}</b>
+                    </div>
+                    <div class="user-header-stat-line-item">
+                        <b class="user-header-stat-line-item-title">Расчетов / Позиций</b>
+                        <b class="user-header-stat-line-item-text">{{ user_detail.userProjectsOpenQty }}<span class="user-header-stat-line-item-text-separator"> / </span>{{ user_detail.milestonesOpen }}</b>
+                    </div>
+                    <div class="user-header-stat-line-item">
+                        <b class="user-header-stat-line-item-title">В работе пунктов</b>
+                        <b class="user-header-stat-line-item-text">{{ user_detail.taskSumm }}<span class="user-header-stat-line-item-text-separator"></b>
+                    </div>
+                </div>
+
+                <div class="user-header-stat-line">
+                    <div class="user-header-stat-line-progress-title clearfix">
+                        <div class="user-header-stat-line-progress-title-text">Производительность</div>
+                        <div class="user-header-stat-line-progress-title-percent">{{ user_detail.velocity|floatformat:"0" }}%</div>
+                    </div>
+                    <div class="user-header-stat-line-progress-bar progress">
+                        <div class="progress-bar progress-bar-success" style="width: {{ user_detail.velocity|floatformat:"%f.2" }}%"></div>
+                    </div>
+                </div>
+
+
+                <div class="user-header-stat-line clearfix">
+                    <div class="user-header-stat-line-icon"><i class="fa fa-heart-o" aria-hidden="true"></i></div>
+                    <div class="user-header-stat-line-item">
+                        <b class="user-header-stat-line-item-title">Ресурс</b>
+                        <b class="user-header-stat-line-item-text">
+                            {% if user_detail.profile.hoursQtyPerDay %}
+                            {{ user_detail.profile.hoursQtyPerDay }}
+                            {% else %}
+                                6
+                            {% endif %}
+                            <span class="user-header-stat-line-item-text-desc">ч. в день</span>
+                        </b>
+                    </div>
+                    <div class="user-header-stat-line-item">
+                        <b class="user-header-stat-line-item-title">Проводится расчетов</b>
+                        <b class="user-header-stat-line-item-text">≈ 1 <span class="user-header-stat-line-item-text-desc">в день</span></b>
+                    </div>
+                    <div class="user-header-stat-line-item">
+                        <b class="user-header-stat-line-item-title">Закрыто пунктов</b>
+                        <b class="user-header-stat-line-item-text">{{ user_detail.allPlanClosed|floatformat:"0"|default_if_none:"0" }}<span class="user-header-stat-line-item-text-desc">&nbsp;за месяц</span></b>
+                    </div>
+                </div>
+
+            </div>
+            <div class="user-header-stat-employer">
+                <div class="user-header-stat-line clearfix">
+                    <div class="user-header-stat-line-icon"><i class="fa fa-pie-chart" aria-hidden="true"></i></div>
+
+                    <div class="user-header-stat-line-item">
+                        <b class="user-header-stat-line-item-title">Проведено пунктов</b>
+                        <b class="user-header-stat-line-item-text">
+                            {{ user_detail.allTaskClosed|default_if_none:"0" }}
+                            <span class="user-header-stat-line-item-text-desc"></span></b>
+                    </div>
+                    <div class="user-header-stat-line-item">
+                        <b class="user-header-stat-line-item-title">Закрыто целей</b>
+                        <b class="user-header-stat-line-item-text">
+                            {{ user_detail.milestonesClosed|default_if_none:"0" }}
+                            <span class="user-header-stat-line-item-text-desc"></span></b>
+                    </div>
+                    <div class="user-header-stat-line-item">
+                        <b class="user-header-stat-line-item-title">Закрыто проектов</b>
+                        <b class="user-header-stat-line-item-text">{{ user_detail.userProjectsClosedQty }}</b>
+                    </div>
+                </div>
+
+                <div class="user-header-stat-line">
+                    <div class="user-header-stat-line-progress-title clearfix">
+                        <div class="user-header-stat-line-progress-title-text">Качество</div>
+                        <div class="user-header-stat-line-progress-title-percent">{{ user_detail.quality|floatformat:"0" }}%</div>
+                    </div>
+                    <div class="user-header-stat-line-progress-bar progress">
+                        <div class="progress-bar progress-bar-success" style="width: {{ user_detail.quality|floatformat:"%f.2" }}%"></div>
+                    </div>
+                </div>
+
+
+                <div class="user-header-stat-line clearfix">
+                    <div class="user-header-stat-line-icon"><i class="fa fa-bug" aria-hidden="true"></i></div>
+                    <div class="user-header-stat-line-item two-items">
+                        <b class="user-header-stat-line-item-title">Просрочено</b>
+                        <b class="user-header-stat-line-item-text">
+                            {{ user_detail.overdueTasks }}<span class="user-header-stat-line-item-text-desc">&nbsp;задач</span>
+                            {{ user_detail.overdueMilestones }}<span class="user-header-stat-line-item-text-desc">&nbsp;целей</span>
+                        </b>
+                    </div>
+                    <div class="user-header-stat-line-item two-items">
+                        <b class="user-header-stat-line-item-title">Допущено ошибок</b>
+                        <b class="user-header-stat-line-item-text">{{ user_detail.bugsQty|default_if_none:'0' }}</b>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="user-body clearfix">
+            <div class="user-body-info">
+                <div class="user-body-info-block">
+                    <h2 class="user-body-info-block-name">{{ user_detail.title }}
+                        {% if user_detail.userIsEqualCurrentUser or user_detail.current_user_is_admin  %}
+                        <a href="/profile/edit/?id={{ user_detail.user.id }}"
+                           class="user-body-info-block-edit-icon">
+                            <i class="fa fa-cog" aria-hidden="true"></i></a>
+                        {% endif %}
+                        </h2>
+                        {% if user_detail.current_user_is_admin %}
+                        <form method="POST" action="">
+                            {% csrf_token %}
+                            <input name="action" type="hidden" value="delete_user" />
+                            <input type="submit" class="js-delete-user button red-bg block margin-bottom-10" value="Удалить пользователя" /></form>
+                        {% endif %}
+                        {% if not user_detail.userIsEqualCurrentUser %}
+                        <a href="#add-project" class="button green-bg block js-add-project" role="tab" data-toggle="tab">Добавить в проект</a>
+                        {% endif %}
+                </div>
+                <div class="user-body-info-block hidden">
+                    <h3>Финансы</h3>
+                    <div class="user-body-info-block-balance">
+                        На счету:
+                        <span class="user-body-info-block-balance-sum dropdown">
+                            <a href="#" class="user-body-info-block-balance-sum-active" data-toggle="dropdown" data-target="#" title="Личные сообщения">82 863</a>
+                            <div class="dropdown-menu">
+                                    <ul class="user-body-info-block-balance-project-ul">
+                                        <li class="user-body-info-block-balance-project-ul-li">
+                                            <div class="user-body-info-block-balance-project-ul-li-title"><a href="">Экспертная компания</a></div>
+                                            <div class="user-body-info-block-balance-project-ul-li-desc clearfix">
+                                                <div class="user-body-info-block-balance-project-ul-li-desc-left"><b class="font-20">24794</b>&nbsp;&nbsp;&nbsp;ставка: <b class="text-green font-20">605,0</b></div>
+                                                <div class="user-body-info-block-balance-project-ul-li-desc-right"><a href="" class="user-body-info-block-balance-remove"><i class="fa fa-times" aria-hidden="true"></i></a></div>
+                                            </div>
+                                        </li>
+                                        <li class="user-body-info-block-balance-project-ul-li">
+                                            <div class="user-body-info-block-balance-project-ul-li-title"><a href="">finance.kari.com</a></div>
+                                            <div class="user-body-info-block-balance-project-ul-li-desc clearfix">
+                                                <div class="user-body-info-block-balance-project-ul-li-desc-left"><b class="font-20">24794</b>&nbsp;&nbsp;&nbsp;ставка: <b class="text-green font-20">605,0</b></div>
+                                                <div class="user-body-info-block-balance-project-ul-li-desc-right"><a href="" class="user-body-info-block-balance-remove"><i class="fa fa-times" aria-hidden="true"></i></a></div>
+                                            </div>
+                                        </li>
+                                        <li class="user-body-info-block-balance-project-ul-li">
+                                            <div class="user-body-info-block-balance-project-ul-li-title"><a href="">GetCollect</a></div>
+                                            <div class="user-body-info-block-balance-project-ul-li-desc clearfix">
+                                                <div class="user-body-info-block-balance-project-ul-li-desc-left"><b class="font-20">24794</b>&nbsp;&nbsp;&nbsp;ставка: <b class="text-green font-20">605,0</b></div>
+                                                <div class="user-body-info-block-balance-project-ul-li-desc-right"><a href="" class="user-body-info-block-balance-remove"><i class="fa fa-times" aria-hidden="true"></i></a></div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                            </div>
+                        </span> баллов
+                    </div>
+                    <div class="user-body-info-block-balance">Мин. ставка: <span class="user-body-info-block-balance-sum">600</span> <span class="user-body-info-block-balance-bonus"><span class="user-body-info-block-balance-bonus-plus-minus">+</span> 5,0</span></div>
+                    <div class="user-body-info-block-desc">Цена часа для конкретного проекта может быть переопределена менеджером</div>
+                </div>
+                <div class="user-body-info-block">
+                    <h3 class="user-body-info-block-name dropdown add-smthng-dropdown">Навыки
+                        {% if user_detail.userIsEqualCurrentUser or user_detail.current_user_is_admin  %}
+                            <a href="" class="user-body-info-block-edit-icon"
+                           data-toggle="dropdown" data-target="#">
+                            <i class="fa fa-plus-circle" aria-hidden="true"></i></a>
+                            <div class="dropdown-menu" onclick="event.stopPropagation();return false;">
+                                <ul class="user-body-info-block-balance-project-ul" onclick="return false;">
+                                    <li class="user-body-info-block-balance-project-ul-li ">
+                                        <div class="add-smthng-dropdown-input-wrapper clearfix dropdown js-specialties_search_wrapper">
+                                            <input type="text" name="additional_tags" data-user-id="{{ user_detail.user.id }}"
+                                                   placeholder="Укажите свои навыки" id="skillsDropdown"
+                                                   class="form-control js-save_specialty" autocomplete="off" >
+                                            <ul class="dropdown-menu js-search_specialties" role="dropdown"
+                                                aria-labelledby="skillsDropdown">
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </h3>
+                    <ul class="user-body-info-block-ul js-specialties">
+                        {% if user_detail.specialties %}
+                            {% for specialty in user_detail.specialties %}
+                                <li class="js-skill-item">
+                                    <div class="user-header-stat-line-progress-title clearfix">
+                                        <div class="user-header-stat-line-progress-title-text">{{ specialty.name }}
+                                            {% if user_detail.userIsEqualCurrentUser or user.is_superuser %}
+                                                    <a href="#" class="remove-icon js-delete_specialty" data-specialty="{{ specialty.id }}"><i class="fa fa-remove"></i></a>
+                                            {% endif %}
+                                        </div>
+                                        <div class="user-header-stat-line-progress-title-percent">{{ specialty.weight|default_if_none:'' }}</div>
+                                    </div>
+                                    <div class="user-header-stat-line-progress-bar-2 progress">
+                                        <div class="progress-bar blue" style="width: {{ specialty.weightPercent }}%"></div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <div class="user-body-info-block">
+                    <h3 class="user-body-info-block-name add-smthng-dropdown">Контакты
+                        {% if user_detail.userIsEqualCurrentUser or user_detail.current_user_is_admin  %}
+                            <a href="/profile/edit/?id={{ user_detail.user.id }}" class="user-body-info-block-edit-icon"><i class="fa fa-cog" aria-hidden="true"></i></a>
+                            {% endif %}
+                    </h3>
+                    <ul class="user-body-info-block-ul">
+                        <li class="user-body-info-block-ul-li-with-icon"><i class="fa fa-envelope"></i>{{ user_detail.user.email }}</li>
+                        {% if user_detail.profile.telegram %}<li class="user-body-info-block-ul-li-with-icon"><i class="fa fa-paper-plane"></i>{{ user_detail.profile.telegram }}</li>{% endif %}
+                        {% if user_detail.profile.skype %}<li class="user-body-info-block-ul-li-with-icon"><i class="fa fa-skype"></i>{{ user_detail.profile.skype }}</li>{% endif %}
+                    </ul>
+                </div>
+
+                <div class="user-body-info-block">
+                    <h3>Последняя активность</h3>
+                    <ul class="user-body-info-block-ul">
+                        <li class="user-body-info-block-ul-li-with-icon"><i class="fa fa-tasks" aria-hidden="true"></i>{{ user_detail.profile.last_activity_date|default_if_none:'' }}</li>
+                    </ul>
+                </div>
+
+            </div>
+            <div class="user-body-desc">
+
+
+                <div class="row-fluid clearfix user-inner-tabs" id="myTab">
+                        <ul class="nav nav-pills js-tab-menu">
+                            <li class="active"><a href="#svodka" role="tab" data-toggle="tab">Сводка</a></li>
+                            <li><a href="#ychastvyet" role="tab" data-toggle="tab">Участвует в проектах</a></li>
+                            <li><a href="#tekyshie_zadachi" role="tab" data-toggle="tab" class="js-current-tasks">Текущие задачи</a></li>
+                            <li><a href="#dostizheniya" role="tab" data-toggle="tab">Значки</a></li>
+                            <li><a href="#activity" role="tab" data-toggle="tab">Активность</a></li>
+                            {% if user_detail.use_git and user_detail.userIsEqualCurrentUser %}
+                            <li><a href="#keys" role="tab" data-toggle="tab">SSH-ключи</a></li>
+                            {% endif %}
+                            {% if user_detail.current_user_is_admin %}
+                            <li><a href="#payments" role="tab" data-toggle="tab">Движения по счету</a></li>
+                            {% endif %}
+                        </ul>
+                </div><!--ТАБЫ-->
+
+                <div class="tab-content">
+                    <div class="tab-pane active" id="svodka">
+                        <div class="statistic-wrapper clearfix">
+                            <div class="row">
+                                <div class="col-lg-12 widget">
+                                    <h4>Активные спринты</h4>
+                                    <table id="payment_table_id" class="display table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>Проект</th>
+                                            <th>Группа расчетов</th>
+                                            <th>Дата закрытия: план</th>
+                                            <th>Загрузка, ч</th>
+                                            <th>Пункты после оценки, шт</th>
+                                            <th>Пункты после оценки, т руб</th>
+                                            <th>Всего, т руб</th>
+                                            <th>Оценка загруженности, %</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for user in user_detail.active_sprints %}
+                                            {% for milestone in user.milestones %}
+                                                <tr>
+                                                    <td>{{ milestone.project }}</td>
+                                                    <td>{{ milestone.name }}</td>
+                                                    <td>{{ milestone.date_close_plan }}</td>
+                                                    <td>{{ milestone.hours }}</td>
+                                                    <td>{{ milestone.tasks_after_start }}</td>
+                                                    <td>{{ milestone.hours_after_start }}</td>
+                                                    {% ifchanged user.id %}<td rowspan="{{ user.milestones|length }}">{{ user.hours_all }}</td>{% endifchanged %}
+                                                    {% ifchanged user.id %}
+                                                        <td rowspan="{{ user.milestones|length }}">
+                                                            {% if user.workload %}
+                                                                {{ user.workload.workload }} ({{ user.workload.date }})
+                                                            {% else %}
+                                                                -
+                                                            {% endif %}
+                                                        </td>
+                                                    {% endifchanged %}
+                                                </tr>
+                                            {% endfor %}
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <table id="payment_table_id" class="display table table-bordered" style="width: auto">
+                                        <tbody>
+                                        {% for user in user_detail.active_sprints %}
+                                            <tr>
+                                                <td>Задачи вне спринтов, ч</td>
+                                                <td>{{ user_detail.planned_hours }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <h4>Закрытые спринты</h4>
+                                    <table id="payment_table_id" class="display table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>Проект</th>
+                                            <th>Группа расчетов</th>
+                                            <th>Дата утверждения: факт</th>
+                                            <th>Опоздание, д</th>
+                                            <th>Общее, руб</th>
+                                            <th>Пункты после оценки, шт</th>
+                                            <th>Пункты после оценки, руб</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for user in user_detail.closed_sprints %}
+                                            {% for milestone in user.milestones %}
+                                                <tr>
+                                                    <td>{{ milestone.project }}</td>
+                                                    <td>{{ milestone.name }}</td>
+                                                    <td>{{ milestone.date_close_fact }}</td>
+                                                    <td>{{ milestone.final_delay }}</td>
+                                                    <td>{{ milestone.hours }}</td>
+                                                    <td>{{ milestone.tasks_after_start }}</td>
+                                                    <td>{{ milestone.hours_after_start }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="statistic-graph-wrapper">
+                                {% if user_detail.bets %}
+                                    <div class="statistic-graph js-bonuses" style="display: none"><h3>Бонусы</h3>
+                                    <div class="list-group">
+                                        {% for arBet in user_detail.bets %}
+                                        {% if arBet.price %}
+                                        <span class="list-group-item js-pay-item">
+                                            {{ arBet.project }}: 
+                                            <b>{{ arBet.price }} (ставка: {{ arBet.bet }})</b>
+                                            {% if user_detail.userIsEqualCurrentUser or user_detail.current_user_is_admin %}
+                                            <a href="#" class="js-pay"
+                                               style="float: right;"
+                                               data-project="{{ arBet.project_id }}"
+                                               data-role="{{ arBet.role_id }}"
+                                               data-sum="{{ arBet.price }}">Списать</a>
+                                            {% endif %}
+                                            <span class="clr"></span></span>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <div class="statistic-graph js-productivity">
+                                    <h3>Последняя активность</h3>
+                                    {#                                    <div id='dashboard'></div>#}
+                                    <div style="width: 100%">
+                                        <canvas id="dashboard" height="350" width="600"></canvas>
+                                    </div>
+                                </div>
+                                <div class="statistic-detail js-user-legend">
+                                    <p style="background-color: rgba(220,220,220,0.5);padding:10px;"><b>Затраченое время, ч</b></p>
+                                    <p style="background-color: rgba(151,205,187,0.5);padding:10px;"><b>Закрытые задачи</b></p>
+                                    <p style="background-color: rgba(215, 185, 180,0.5);padding:10px;"><b>Коммиты</b></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="ychastvyet">
+                        {% for project in user_detail.user_projects %}
+                        <div class="media clearfix">
+                            <a href="/project/{{ project.id }}/#participants_and_rates" class="pull-left project-thumb-link">
+                                <img src="{% if project.imagePath %}{{ project.imagePath|thumbnail:"100x100" }}{% else %}/static/images/avatar_red_eye.png{% endif %}" class="img-thumbnail pull-left" width="100" />
+                            </a>
+                            <h3><a href="/project/{{ project.id }}/#participants_and_rates">{{ project.name }}</a></h3>
+                            <ul class="list-inline" >
+                                {% if project.canEdit  or 'guest' in project.roles %}
+                                <li><div {% if project.canEdit %}class="checkbox"{% endif %}><label>
+                                    {% if project.canEdit %}
+                                    <input class="js-role-check" {% if 'guest' in project.roles %}checked{% endif %}
+                                    data-project="{{ project.id }}"
+                                    data-user-id="{{ user_detail.user.id }}" name="role_{{ project.id }}" data-name="guest" value="1" type="radio" />
+                                    {% endif %}
+                                    <span class="fa fa-users"></span>
+                                    Гость</label></div></li>
+                        {% endif %}
+                        {% if project.canEdit or 'manager' in project.roles %}
+                        <li><div {% if project.canEdit %}class="checkbox"{% endif %}><label>
+                            {% if project.canEdit %}
+                            <input class="js-role-check" {% if 'manager' in project.roles %}checked{% endif %}
+                            data-project="{{ project.id }}"
+                            data-user-id="{{ user_detail.user.id }}" name="role_{{ project.id }}" data-name="manager" value="1" type="radio" />
+                            {% endif %}
+                            <span class="fa fa-cogs"></span>
+                            Руководитель</label></div></li>
+                    {% endif %}
+                    {% if project.canEdit  or 'employee' in project.roles %}
+                    <li><div {% if project.canEdit %}class="checkbox"{% endif %}><label>
+                        {% if project.canEdit %}
+                        <input class="js-role-check" {% if 'employee' in project.roles %}checked{% endif %}
+                        data-project="{{ project.id }}"
+                        data-user-id="{{ user_detail.user.id }}" name="role_{{ project.id }}" data-name="employee" value="1" type="radio" />
+                        {% endif %}
+                        <span class="fa fa-user"></span>
+                        Разработчик</label></div></li>
+                {% endif %}
+                </ul>
+            </div>
+
+            <!--ychastvyet-item-->
+            {% if not forloop.last %}<hr />{% endif %}
+            {% endfor %}
+        </div>
+                    <div class="js-tasks tab-pane" id="tekyshie_zadachi">
+                        <script language="javascript">
+                            var aTaskList = [], arTimers = {}, taskRespSummary = {};
+                            {% for task in user_detail.task.list.tasks %}
+                                aTaskList.push({{ task|jsonify|safe }});
+                            taskRespSummary['{{ task.id }}'] = {{ task.responsibleList|jsonify|safe }}
+                            {% if task.time %}
+                                arTimers['{{ task.id }}'] = new PM_Timer({{ task.time|jsonify|safe }});
+                            {% if task.startedTimerExist %}
+                                arTimers['{{ task.id }}'].start();
+                                {% endif %}
+                                {% endif %}
+                                {% empty %}
+                                document.write('<div class="empty"><img src="/static/images/no-tasks.png"><br>Нет ни одной задачи</div>');
+                                {% endfor %}
+                        </script>
+                    </div>
+                    <div class="tab-pane" id="dostizheniya">
+                        {% if user_detail.achievements %}
+                        <div class="dostizheniya-item-wrapper clearfix">
+                            {% for c in user_detail.achievements %}
+                            <div class="dostizheniya-item">
+                                <div class="dostizheniya-item-img"><a href="#"><img width="80" src="{{ c.achievement.smallImageUrl }}" alt="{{ c.name }}" /></a></div>
+                                <div class="dostizheniya-item-text">
+                                    <h4>{{ c.achievement.name }}</h4>
+                                    <p style="white-space: nowrap;overflow: hidden;">{{ c.text|safe|default_if_none:'' }}</p>
+                                    {% if c.project %}<hr>
+                                    <p><b>{{ c.project.name }}</b></p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% if not forloop.last %}
+                            {% endif %}
+
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="empty"><i class="fa fa-rocket"></i><br>У пользователя нет ни одного достижения</div>
+                        {% endif %}
+
+                        {#                        <hr />#}
+
+                    </div>
+
+                    <div class="tab-pane" id="activity">
+                        {% if user_detail.timers %}
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Время</th>
+                                <th>Расчет</th>
+                                <th>Комментарий</th>
+                                <th>Добавлено</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for timer in user_detail.timers %}
+                            <tr>
+                                <td>{{ timer.id }}</td>
+                                <td>{{ timer.time }}</td>
+                                <td><a href="{{ timer.task_url }}">{{ timer.task }}</a></td>
+                                <td>{{ timer.comment|safe }}</td>
+                                <td>{{ timer.date }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <div class="empty"><i class="fa fa-bolt"></i><br>У пользователя нет ни одной активности</div>
+                        {% endif %}
+                        <div align="center">
+                        </div>
+                    </div>
+                    {% if user_detail.use_git and user_detail.userIsEqualCurrentUser %}
+                    <div class="tab-pane" id="keys">
+                        {% if user_detail.keys %}
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Создан</th>
+                                <th>Имя</th>
+                                <th>Действия</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for key in user_detail.keys %}
+                            <tr>
+                                <td>{{ key.id }}</td>
+                                <td>{{ key.created_at }}</td>
+                                <td>{{ key.name }}</td>
+                                <td><a class="btn btn-alert js-deleteKey"><i class="fa fa-remove"></i>&nbsp;Удалить</a></td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <p align="center" class="button-link">
+                            <a href="#" class="btn btn-success js-openKeyForm" data-toggle='modal' data-target="#key-add"><i class="fa fa-plus"></i>&nbsp;Добавить ключ</a>
+                            &nbsp;&nbsp;&nbsp;<a href="/wiki/how-to-setup-repository#creating-keys">Как создать ключи?</a>
+                        </p>
+                        {% else %}
+                        <div class="empty">
+                            <img src="/static/images/key.png"><br><p>У вас нет ни одного ключа</p><br>
+                            <p align="center" class="button-link">
+                                <a href="#" class="btn btn-success js-openKeyForm" data-toggle='modal' data-target="#key-add"><i class="fa fa-plus"></i>&nbsp;Добавить ключ</a>
+                                &nbsp;&nbsp;&nbsp;<a href="/wiki/how-to-setup-repository#creating-keys">Как создать ключи?</a>
+                            </p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% if user_detail.current_user_is_admin %}
+                    <div class="tab-pane" id="payments">
+                        {% if user_detail.payments %}
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Дата</th>
+                                <th>Сумма</th>
+                                <th>Проект</th>
+                                <th>Позиция</th>
+                                <th>Комментарий</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for payment in user_detail.payments %}
+                            <tr>
+                                <td>{{ forloop.revcounter}}</td>
+                                <td>{{ payment.date }}</td>
+                                <td>{{ payment.value }}</td>
+                                <td>{{ payment.project.name }}</td>
+                                <td><a href="{{ payment.task.url }}">{{ payment.task.name }}</a></td>
+                                <td>{{ payment.comment|default_if_none:'' }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <div class="empty"><img src="/static/images/payments.png"> <br>Нет ни одной оплаты</div>
+
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    <div class="tab-pane" id="add-project">
+                        <h2>Добавить пользователя в проект</h2>
+                        {% if user_detail.projectsForAddUser %}
+                        <form name="add_to_project" method="POST" action="" role="form">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="add_to_project" />
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Проект</label>
+                                <select name="project" class="form-control">
+                                    <option>Выберите проект</option>
+                                    {% for project in user_detail.projectsForAddUser %}
+                                    <option value="{{ project.id }}">{{ project.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Права</label>
+                                <select name="role" class="form-control">
+                                    <option>Выберите роль</option>
+                                    {% for role in user_detail.roles %}
+                                    <option value="{{ role.id }}">{{ role.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <input type="submit" class="btn-default btn" name="" value="Добавить" />
+                        </form>
+                        {% else %}
+                        <p>Пользователь уже состоит во всех ваших проектах</p>
+                        {% endif %}
+                    </div>
+    </div>
+    <script type="text/javascript">
+        {% if user_detail.use_git and user_detail.userIsEqualCurrentUser %}
+        $('.js-deleteKey').click(function(){
+            var row = $(this).parents('tr');
+            var key_name = row.find('td:eq(2)').html();
+            var key_id = row.find('td:eq(0)').html();
+            if(confirm('Вы точно хотите удалить ключ ' + key_name)){
+                $.get('/user_key_handle/remove/' + key_id, function(response){
+                    if(response.errors) {
+                        alert('Не удалось удалить ключ ' + key_name);
+                        return false;
+                    }
+                    row.remove();
+                    if(row.parents('tbody').find('tr').length == 0){
+                        row.parent('table').remove();
+                    }
+                    return false;
+                });
+            }
+            return false;
+        });
+        {% endif %}
+    </script>
+
+            </div>
+        </div>
+   </div>
+</div>
+
+
+

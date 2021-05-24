@@ -1,0 +1,1590 @@
+.COLORTEXT._dark,
+._dark.textMain {
+    color: #1a1a1a;
+}
+
+.COLORTEXT._light,
+._light.textMain {
+    color: #fff;
+}
+
+.COLORTEXT._shopZilla,
+._shopZilla.textMain {
+    color: #fed739;
+}
+
+.COLORTEXT._darkCasuarn,
+._darkCasuarn.textMain {
+    color: #272D3E;
+}
+
+.COLORTEXT._darkCasuarn *,
+._darkCasuarn.textMain * {
+    color: #272D3E;
+}
+
+@font-face {
+    font-family: "FirM";
+    src: url("./fonts/FiraSansCondensed-Medium.woff");
+}
+
+@font-face {
+    font-family: "FirL";
+    src: url("./fonts/FiraSansCondensed-Light.woff");
+}
+
+@font-face {
+    font-family: "FirLI";
+    src: url("./fonts/FiraSansCondensed-LightItalic.woff");
+}
+
+@font-face {
+    font-family: "FirB";
+    src: url("./fonts/FiraSansCondensed-Bold.woff");
+}
+
+@font-face {
+    font-family: "FirBl";
+    src: url("./fonts/FiraSansCondensed-Black.woff");
+}
+
+@font-face {
+    font-family: "FirBlI";
+    src: url("./fonts/FiraSansCondensed-BlackItalic.woff");
+}
+
+@font-face {
+    font-family: "FirBI";
+    src: url("./fonts/FiraSansCondensed-BoldItalic.woff");
+}
+
+.reset,
+html,
+.section,
+.formBox,
+.section *,
+.formBox *,
+.body,
+.body__menu,
+.body__menu *,
+.body__form,
+.body__form *,
+.body__nav,
+.body__nav *,
+.body__price,
+.body__price *,
+.body__quiz,
+.body__quiz *,
+.body__banner,
+.body__banner *,
+.body__success,
+.body__success *,
+.body__section,
+.body__section * {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    text-decoration: none;
+    outline: none;
+    border: none;
+    background: none;
+    border-radius: 0;
+    box-shadow: none;
+    letter-spacing: unset;
+    box-sizing: border-box;
+    color: #292929;
+    font-family: 'FirL';
+    -webkit-appearance: none;
+}
+
+html {
+    font-size: calc(100vw / 165);
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    html {
+        font-size: calc(100vw / 52);
+    }
+}
+
+.mobileElement {
+    display: none;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .mobileElement {
+        display: block;
+    }
+}
+
+.desktopElement {
+    display: block;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .desktopElement {
+        display: none;
+    }
+}
+
+.JStrans {
+    transition: .2s ease-out;
+}
+
+.section,
+.formBox {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 9rem 0;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .section,
+    .formBox {
+        padding: 5rem 0;
+    }
+}
+
+.wrapper,
+.formBox__wrapper {
+    position: relative;
+    width: 122rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.wrapper._ropa,
+._ropa.formBox__wrapper {
+    width: 95rem;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .wrapper._ropa,
+    ._ropa.formBox__wrapper {
+        width: 90vw;
+    }
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .wrapper,
+    .formBox__wrapper {
+        width: 90vw;
+    }
+}
+
+.wrapperMin {
+    width: 94rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .wrapperMin {
+        width: 90vw;
+    }
+}
+
+.row,
+.body__priceBox,
+.body__success,
+.inputBox,
+.button,
+.formBox__layer,
+.formBox__confirm,
+.selectBox__view {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.col,
+.body__priceInner,
+.body__banner,
+.body__successInner {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+input {
+    display: block;
+    padding: 2rem;
+    font-size: 2rem;
+    border: .1rem solid #000;
+}
+
+.JSformButton {
+    width: 20rem;
+    height: 5rem;
+    font-size: 3rem;
+    background: #000;
+    color: #fff;
+}
+
+._JSanim {
+    opacity: 0;
+    transform: translate(0, 4rem);
+    will-change: transform;
+}
+
+._JSanim._active {
+    opacity: 1;
+    transform: translate(0, 0);
+}
+
+.body {
+    width: 100%;
+    height: 100%;
+    -webkit-text-size-adjust: none;
+    background: #1a1a1a;
+    overflow-y: scroll;
+}
+
+.body._hidden {
+    position: fixed;
+}
+
+.body._light {
+    background: #fff;
+}
+
+.body._blog {
+    background: #f2f2f2;
+}
+
+.body._qrGate {
+    background: #315FF2;
+}
+
+.body._casuarn {
+    background: #fffaf5;
+}
+
+.body__menu {
+    width: 100%;
+}
+
+.body__menu._fix {
+    position: fixed;
+    z-index: 200;
+}
+
+.body__menu._caseFix {
+    position: fixed;
+    z-index: 300;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    visibility: hidden;
+    will-change: opacity;
+}
+
+.body__menu._caseFix._active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.body__menu._case {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 22;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .body__menu {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 222;
+    }
+}
+
+.body__menu-fixed {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    transition: all .3s ease-in-out;
+    z-index: 5;
+    background: #1a1a1a;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .body__menu-fixed {
+        position: fixed;
+    }
+}
+
+.body__menu-fixed .menu__items._logo {
+    transition: all .2s ease-in-out;
+    transform-origin: 20% 50%;
+}
+
+.body__menu-fixed.scroll {
+    transform: translateY(-5rem);
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .body__menu-fixed.scroll {
+        transform: translateY(0);
+    }
+}
+
+.body__menu-fixed.scroll .menu__items._logo {
+    transform: scale(0.75);
+}
+
+.body__menu-fixed .menu__open {
+    display: none !important;
+}
+
+.body__menu-fixed .menu__items._button {
+    display: block;
+}
+
+.body__menu-fixed .menu__items._button .button {
+    font-size: 2.3rem;
+    padding: 1.5rem 3.5rem;
+}
+
+.body._blog .body__menu-fixed {
+    background: #f2f2f2;
+}
+
+.body__form {
+    width: 100%;
+    height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 3333;
+    transform: translate(-100%, 0);
+}
+
+.body__form.JStrans {
+    transition: .3s ease-out;
+}
+
+.body__form._active {
+    transform: translate(0, 0);
+}
+
+.body__nav {
+    position: fixed;
+    bottom: 5rem;
+    right: 3rem;
+    z-index: 30;
+    width: 10rem;
+    height: 40rem;
+    transition: .5s ease-out;
+    opacity: 1;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .body__nav {
+        left: auto;
+        right: 3rem;
+        width: 90vw;
+        height: 12rem;
+    }
+}
+
+.body__nav._hidden {
+    opacity: 0;
+}
+
+.body__price {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    background: rgba(0, 0, 0, 0.7);
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: none;
+}
+
+.body__priceBox {
+    width: 100%;
+    height: 100%;
+    min-height: 90rem;
+    justify-content: center;
+    align-items: center;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .body__priceBox {
+        height: auto;
+        min-height: auto;
+    }
+}
+
+.body__priceInner {
+    width: 80rem;
+    justify-content: center;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .body__priceInner {
+        width: 100%;
+    }
+}
+
+.body__quiz {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    z-index: 2222220;
+    display: none;
+}
+
+.body__banner {
+    position: fixed;
+    width: 50rem;
+    height: 50rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100000;
+    background: #000;
+    justify-content: center;
+    align-items: center;
+    border-radius: 2rem;
+    display: none;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .body__banner {
+        width: 90vw;
+    }
+}
+
+.body__bannerClose {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    width: 4rem;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.body__bannerIcon {
+    width: 30rem;
+    margin-bottom: 2rem;
+}
+
+.body__bannerContent {
+    font-size: 2.7rem;
+    color: #fff;
+}
+
+.body__success {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 9999999;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+
+.body__successInner {
+    width: 60rem;
+    background: #1a1a1a;
+    padding: 5rem 7rem;
+    font-size: 2.3rem;
+    line-height: 1.5;
+    font-family: 'FirL';
+    color: #fff;
+    text-align: center;
+    position: relative;
+    align-items: center;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .body__successInner {
+        width: 90vw;
+        padding: 3rem;
+        font-size: 2.5rem;
+    }
+}
+
+.body__successLogo {
+    width: 12rem;
+    margin-bottom: 3rem;
+}
+
+.body__success__close {
+    background-image: url("/img/close.svg");
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+.body__success__close:hover {
+    cursor: pointer;
+}
+
+.body__section {
+    width: 100%;
+}
+
+.body__section._caseHeader {
+    overflow: hidden;
+    position: relative;
+}
+
+.body__section._caseInfo {
+    margin-top: -10rem;
+    position: relative;
+}
+
+.body__section._caseService {
+    margin-top: -20rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.body__section._caseIdea {
+    margin: -30rem 0 0 0;
+    position: relative;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .body__section._caseIdea {
+        overflow: hidden;
+    }
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .body__section._caseHow {
+        position: relative;
+        overflow: hidden;
+    }
+}
+
+.body__section._caseFooter {
+    margin: -80rem 0 0 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.body__section._caseFooter._inner {
+    margin-top: -30rem;
+    padding-top: 70rem;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .body__section._caseFooter._inner {
+        padding-top: 24rem;
+        margin-top: -10rem;
+    }
+}
+
+.body__section._caseFooter._inner::after {
+    position: absolute;
+    content: "";
+    top: 0rem;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url("/img/footer-back.svg") no-repeat;
+    background-size: contain;
+    background-position: center top;
+    z-index: -1;
+}
+
+.body__section._caseMore {
+    margin: 0 0 15rem 0;
+    z-index: 4;
+    position: relative;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .body__section._caseMore {
+        margin: -10rem 0 24rem 0;
+    }
+}
+
+.body__section._qrGateTechnology {
+    margin-bottom: 30rem;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .body__section._qrGateTechnology {
+        margin: -33rem 0 0 0;
+    }
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .body__section._qrGateInfo {
+        margin: -35rem 0 0 0;
+    }
+}
+
+.inputBox {
+    width: 100%;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+}
+
+.inputBox__label {
+    position: absolute;
+    font-size: 1.7rem;
+    line-height: 1.2;
+    color: #fff;
+    left: 0;
+    top: 50%;
+    transform: translate(0, -50%);
+    will-change: transform;
+    cursor: text;
+    transform-origin: left;
+}
+
+.input._area+.inputBox__label {
+    top: 2rem;
+    transform: translate(0, 0);
+}
+
+.inputBox__label.JStrans {
+    transition: .2s ease-out;
+}
+
+.inputBox__label._active {
+    transform: translate(0, -150%) scale(.8);
+}
+
+.input._area+.inputBox__label._active {
+    transform: translate(0, -100%) scale(.8);
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .inputBox__label {
+        font-size: 2.3rem;
+    }
+}
+
+.sectionCaseFooter__fieldInput+.inputBox__label {
+    color: #767676;
+    transform-origin: left top;
+}
+
+.sectionCaseFooter__fieldInput+.inputBox__label._active {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(0, -0.5rem) scale(0.7);
+    top: 0;
+}
+
+.input._dark+.inputBox__label {
+    color: #1a1a1a;
+}
+
+.inputBox__error {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translate(0, -50%);
+    width: 3rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: .2s;
+}
+
+.inputBox__error._active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.button {
+    width: 100%;
+    border-radius: .75rem;
+    border: 0.2rem solid #cc151d;
+    padding: 1.6rem 4.5rem 1.5rem 4.5rem;
+    cursor: pointer;
+    font-size: 1.6rem;
+    color: #fff;
+    justify-content: center;
+    align-items: center;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .button {
+        font-size: 2.3rem;
+        border-width: 2px;
+        padding: 2.2rem 4.5rem 2.5rem 4.5rem;
+    }
+}
+
+.button:hover {
+    background: #cc151d;
+    border-color: #cc151d;
+    color: #fff;
+}
+
+.button._light {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.button._light:hover {
+    background: #cc151d;
+    border-color: #cc151d;
+    color: #fff;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .button._light._mob {
+        border-color: #fff;
+    }
+}
+
+.button._darkOnGrey {
+    color: #1a1a1a;
+}
+
+.button._darkOnGrey:hover {
+    color: #fff;
+}
+
+.button._dark {
+    color: #1a1a1a;
+    border-color: #1a1a1a;
+}
+
+.button._dark:hover {
+    background: #cc151d;
+    border-color: #cc151d;
+    color: #fff;
+}
+
+.button._extraLight {
+    border-color: #fff;
+    background: #fff;
+    color: #000;
+}
+
+.button._red {
+    background: #cc151d;
+    border-color: #cc151d;
+    color: #fff;
+}
+
+.button._red:hover {
+    background: none;
+    color: #fff;
+}
+
+.titleMain {
+    width: 100%;
+    font-size: 12rem;
+    font-family: 'FirBI';
+    color: #cc151d;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .titleMain {
+        font-size: 6.3rem;
+    }
+}
+
+.titleMain__inner {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+
+.titleMain__inner._curry {
+    opacity: 1;
+}
+
+.titleMain__item {
+    font-size: 12rem;
+    font-family: 'FirBI';
+    color: #cc151d;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    transition: all .1s ease-in-out;
+}
+
+.titleMain__item._hidden {
+    opacity: 0;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .titleMain__item {
+        font-size: 6.3rem;
+    }
+}
+
+.titleMain._lightMin {
+    font-size: 7rem;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .titleMain._lightMin {
+        font-size: 4.5rem;
+    }
+}
+
+.titleMain._lightMin .titleMain__item {
+    font-size: 7rem;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .titleMain._lightMin .titleMain__item {
+        font-size: 4.5rem;
+    }
+}
+
+.titleMedium {
+    width: 100%;
+    font-size: 8rem;
+    font-family: 'FirB';
+    color: #fff;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .titleMedium {
+        font-size: 6.2rem;
+        line-height: 1.3;
+    }
+}
+
+.titleMedium._light {
+    font-size: 7rem;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .titleMedium._light {
+        font-size: 6.2rem;
+    }
+}
+
+.titleMedium._dark {
+    color: #000;
+}
+
+.titleMedium__inner {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: none;
+}
+
+.titleMedium__inner._curry {
+    display: block;
+}
+
+.titleMedium__item {
+    font-size: 8rem;
+    font-family: 'FirB';
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    color: #fff;
+    transition: all .7s ease-in-out;
+}
+
+.titleMedium__item._hidden {
+    opacity: 0;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .titleMedium__item {
+        font-size: 6.2rem;
+    }
+}
+
+.titleMedium._light .titleMedium__item {
+    font-size: 6rem;
+}
+
+.titleMedium__part {
+    font-size: 10rem;
+    font-family: 'FirBI';
+    color: #cc151d;
+}
+
+.titleMedium__part._light {
+    color: #1a1a1a;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .titleMedium__part._light {
+        color: #cc151d;
+    }
+}
+
+.titleMedium__part._lightMin {
+    font-size: 6rem;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .titleMedium__part._lightMin {
+        font-size: 4.5rem;
+    }
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .titleMedium__part {
+        font-size: 6.2rem;
+        line-height: 1.3;
+    }
+}
+
+.titleMedium._light .titleMedium__part {
+    font-size: 6rem;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .titleMedium._light .titleMedium__part {
+        font-size: 4rem;
+        line-height: 1.3;
+    }
+}
+
+.titlePage {
+    width: 100%;
+    font-size: 4.4rem;
+    line-height: 1.4;
+    font-family: 'FirBl';
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .titlePage {
+        font-size: 6rem;
+        line-height: 1.4;
+    }
+}
+
+.titlePage._light {
+    color: #fff;
+}
+
+.titlePage._medium {
+    font-size: 3.8rem;
+}
+
+.titlePage._min {
+    font-size: 2.8rem;
+}
+
+.titlePage__item {
+    font-family: 'FirBlI';
+}
+
+.titlePage._shopZilla .titlePage__item {
+    color: #fed739;
+}
+
+.textMedium {
+    font-size: 1.7rem;
+    line-height: 1.5;
+    color: #fff;
+    font-family: 'FirL';
+}
+
+.textMedium._dark {
+    color: #1a1a1a;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .textMedium {
+        font-size: 2.9rem;
+        line-height: 1.6;
+    }
+}
+
+.textMain {
+    width: 100%;
+    font-size: 2.1rem;
+    line-height: 1.5;
+    font-family: 'FirL';
+}
+
+.textMain._medium {
+    font-size: 2rem;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .textMain._medium {
+        font-size: 2.3rem;
+    }
+}
+
+.textMain._min {
+    font-size: 1.7rem;
+    line-height: 1.5;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .textMain._min {
+        font-size: 2rem;
+    }
+}
+
+.textMain._extraMin {
+    font-size: 1.4rem;
+    line-height: 2;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .textMain._extraMin {
+        font-size: 1.7rem;
+    }
+}
+
+.textMain._hard {
+    font-family: 'FirB';
+}
+
+.textMain__item {
+    font-family: 'FirB';
+}
+
+.textMain__item._hardI {
+    font-family: 'FirBI';
+}
+
+.textMain._light .textMain__item {
+    color: #fff;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .textMain {
+        font-size: 2.7rem;
+    }
+}
+
+.input {
+    width: 100%;
+    height: 5rem;
+    font-size: 1.7rem;
+    border-bottom: 0.1rem solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.input._area {
+    resize: none;
+    height: 12rem;
+    padding-top: 2rem;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .input {
+        border-color: rgba(255, 255, 255, 0.5);
+        height: 6rem;
+        font-size: 2.3rem;
+    }
+}
+
+.input._dark {
+    color: #1a1a1a;
+    border-color: #1a1a1a;
+}
+
+.error .input {
+    border-bottom: 0.1rem solid #cc151d;
+}
+
+.formBox {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #1a1a1a;
+    padding: 0;
+    /* display: flex;
+    flex-direction: column;
+    justify-content: center; */
+}
+
+.body._taxi .formBox {
+    background: #00e06f;
+}
+
+.body._taxi .formBox__support {
+    color: #fff;
+}
+
+.body._taxi .formBox input {
+    border-color: #fff;
+}
+
+.body._taxi .formBox .selectBox__view {
+    border-color: #fff;
+}
+
+.body._taxi .formBox .selectBox__drop {
+    background: #00e06f;
+    border-color: #fff;
+}
+
+.body._taxi .formBox__confirmField {
+    border-color: #fff;
+}
+
+.body._taxi .formBox .titleMedium__part {
+    color: #fff;
+}
+
+.body._taxi .formBox .button {
+    border-color: #fff;
+}
+
+.body._taxi .formBox .button:hover {
+    background: #fff;
+    color: #1a1a1a;
+}
+
+.body._gdeConcert .formBox {
+    background: #ffeb3b;
+}
+
+.body._gdeConcert .formBox__support {
+    color: #1a1a1a;
+}
+
+.body._gdeConcert .formBox .titleMedium._light {
+    color: #1a1a1a;
+}
+
+.body._gdeConcert .formBox input {
+    border-color: #1a1a1a;
+    color: #1a1a1a;
+}
+
+.body._gdeConcert .formBox .selectBox__view {
+    border-color: #1a1a1a;
+}
+
+.body._gdeConcert .formBox .selectBox__drop {
+    background: #ffeb3b;
+    border-color: #1a1a1a;
+}
+
+.body._gdeConcert .formBox .selectBox__support {
+    color: #1a1a1a;
+}
+
+.body._gdeConcert .formBox .selectBox__dropItems {
+    color: #1a1a1a;
+}
+
+.body._gdeConcert .formBox .selectBox__dropItems:hover {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+.body._gdeConcert .formBox .inputBox__label {
+    color: #1a1a1a;
+}
+
+.body._gdeConcert .formBox__confirmContent {
+    color: #1a1a1a;
+}
+
+.body._gdeConcert .formBox__confirmField {
+    border-color: #1a1a1a;
+    background: #1a1a1a;
+}
+
+.body._gdeConcert .formBox .button {
+    color: #1a1a1a;
+}
+
+.body._gdeConcert .formBox .button:hover {
+    color: #fff;
+}
+
+.body._gdeConcert .formBox .formBox__close._light {
+    display: none;
+}
+
+.body._gdeConcert .formBox .formBox__close._dark {
+    display: block;
+}
+
+.body._shopZilla .formBox {
+    background: #fed739;
+}
+
+.body._shopZilla .formBox__support {
+    color: #1a1a1a;
+}
+
+.body._shopZilla .formBox .titleMedium._light {
+    color: #1a1a1a;
+}
+
+.body._shopZilla .formBox input {
+    border-color: #1a1a1a;
+    color: #1a1a1a;
+}
+
+.body._shopZilla .formBox .selectBox__view {
+    border-color: #1a1a1a;
+}
+
+.body._shopZilla .formBox .selectBox__drop {
+    background: #fed739;
+    border-color: #1a1a1a;
+}
+
+.body._shopZilla .formBox .selectBox__support {
+    color: #1a1a1a;
+}
+
+.body._shopZilla .formBox .selectBox__dropItems {
+    color: #1a1a1a;
+}
+
+.body._shopZilla .formBox .selectBox__dropItems:hover {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+.body._shopZilla .formBox .inputBox__label {
+    color: #1a1a1a;
+}
+
+.body._shopZilla .formBox__confirmContent {
+    color: #1a1a1a;
+}
+
+.body._shopZilla .formBox__confirmField {
+    border-color: #1a1a1a;
+    background: #1a1a1a;
+}
+
+.body._shopZilla .formBox .button {
+    color: #1a1a1a;
+}
+
+.body._shopZilla .formBox .button:hover {
+    color: #fff;
+}
+
+.body._shopZilla .formBox .formBox__close._light {
+    display: none;
+}
+
+.body._shopZilla .formBox .formBox__close._dark {
+    display: block;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .formBox {
+        min-height: 140rem;
+    }
+}
+
+.formBox__close {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    width: 3rem;
+    height: 3rem;
+    -o-object-fit: contain;
+    object-fit: contain;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.formBox__close._dark {
+    display: none;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .formBox__close {
+        top: 2rem;
+        right: 2rem;
+    }
+}
+
+.body._gdeConcert .formBox__close._light {
+    display: none;
+}
+
+.body._gdeConcert .formBox__close._dark {
+    display: block;
+}
+
+.formBox__wrapper {
+    padding: 5rem 0;
+    justify-content: center;
+}
+
+.formBox__title {
+    margin-bottom: 5rem;
+}
+
+.formBox__layer {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 3rem;
+}
+
+.formBox__items {
+    width: 48%;
+    margin-bottom: 2rem;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .formBox__items {
+        width: 100%;
+    }
+}
+
+.formBox__items._full {
+    width: 100%;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .formBox__items+.formBox__items {
+        margin-top: 5rem;
+    }
+}
+
+.formBox__support {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.2);
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .formBox__support {
+        font-size: 2rem;
+    }
+}
+
+.formBox__confirm {
+    margin-bottom: 5rem;
+    cursor: pointer;
+}
+
+.formBox__confirmField {
+    width: 2.5rem;
+    height: 2.5rem;
+    position: relative;
+    border-radius: .5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    margin-right: 2rem;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .formBox__confirmField {
+        width: 3.5rem;
+        height: 3.5rem;
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+}
+
+.formBox__confirmInput {
+    display: none;
+}
+
+.formBox__confirmDone {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1.7rem;
+    opacity: 0;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .formBox__confirmDone {
+        width: 2.5rem;
+    }
+}
+
+.formBox__confirmContent {
+    width: calc(100% - 4rem);
+    font-size: 2rem;
+    font-family: 'FirL';
+    line-height: 1.4;
+    color: #fff;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .formBox__confirmContent {
+        font-size: 2.7rem;
+    }
+}
+
+.formBox__confirmInput:checked~.formBox__confirmDone {
+    opacity: 1;
+}
+
+.formBox__button {
+    width: 100%;
+}
+
+.example-2 .input-file {
+    width: .1px;
+    height: .1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.js-fileName {
+    color: white;
+}
+
+.error_size_file {
+    color: red;
+    margin-top: 10px;
+    font-size: 1.5rem;
+    display: none;
+    width: 100%;
+}
+
+.selectBox {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.selectBox__view {
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .selectBox__view {
+        border-color: rgba(255, 255, 255, 0.5);
+        padding: 1rem 0;
+    }
+}
+
+.selectBox .JScustomeSelect._error+.selectBox .selectBox__view {
+    border-color: #F3122D;
+}
+
+.selectBox__support {
+    font-size: 1.7rem;
+    color: #fff;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .selectBox__support {
+        font-size: 2.3rem;
+    }
+}
+
+.selectBox__down {
+    width: 3.7rem;
+    height: 3.7rem;
+    position: relative;
+}
+
+.selectBox__down::before {
+    content: "";
+    background: url("../img/selectDown.svg") no-repeat;
+    background-size: contain;
+    background-position: center;
+    width: 2rem;
+    height: 2rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin-top: .1rem;
+}
+
+.selectBox__drop {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: #1a1a1a;
+    z-index: 2;
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(0, -1rem);
+    max-height: 25rem;
+    margin-top: -.1rem;
+    overflow-y: auto;
+}
+
+.selectBox__dropItems {
+    width: 100%;
+    padding: 1.5rem 1.5rem;
+    font-size: 2rem;
+    color: #fff;
+    cursor: pointer;
+}
+
+@media screen and (min-width: 0) and (max-width: 500px) {
+    .selectBox__dropItems {
+        font-size: 2.3rem;
+        padding: 2rem 1.5rem;
+    }
+}
+
+.selectBox__dropItems:hover {
+    background: #f8f8f8;
+    color: #1a1a1a;
+}
+
+.selectBox__dropItems._curry {
+    background: #f8f8f8;
+    color: #1a1a1a;
+    pointer-events: none;
+}
+
+.selectBox._active .selectBox__drop {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(0, 0);
+}
+
+.selectBox._active .selectBox__down {
+    transform: rotate(180deg);
+}

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block wiking_js %}
+    {% include 'partials/create_page.html' %}
+    <script>
+        $(function(){
+           var $wContent = $('.wiking-content'),
+               md_content = $wContent.text(),
+               html_content = markdown.toHTML(md_content, 'Maruku');
+
+           $wContent.html(html_content).
+               find('code').wrap('<pre>').end().
+               find('img').addClass('wiking-content__image').end().
+               find('ul').addClass('wiking-content__list').end().
+               find('ol').addClass('wiking-content__list');
+        });
+    </script>
+{% endblock %}
+
+{% block wiking_title %}
+    {% include 'partials/full_title.html' %}
+{% endblock %}
+
+{% block wiking_breadcrumbs %}
+    {% include 'partials/breadcrumbs.html' %}
+{% endblock %}
+
+{% block wiking_childs %}
+    {% if article.active_children %}
+        <div class="childs">
+            <div class="btn-group" role="group" aria-label="sub-articles" style="float:right">
+                {% for child in article.active_children %}
+                      <a href="{{ child.slug }}" class="btn btn-default btn-xs">{{ child }}</a>
+                {% endfor %}
+            </div>
+            <div class="pull-right">Вложенные статьи:&nbsp;&nbsp;</div>
+            <div class="clearfix"></div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block wiking_content %}
+    <div class="wiking-content clearfix">{{ article.get_content }}</div>
+
+    <div class="wiki-footer clearfix">
+        {% if can_write %}
+        <div class="wiki-actions pull-left clearfix">
+            <a href="edit" class="btn btn-warning btn-sm"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Редактировать статью</a>
+            <form action="delete" method="POST">
+                {% csrf_token %}
+                <input type="hidden" value="Удалить статью"/>
+                <a href='#' class="btn btn-danger btn-sm" onclick="$(this).closest('form').submit();return false;"><i class="fa fa-times"></i>&nbsp;&nbsp;Удалить статью</a>
+            </form>
+            <a href="" class="btn btn-success btn-sm" onclick="window.create_new_page();return false;"><i class="fa fa-plus"></i>&nbsp;&nbsp;Добавить страницу</a>
+        </div>
+        {% endif %}
+        <div class="wiki-info pull-right clearfix">
+            <span class="author">Последний автор:
+                <a href="{{ article.get_author.get_profile.url }}">
+                    {{ article.get_author.first_name }} {{ article.get_author.last_name }}
+                </a>
+            </span>
+            <span class="replaced">Изменено: {{ article.head.created_at }}</span>
+            <span class="version">Версия: <a href="revisions">{{ article.get_revision }}</a></span>
+        </div>
+    </div>
+{% endblock %}

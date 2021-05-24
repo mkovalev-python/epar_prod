@@ -1,0 +1,73 @@
+{% load jsonify %}
+<div class="add-user-popup dropdown-menu responsibles js-add-user-popup">
+    <div class="add-user-popup-top-arrow"></div>
+    <div class="add-user-popup-header">
+        <input type="text" class="form-control js-input-user-name" placeholder="Введите имя человека, которого хотите назначить ответственным" />
+    </div>
+    <div class="add-user-popup-content">
+        <div class="add-user-list-of-categories js-categories-list">
+            <ul>
+                <li><a href="#" class="active">Программисты</a></li>
+                <li><a href="#">Менеджеры</a></li>
+                <li><a href="#">Верстальщики</a></li>
+            </ul>
+        </div>
+        <div class="add-user-list-of-users js-user-list-of-user">
+            <ul>
+                {% for resp_user in users %}
+                    <li class="media js-user-item">
+                        <a class="media-item js-get-rel" rel={{ resp_user.id }}>
+                            <span class="pull-left">
+                                <div class="avatar_container js-avatar-container" rel='{{ resp_user.get_profile.avatar_rel|jsonify|safe }}'></div>
+                            </span>
+                            <div class="media-body">
+
+                                <span class="user js-user-name" onclick="document.location.href='/user_detail/?id={{ resp_user.id }}';event.stopPropagation();return false;" >
+                                    {% if resp_user.first_name %}
+                                        {{ resp_user.first_name }} {{ resp_user.last_name }}
+                                    {% else %}
+                                        {{ resp_user.username }}
+                                    {% endif %}
+                                </span>
+                                <span class="occupation">
+                                    {% for specialty in resp_user.get_profile.specialties.all %}, {{ specialty.name }}{% endfor %}
+                                    {% if resp_user.openTasksQty %} <b>({{ resp_user.openTasksQty }})</b>{% endif %}
+                                </span>
+                                <div class="progress-bar-wrapper clearfix">
+                                    <div class="progress-bar-wrapper-title">Компетентность</div>
+                                    <div class="progress">
+                                        <div class="js-progress-success progress-bar progress-bar-success"></div>
+                                    </div>
+                                </div>
+                                <p><i class="fa fa-cogs"></i> Каталог программ; <i class="fa fa-user"></i> Каталог программ; <i class="fa fa-users"></i> Проект</p>
+                            </div>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="add-user-popup-footer my-row clearfix">
+        <div class="pull-left my-row-5">
+            <a href="#"><i class="fa fa-check-circle"></i> Выбрать всю категорию</a>
+            <a href="#"><i class="fa fa-bullhorn"></i> Пригласить нового пользователя</a>
+        </div>
+        <div class="pull-right my-row-5">
+            <form role="form" class="js-email-form">
+                <table width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td><input type="text" class="form-control js-email" placeholder="Введите e-mail"></td>
+                        <td width="110px"><button type="submit" class="btn btn-success js-invite">Пригласить</button></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        $('.js-add-user-popup .js-avatar-container').each(function(index, el){
+            $.updateAvatar($(el), { size: 40 });
+        });
+    })
+</script>

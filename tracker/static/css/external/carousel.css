@@ -1,0 +1,57 @@
+.CarouselBlock .CarouselBG
+{
+    background: none repeat scroll 0 0 #FFFFFF;
+    height: 123px;
+    left: 40px;
+    position: absolute;
+    width: 1px;
+    z-index:10;
+}
+.CarouselBlock .CarouselRBG
+{
+    background: none repeat scroll 0 0 #FFFFFF;
+    height: 123px;
+    right: 65px;
+    position: absolute;
+    width: 1px;
+    z-index:10;
+}
+.CarouselBlock .jcarousel-container-horizontal 
+{
+    padding:0 65px 0 40px;
+    height: 123px;
+}
+.CarouselBlock .jcarousel-clip
+{
+    overflow: hidden;
+}
+.CarouselBlock .jcarousel-clip-horizontal
+{
+    height: 123px;
+}
+.CarouselBlock .jcarousel-item 
+{
+    width: 127px;
+    height: 123px;
+}
+.CarouselBlock .jcarousel-next-horizontal 
+{
+    position: absolute;
+    top:39px;
+    right:20px;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    background:url(../../images/primero_72.png) no-repeat;
+    z-index:100;
+}
+.CarouselBlock .jcarousel-prev-horizontal
+ {
+    left:0;
+    background:url(../../images/primero_69.png) no-repeat;
+    position: absolute;
+    top:39px;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+}

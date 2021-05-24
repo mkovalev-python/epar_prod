@@ -1,0 +1,13 @@
+<ol class="breadcrumb">
+    {% if project %}
+        <li><a href="/wiki/project/{{ project.id }}">Главная</a></li>
+    {% else %}
+        <li><a href="/wiki">Главная</a></li>
+    {% endif %}
+    {% for bread in breadcrumbs %}
+        {% if not bread.article.deleted %}
+            <li><a href="{{ bread.path }}">{{ bread.article }}</a></li>
+        {% endif %}
+    {% endfor %}
+    <li class="active">{{ article.get_title }}</li>
+</ol>

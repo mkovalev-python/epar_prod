@@ -1,0 +1,72 @@
+{% extends "main/base.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-lg-12 widget">
+            <table id="users_workloads_id" class="display table table-bordered">
+                <thead>
+                <tr>
+                    <th>
+                        <a href="?sort_field=name&sort_order={{ sort_orders.name }}">Разработчик</a>
+                        {% if sort_field == 'name' %}
+                            {% if sort_order == 'desc' %}
+                                <i class="fa fa-long-arrow-down"></i>
+                            {% else %}
+                                <i class="fa fa-long-arrow-up"></i>
+                            {% endif %}
+                        {% endif %}
+                    </th>
+                    <th>Проект</th>
+                    <th>Группа расчетов</th>
+                    <th>Дата закрытия: план</th>
+                    <th>Загрузка, ч</th>
+                    <th>
+                        <a href="?sort_field=hours_all&sort_order={{ sort_orders.hours_all }}">Всего</a>
+                        {% if sort_field == 'hours_all' %}
+                            {% if sort_order == 'desc' %}
+                                <i class="fa fa-long-arrow-down"></i>
+                            {% else %}
+                                <i class="fa fa-long-arrow-up"></i>
+                            {% endif %}
+                        {% endif %}
+                    </th>
+                    <th>
+                        <a href="?sort_field=workload&sort_order={{ sort_orders.workload }}">Оценка загруженности</a>
+                        {% if sort_field == 'workload' %}
+                            {% if sort_order == 'desc' %}
+                                <i class="fa fa-long-arrow-down"></i>
+                            {% else %}
+                                <i class="fa fa-long-arrow-up"></i>
+                            {% endif %}
+                        {% endif %}
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    {% for milestone in user.milestones %}
+                        <tr>
+                            {% ifchanged user.id %}
+                                <td rowspan="{{ user.milestones|length }}">{{ user.name }}</td>{% endifchanged %}
+                            <td>{{ milestone.project }}</td>
+                            <td>{{ milestone.name }}</td>
+                            <td>{{ milestone.date_close_plan }}</td>
+                            <td>{{ milestone.hours }}</td>
+                            {% ifchanged user.id %}
+                                <td rowspan="{{ user.milestones|length }}">{{ user.hours_all }}</td>{% endifchanged %}
+                            {% ifchanged user.id %}
+                                <td rowspan="{{ user.milestones|length }}">
+                                    {% if user.workload %}
+                                        {{ user.workload.workload }} ({{ user.workload.date }})
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            {% endifchanged %}
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

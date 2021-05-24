@@ -1,0 +1,129 @@
+{% extends 'main/base.html' %}
+{% block stylesheets %}
+<style type="text/css">
+    .new-milestone {
+      background: url(/static/images/new-milestone.png) 0px 0px no-repeat;
+      height: 32px;
+      width: 32px;
+      display: inline-block;
+      text-indent: -99999em;
+      background-size: contain;
+      position: absolute;
+      right: 0px;
+      top: -7px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<script>
+    $(document).ready(function(){
+        $.get('/ajax/milestone_create/', function(response){
+            $('body').append(response);
+        });
+        $('.js-milestone-close').click(function () {
+            var $t = $(this).closest('.js-milestone');
+            $.post('/milestone_ajax/', {
+                'action': 'remove',
+                'id': $t.data('id')
+            }, function (response) {
+                $t.remove();
+            });
+
+            return false;
+        });
+    });
+</script>
+<div class="widget milestones_summary">
+    <h1>{%if cur_project %}Цели проекта {{cur_project.name}}{%else%}Незавершенные цели{%endif%}</h1>
+    <hr />
+        {% for project in m_projects %}
+            {% if cur_project %}
+                <div class="project-milestones">
+        				<div class="project-milestones-title">
+                            <h3 align="center"><a href="?project={{project.id}}">{{project.name}}</a> </h3>
+                            <a href="#" class="button green-button-color right" data-toggle="modal" data-target="#new-milestone"
+                               data-project-id="{{ project.id }}"><i class="fa fa-star"></i>&nbsp;&nbsp;Изменить назначение</a>
+                        </div>
+		        		{% for milestone in project.milestones.all %}
+                        <div class="project-milestones-item js-milestone" {% if milestone.overdue %}style="background-color: #ffeaea;"{% endif %} data-id="{{ milestone.id }}">
+                                <h4 class="clearfix">
+                                    <a href="/?project={{project.id}}#%7B%22taskListFilter%22%3A%7B%22action%22%3A%22all%22%2C%22group%22%3A%22milestones%22%7D%7D" class="left">
+                                        {{ milestone.get_name }}
+                                    </a>
+                                    <br>
+                                    {% if milestone.userHours.sum %}
+                                    <small>
+
+                                        {% for u,v in milestone.userHours.elements.items %}
+                                        {{ v.name }} - {{ v.hrs }} ({{ v.price }} руб.){% if not forloop.last %},{% endif %}
+                                        {% endfor %}
+
+                                    </small>
+                                    | <span style="color: red">{{ milestone.userHours.sum }} руб.</span>
+                                    {% endif %}
+                                </h4>
+                            <div class="time">
+                                {% include 'milestones/milestone_details_string.html' %}
+                            </div>
+                                <div class="progress-bar-wrapper clearfix">
+                                    <div class="progress-bar-wrapper-title">Прогресс</div>
+                                    <div class="progress clearfix" style="display: flex">
+                                        {% for task in milestone.tasksOrderedByClose %}
+                                        <a class="progress-bar-item{% if task.closed %} btn-success{% endif %}" style="width: 100%;text-decoration: none;" title="{{ task.name }}">&nbsp;</a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                        </div>
+                            {% empty %}
+                            <p>Цели помогают привязать ваши задачи к реальной дате и времени, чтобы быстрее достигать конкретных результатов.</p>
+                            <p><a href="#">Создать спринт</a></p>
+
+		        		{% endfor %}
+        		</div>
+        	{% elif project.openMilestones %}
+        		<div class="project-milestones">
+        				<div class="project-milestones-title">
+                            <h3 align="center"><a href="?project={{project.id}}">{{project.name}}</a> </h3>
+                            <a href="#" class="button green-button-color right" data-toggle="modal" data-target="#new-milestone" data-project-id="{{ project.id }}"><i class="fa fa-star"></i>&nbsp;&nbsp;Добавить цель</a>
+                        </div>
+
+		        		{% for milestone in project.openMilestones %}
+                        <div class="project-milestones-item js-milestone" {% if milestone.overdue %}style="background-color: #ffeaea;"{% endif %} data-id="{{ milestone.id }}">
+                                <h4 class="clearfix">
+                                    <a href="/?project={{project.id}}#%7B%22taskListFilter%22%3A%7B%22action%22%3A%22all%22%2C%22group%22%3A%22milestones%22%7D%7D" class="left">
+                                        {{ milestone.get_name }}
+                                    </a>
+                                    <br>
+                                    {% if milestone.userHours.sum %}
+                                    <small>
+
+                                        {% for u,v in milestone.userHours.elements.items %}
+                                        {{ v.name }} - {{ v.hrs }} ({{ v.price }} руб.){% if not forloop.last %},{% endif %}
+                                        {% endfor %}
+
+                                    </small>
+                                    | <span style="color: red">{{ milestone.userHours.sum }} руб.</span>
+                                    {% endif %}
+                                </h4>
+                            <div class="time">
+                                {% include 'milestones/milestone_details_string.html' %}
+                            </div>
+                                <div class="progress-bar-wrapper clearfix">
+                                    <div class="progress-bar-wrapper-title">Прогресс</div>
+                                    <div class="progress clearfix" style="display: flex">
+                                        {% for task in milestone.tasksOrderedByClose %}
+                                        <a class="progress-bar-item{% if task.closed or task.status.code == 'ready' %} btn-success{% endif %}" style="width: 100%;text-decoration: none;" title="{{ task.name }}">&nbsp;</a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                        </div>
+                            {% empty %}
+                            <p>Группа расчетовы помогают привязать ваши задачи к реальной дате и времени, чтобы быстрее достигать конкретных результатов.</p>
+                            <p><a href="#">Создать спринт</a></p>
+
+		        		{% endfor %}
+        		</div>
+    		{% endif %}
+        {% endfor %}
+</div>
+{% endblock %}

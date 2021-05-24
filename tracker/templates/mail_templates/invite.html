@@ -1,0 +1,26 @@
+{% extends 'mail_templates/default_template.html' %}
+{% load get_settings %}
+{% block subject %}Новые задачи на оценку!{% endblock %}
+
+{% block top_running_title %}
+    <strong>{{ project.author.first_name }} {{ project.author.last_name }}</strong>
+{% endblock %}
+
+{% block title %}Новые задачи на оценку{% endblock %}
+
+{% block content %}
+    Здравствуйте, вы получили это письмо, потому что входите в сообщество профессионалов веб-разработки Экспертная компания.<br />
+    Исли вас заинтересуют данные задачи, перейдите по ссылке и оцените те из них, которые вы выбрали.
+
+    <p style="font-size:14px; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; line-height:20px; color:#3b3f4a;"><a style="color:#51A351" href="{% get_settings "HTTP_ROOT_URL" %}/invite/?project={{ project.id }}">{{ project.name }}</a>
+        <i>{{ project.description }}</i>
+        <br /><br />
+        <h3>Задачи</h3>
+        {% for task in tasks %}
+            {{ task.name }}<br />
+        {% endfor %}
+    </p>
+    <br />
+    <br />
+    <small>Если вы не хотите получать эту рассылку, пожалуйста, напишите нам на admin@tracker.ru</small>
+{% endblock %}

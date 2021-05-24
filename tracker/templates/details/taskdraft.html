@@ -1,0 +1,87 @@
+{% extends "main/base.html" %}
+{% load thumbnail %}
+{% load jsonify %}
+{% load humanize %}
+{% load compressed %}
+{% block stylesheets %}
+    {% compressed_css 'taskdraft_detail' %}
+{% endblock %}
+{% block content %}
+    <div class="widget draft">
+
+        <div class="widget-title clearfix">
+            <h3>Приглашения в проект {{ draft.project.name }}</h3>
+            <!--<span class="draft-status">{{ draft.status_humanize }}</span>-->
+        </div>
+        <div class="widget-body">
+            <div class="js-tasks invite-tasks">
+                {% if not tasks and draft.author.id == request.user.id %}
+                    <div class="task-wrapper">
+                        <div class="task" style="padding:10px; line-height: 31px;">
+                            Нет задач без исполнителей в списке.
+                            <form action="/taskdraft/{{ draft.slug }}" method="POST" style="display: inline-block; float: right;">
+                                {% csrf_token %}
+                                <input type="hidden" name="_method" value="DELETE"/>
+                                <a class="btn btn-danger"  href="" title="Удалить список" onclick="javascript:$(this).parents('form').trigger('submit');return false;">
+                                    <i class="fa-trash-o fa"></i>&nbsp;Удалить список
+                                </a>
+                            </form>
+                            <form action="/taskdraft/{{ draft.slug }}" method="POST" style="display: inline-block; float: right; margin-right: 10px;">
+                                {% csrf_token %}
+                                <input type="hidden" name="_method" value="PUT"/>
+                                <input type="hidden" name="set_status" value="close"/>
+                                <a class="btn btn-warning" href="" title="Закрыть список" onclick="javascript:$(this).parents('form').trigger('submit');return false;">
+                                    <i class="fa-times-circle fa"></i>&nbsp;Закрыть список
+                                </a>
+                            </form>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if request.user.id == draft.author.id and tasks %}
+            <div align="center" class="invite-developers">
+                <a href="/taskdraft/{{ draft.slug }}/resend-invites"
+                   class="btn btn-success js-invite-developers">
+                    <i class="fa fa-paper-plane"></i>&nbsp;&nbsp;Пригласить других исполнителей
+                </a>
+            </div>
+            {% endif %}
+
+
+            <div class="invite-wrapper">
+                    <ul class="invite-users-list clearfix">
+                        {% for user in users %}
+                            {% include 'partials/user/user_list_invite_item.html' %}
+                        {% endfor %}
+                    </ul>
+            </div>
+
+        </div>
+    </div>
+    {% block javascript %}
+        <script language="javascript">
+            (function(){
+                window.taskHtml = {{ tasks_template|jsonify|safe }};
+
+                var aTaskList = [],taskRespSummary = {};
+                {% for task in tasks %}
+                    aTaskList.push({{ task|jsonify|safe }});
+                    taskRespSummary['{{ task.id }}'] = {{ responsible_list|jsonify|safe }}
+                {% endfor %}
+                window.heliardData = {
+                    responsibleTag: '{% if draft.author.id == request.user.id %}a{% else %}span{% endif %}',
+                    draft: {
+                        id: {{ draft.id }},
+                        slug: '{{ draft.slug }}'
+                    },
+                    aTaskList: aTaskList,
+                    taskRespSummary: taskRespSummary
+                };
+            })();
+        </script>
+        {% compressed_js 'taskdraft_detail' %}
+    {% endblock %}
+
+{% endblock %}

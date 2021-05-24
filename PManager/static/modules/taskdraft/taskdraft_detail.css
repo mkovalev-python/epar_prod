@@ -1,0 +1,72 @@
+
+.draft-status {
+    background: #1d6e62 none repeat scroll 0 0;
+    border-radius: 4px;
+    color: #fff;
+    display: inline-block;
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 11px;
+    margin-left: 6px;
+    padding: 5px 6px 4px;
+    position: relative;
+    text-transform: uppercase;
+    top: -10px;
+}
+
+
+.invite-tasks .task-info .task-info-time {
+    width: 100px;
+    padding: 0 0 0 25px;
+}
+
+.invite-tasks .task-info {
+    width: 35%;
+    padding-left: 0px;
+}
+
+.invite-tasks .task-title {
+    width: 65%;
+    padding-right: 140px;
+    padding-left: 0px;
+}
+
+.invite-tasks .task-title .task-info-message-board-to-hide {
+    color: #1d6e62;
+    margin-right: 5px;
+}
+
+.invite-tasks .task-title .task-info-message-board-to-hide span {margin-left: 5px;}
+
+
+.task-discussion {
+    background: rgba(255, 255, 255, 0.5) none repeat scroll 0 0;
+    border-top: 1px solid rgba(1, 1, 1, 0.07);
+    margin: 5px -15px -20px;
+    padding: 15px;
+}
+.message {background: #fff;}
+.task-discussion .message {padding: 0px; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px;}
+.task-discussion .task_add-message {background: none; margin-bottom: 10px; padding: 0px;}
+.task-discussion .task_add-message .btn {margin-bottom: 0px;}
+
+
+@media only screen and (max-width: 900px) {
+    .invite-tasks .task_add-subtask {right: 0px;}
+    .invite-tasks .task-title,
+    .invite-tasks .task-info  {float:none; width:100%; text-align:left;}
+
+    .invite-tasks .task-info .task-info-time {padding-left: 0px; width: 100%;}
+    .invite-tasks .task-info .task-info-author {width: 100%;}
+}
+
+
+@media only screen and (max-width: 768px) {
+    .invite-tasks .task-title {padding-right: 50px;}
+    .invite-tasks .task-title .task-info-message-board-to-hide span {margin-left: 0px; display: none;}
+}
+
+
+@media only screen and (max-width: 568px) {
+    .task-info .task-info-time {top: 0px;}
+}

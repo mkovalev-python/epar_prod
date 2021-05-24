@@ -1,0 +1,27 @@
+{% extends "main/base.html" %}
+{% block content %}
+    <div class="widget">
+    <h1>Отправка временных затрат</h1>
+        {% if request.text %}<div class="alert alert-success">{{ request.text }}</div>{% endif %}
+        <form role="form" method="POST" >
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Расчет</label>
+                <select name="task_id" required="required" class="form-control">
+                    {% for task in tasks %}
+                        <option value="{{ task.id }}">{{ task }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Время в секундах</label>
+                <input required="required" class="form-control" type="number" name="seconds" />
+            </div>
+            <div class="form-group">
+                <label>Комментарий</label>
+                <textarea name="comment" required="required" class="form-control"></textarea>
+            </div>
+            <button type="submit" class="btn btn-success">Отправить</button>
+        </form>
+    </div>
+{% endblock %}

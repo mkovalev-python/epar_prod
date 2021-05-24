@@ -1,0 +1,289 @@
+{% load floattags arraytags compressed %}
+{% compressed_js 'fileup' %}
+{% compressed_js 'task_edit' %}
+<form name="task_form" method="POST" action="{% if request.is_ajax %}/task_edit/?id={{ task_edit.id }}&modal=1{% endif%}" rel="{% if task_edit.id %}{{ task_edit.id }}{% endif %}">
+    {% csrf_token %}
+    <table width="100%" cellpadding="0" cellspacing="0">
+    	<tr>
+        	<td valign="top">
+				<div class="widget">
+					<div class="widget-control">
+                   </div>
+                   <h4><span>Проект: </span>{{ task_edit.project.name }}</h4>
+                   <hr>
+
+                    <div class="form-group">
+                        <h5>Заголовок</h5>
+                        <input class="form-control" type="text" placeholder="Введите расчет..." name="name" value="{{ task_edit.post.name }}"  />
+                    </div>
+
+                    <div class="form-group">
+                        <h5>Позиция (СО)</h5>
+                        <textarea class="form-control" placeholder="Введите описание..."
+                                  name="description" rows="5" >{{ task_edit.post.text }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <h5>Позиция (РО)</h5>
+                        <textarea class="form-control" placeholder="Введите описание..."
+                                  name="description_ro" rows="5" >{{ task_edit.post.text_ro|default:"" }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <h5>Позиция (ЭО)</h5>
+                        <textarea class="form-control" placeholder="Введите описание..."
+                                  name="description_eo" rows="5" >{{ task_edit.post.text_eo|default:"" }}</textarea>
+                    </div>
+
+                    <h5>Файлы СО</h5>
+
+                        <div class="file-adding-form" style="position:relative;">
+                            <div class="task-file-upload" style="position: relative; display:block;">
+                            </div>
+                            <h3 class="file_upload_button">Перетащите файлы или нажмите сюда</h3>
+                        </div>
+
+                        {% if task_edit.files %}
+                            <p>
+                                {% for file in task_edit.files %}
+                                    {% if file.is_picture %}
+                                        <a class="fnc" href="{{ file.url }}" style="display: inline-block">
+                                            <img class="img-polaroid" width="130" style="display: block" src="{{ file.url }}" />
+                                            <span class="js-file-remove"  data-file="{{ file.id }}">Удалить</span>
+                                        </a>
+
+                                    {% endif %}
+                                {% endfor %}
+                            </p>
+
+                            <p>
+                                {% for file in task_edit.files %}
+                                    {% if not file.is_picture %}
+                                        <a class="item-list" href="{{ file.url }}">
+                                            <span class="icon-download-alt icon-{{ file.ext }}" href="{{ file.url }}" ></span> {{ file.name }}</a> &nbsp;&nbsp; <span data-file="{{ file.id }}" class="js-file-remove">Удалить</span><br />
+
+                                    {% endif %}
+                                {% endfor %}
+                            </p>
+                        {% endif %}
+
+                        <h5>Файлы РО</h5>
+
+                        <div class="file-adding-form" style="position:relative;">
+                            <div class="task-file-upload" data-postfix="ro" style="position: relative; display:block;">
+                            </div>
+                            <h3 class="file_upload_button">Перетащите файлы или нажмите сюда</h3>
+                        </div>
+
+                        {% if task_edit.files %}
+                            <p>
+                                {% for file in task_edit.files_ro %}
+                                    {% if file.is_picture %}
+                                        <a class="fnc" href="{{ file.url }}" style="display: inline-block">
+                                            <img class="img-polaroid" width="130" style="display: block" src="{{ file.url }}" />
+                                            <span class="js-file-remove"  data-file="{{ file.id }}">Удалить</span>
+                                        </a>
+
+                                    {% endif %}
+                                {% endfor %}
+                            </p>
+
+                            <p>
+                                {% for file in task_edit.files_ro %}
+                                    {% if not file.is_picture %}
+                                        <a class="item-list" href="{{ file.url }}">
+                                            <span class="icon-download-alt icon-{{ file.ext }}" href="{{ file.url }}" ></span> {{ file.name }}</a> &nbsp;&nbsp; <span data-file="{{ file.id }}" class="js-file-remove">Удалить</span><br />
+
+                                    {% endif %}
+                                {% endfor %}
+                            </p>
+                        {% endif %}
+
+                        <h5>Файлы ЭО</h5>
+
+                        <div class="file-adding-form" style="position:relative;">
+                            <div class="task-file-upload" data-postfix="eo" style="position: relative; display:block;">
+                            </div>
+                            <h3 class="file_upload_button">Перетащите файлы или нажмите сюда</h3>
+                        </div>
+
+                        {% if task_edit.files %}
+                            <p>
+                                {% for file in task_edit.files_eo %}
+                                    {% if file.is_picture %}
+                                        <a class="fnc" href="{{ file.url }}" style="display: inline-block">
+                                            <img class="img-polaroid" width="130" style="display: block" src="{{ file.url }}" />
+                                            <span class="js-file-remove"  data-file="{{ file.id }}">Удалить</span>
+                                        </a>
+
+                                    {% endif %}
+                                {% endfor %}
+                            </p>
+
+                            <p>
+                                {% for file in task_edit.files_eo %}
+                                    {% if not file.is_picture %}
+                                        <a class="item-list" href="{{ file.url }}">
+                                            <span class="icon-download-alt icon-{{ file.ext }}" href="{{ file.url }}" ></span> {{ file.name }}</a> &nbsp;&nbsp; <span data-file="{{ file.id }}" class="js-file-remove">Удалить</span><br />
+
+                                    {% endif %}
+                                {% endfor %}
+                            </p>
+                        {% endif %}
+
+                    <div class="profile-edit-filter form-group">
+            {# -------- НАЗНАЧИТЬ ОТВЕТСТВЕННОГО #}
+                        <div class="profile-edit-responsible row">
+                            <div class="col-xs-6">
+                                <select class="form-control js-select-resp" name="resp">
+                                    <option value="">Назначить ответственного</option>
+                                    {% for user in task_edit.users %}
+                                        <option {% if task_edit.post.resp.id == user.id %}selected {% endif %}value="{{ user.id }}">{{ user.last_name }} {{ user.first_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-xs-6">
+                               <span class="dropdown">
+                                    <a href="javascript:void(0);" class="showPopup">Пригласить ответственного</a>
+                                    <span class="dropdown-menu pull-left" style="width: 345px;">
+                                        <div class="form-group">
+                                        <label>Введите E-mail
+                                        <input type="text" style="width: 260px;" placeholder="Введите E-mail" class="input-block-level js-invite form-control" />
+                                        </label>
+                                        </div>
+                                        <a href="javascript:void(0);" onclick="return addResponsible();" class="btn btn-success exit"><span>Добавить</span></a>
+                                    </span>
+                               </span>
+                                <span class="dropdown">
+                                    <a href="#" data-toggle="dropdown">Назначить наблюдателей</a>
+                                    <ul class="dropdown-menu">
+                                    {% for user in task_edit.users %}
+                                        <li><a href="#" class="js-select-observer" data-id="{{ user.id }}">{% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}</a></li>
+                                    {% endfor %}
+                                    </ul>
+                                </span>
+                            </div>
+                        </div><!--profile-edit-responsible-->
+
+
+
+            {# -------- ОТВЕТСТВЕННЫЕ #}
+                    </div>
+            {# -------- НАБЛЮДАТЕЛИ #}
+                       <h5>Наблюдатели:</h5>
+                       <ul class="add-tags js-observers form-control">
+                           {% for observer in task_edit.post.observers %}
+                               <li>
+                                   <span>
+                                       {% if observer.first_name %}
+                                            {{ observer.first_name }} {{ observer.last_name }}
+                                       {% else %}
+                                            {{ observer.username }}
+                                       {% endif %}
+                                       <a class="js-icon-remove fa fa-times"></a>
+                                   </span>
+                                   <input name='observers' type='hidden' value='{{ observer.id }}'>
+                               </li>
+                           {% endfor %}
+                       </ul>
+                       
+                       <hr>
+
+            {# -------- ТЕГИ #}
+                       <h5>Тэги:</h5>
+                       <ul class="add-tags">
+                           {% for tag in task_edit.post.tags %}
+                               <li><span>{{ tag.tag }}
+{#                                   &nbsp;<a class="js-icon-remove fa fa-times"></a>#}
+                               </span></li>
+                           {% endfor %}
+                            <li><input name="additional_tags" type="text" /></li>
+                       </ul><!--add-tags-->
+
+  						<hr>
+
+            {# -------- ПАРАМЕТРЫ #}
+                       <div class="params">
+                           <div class="params-item">             
+                                <h5>Важность: <span data-name="critically">{{ task_edit.post.critically }}</span></h5>
+                                <div class="progress">
+                                    <a style="left:{% widthratio task_edit.post.critically|dotted_float 1 100 %}%;" class="btn btn-success"><i class="fa fa-arrows-h"></i></a>
+                                </div>     
+                                <div class="row-fluid">
+                                    <div class="pull-left muted">Низкий</div>
+                                    <div class="pull-right muted">Высокий</div>
+                                </div>      
+                           </div>
+                       </div><!--params-->
+                       
+                       <hr>
+
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="pull-right">
+                            <button value="Сохранить" onclick="document.task_form.submit();" class="btn btn-large btn-success" id="save_button">
+                                Сохранить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                   
+                    <input type="hidden" name="critically" value="{{ task_edit.post.critically|dotted_float }}" />
+                    <input type="hidden" name="hardness" value="{{ task_edit.post.hardness|dotted_float }}" />
+                    <input type="hidden" name="project_knowledge" value="{{ task_edit.post.project_knowledge|dotted_float }}" />
+                    <input type="hidden" name="reconcilement" value="{{ task_edit.post.reconcilement|dotted_float }}" />
+
+				</div><!--widget-->
+
+			</td>
+        	<td width="300" style="padding-left:25px;" valign="top">
+            <div class="widget js-widget">
+                   <h4>Планирование</h4>           
+                   <hr>
+
+                   <p><label>Сетевая организация, руб.: </label>
+                       <input class="form-control js-planTime" name="planTimeMainOrg" 
+                              value="{{ task_edit.post.planTimeMainOrg|default_if_none:'0' }}" type="text" placeholder="Плановая сумма"></p>
+                   <p><label>Регулирующий орган, руб.: </label>
+                       <input class="form-control js-planTime" name="planTimeRegulator" 
+                              value="{{ task_edit.post.planTimeRegulator|default_if_none:'0' }}" type="text" placeholder="Плановая сумма"></p>
+                   <p><label>Экспертная организация, руб.: </label>
+                       <input class="form-control js-planTime" name="planTime" 
+                              value="{{ task_edit.post.planTime|default_if_none:'0' }}" type="text" placeholder="Плановая сумма"></p>
+{#                   <p><label>Повторять каждые, ч.: </label><input class="form-control" name="repeatEvery" value="{{ task_edit.post.repeatEvery|default_if_none:'0' }}" type="text" placeholder="Повторять каждые"></p>#}
+                {# -------- КРАЙНИЙ СРОК #}
+                       <h5>Дата:</h5>
+                       <div class="task-edit_choose-time">
+                            <input class="form-control pull-left" name="deadline" type="text" placeholder="Формат даты дд.мм.гггг" value="{% if task_edit.post.deadline %}{{ task_edit.post.deadline }}{% endif %}">
+                            <a class="fa fa-calendar" href="javascript:void(0);" onclick="$(this).prev().focus();"></a>
+                            <span><a href="#" class="js-changeDate" data-time="today">Сегодня</a></span>
+                            <span><a href="#" class="js-changeDate" data-time="tomorrow">Завтра</a></span>
+                            <span><a href="#" class="js-changeDate" data-time="week">Неделя</a></span>
+                       </div><!--choose-tim-->
+
+            </div>
+            <div class="widget">
+                   <h4>Похожие позиции</h4>
+                   <hr>  
+                   <ul>
+                       {% for task in task_edit.post.similarTasks %}
+                        <li>&mdash; <a href="/task_detail/?id={{ task.id }}">{{ task.name }} »</a></li>
+                       {% endfor %}
+                    </ul>
+                                   
+            </div>
+            <div class="widget">                   
+                   <h4>Возможные ресурсы</h4>           
+                   <hr>
+
+                   <ul>
+                       {% for user in task_edit.users %}
+                           {% if user.id|slugify in task_edit.recommendedUsers %}
+                                <li><a href="#">{{ user.first_name }} {{ user.last_name }}»</a></li>
+                           {% endif %}
+                       {% endfor %}
+                    </ul>       
+            </div>
+            </td>
+        </tr>
+    </table>
+</form>

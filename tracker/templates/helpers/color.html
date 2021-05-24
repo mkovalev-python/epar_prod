@@ -1,0 +1,45 @@
+<div class="modal fade js-set-deadline green-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title">Установить цвет</h3>
+            </div>
+            <div class="modal-body clearfix">
+                <h5>№#TASK_NUMBER# — #TASK_NAME#</h5>
+                <ul class="colors clearfix">
+                    {% if projectSettings.color_name_red %}
+                        <li class="color-block red js-color-block" data-color="red"></li>
+                    {% endif%}
+                    {% if projectSettings.color_name_green %}
+                        <li class="color-block green js-color-block" data-color="green"></li>
+                    {% endif%}
+                    {% if projectSettings.color_name_blue %}
+                        <li class="color-block blue active js-color-block" data-color="blue"></li>
+                    {% endif%}
+                    {% if projectSettings.color_name_grey %}
+                        <li class="color-block grey js-color-block" data-color="grey"></li>
+                    {% endif%}
+                    {% if projectSettings.color_name_purple %}
+                        <li class="color-block purple js-color-block" data-color="purple"></li>
+                    {% endif%}
+                    {% if projectSettings.color_name_yellow %}
+                        <li class="color-block yellow js-color-block" data-color="yellow"></li>
+                    {% endif%}
+                    {% if projectSettings.color_name_orange %}
+                        <li class="color-block orange js-color-block" data-color="orange"></li>
+                    {% endif%}
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <input type="submit" name="color"
+                       class="btn btn-success js-save-color"
+                       data-dismiss="modal"
+                       value="Сохранить" />
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>

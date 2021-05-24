@@ -1,0 +1,77 @@
+{% extends "main/base.html" %}
+{% load thumbnail %}
+{% load jsonify %}
+{% block content %}
+    {% load thumbnail %}
+{% load jsonify %}
+<div class="widget draft">
+    <div class="widget-title clearfix">
+        <h3>Список задач: <a href="/taskdraft/{{ draft.slug }}">{{ draft }}</a></h3>
+        <div class="draft-status">Статус: {{ draft.status_humanize }}</div>
+    </div>
+    <div class="widget-body">
+            <h2>{{ task.name|safe }}</h2>
+            <p>{{ task.text|safe }}</p>
+        <hr>
+        <div class="clearfix"></div>
+        <h4 class="uppercase">Оценки</h4>
+
+            {% for evaluation in evaluations %}
+                <div class="task-message row-fluid show-grid js-taskMessage js-op js-um" style="display: block;">
+                    <div class="message warning">
+                        <div class="message-content">
+                                <a class="message-info-name" href="/user_detail/?id={{ evaluation.user.id }}">{{ evaluation.user.get_full_name }}</a>
+                                <b class="message-desc-status last js-taskMessageText">оценил позицию в {{ evaluation.time|safe }} руб.</b>
+                                    {% if draft.author.id == request.user.id %}
+                                    <form action="/taskdraft/{{ draft.slug }}/{{ task.id }}/accept-developer" method="POST" class="inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" value="{{ evaluation.user.id }}" name="user_id"/>
+                                        <button class="btn btn-xs btn-success js-accept-developer">Выбрать исполнителем</button>
+                                    </form>
+                                    {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+        <h4 class="uppercase">Обсуждение:</h4>
+            {% for message in simple_messages %}
+                {% include 'partials/taskdraft_task/taskdraft_task_message.html' %}
+            {% endfor %}
+
+        <hr>
+        <div class="task_add-message form-horizontal clearfix">
+        <form action="/taskdraft/{{ draft.slug }}/{{ task.id }}" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <div class="col-xs-12">
+                    <textarea name="task_message" rows="5" class="form-control" placeholder="Напишите сообщение"></textarea>
+                </div>
+                <div class="col-xs-12" style="padding-top: 10px;">
+                    <input type="submit" class="btn btn-success sendTaskMessage" value="Добавить сообщение"/>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+       $('.js-accept-developer').click(function(ev){
+           ev.preventDefault();
+           var data = $(this).parent('form').serializeArray();
+           var url = $(this).parent('form').attr('action');
+           $.post(url, data, function(response){
+              if(response.error){
+                  alert(response.error);
+              }else if(response.result) {
+                  alert(response.result);
+                  window.location.reload();
+              }
+           });
+           return false;
+       })
+    });
+</script>
+
+{% endblock %}

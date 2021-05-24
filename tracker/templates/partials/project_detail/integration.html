@@ -1,0 +1,145 @@
+<div class="integration-wrapper clearfix">
+
+    <ul role="tablist" class="tabs-left clearfix">
+        <li class="active clearfix"><a href="#git" aria-controls="git" role="tab" data-toggle="tab"><i class="fa fa-github"></i><span class="to-hide-768">GIT репозиторий</span></a></li>
+        <li class="clearfix"><a href="#slack" aria-controls="slack" role="tab" data-toggle="tab"><i class="fa fa-slack"></i><span class="to-hide-768">Slack</span></a></li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content tab-content-right">
+        <div role="tabpanel" class="tab-pane active" id="git">
+
+            <h2>GIT репозиторий</h2>
+            <p>Ваши сотрудники могут подключаться к репозиторию, загрузив SSH-ключ в свой профиль.</p>
+            <form method="POST" name="integration">
+                <div class="checkbox-wrapper clearfix">
+                    <label class="checkbox-wrapper-item">
+                        <input type="checkbox" name="use_git" class="js-repository" {% if project.repository %}checked="checked" readonly disabled="disabled"{% endif %}>
+                        <span class="checkbox-wrapper-item-checkbox"></span>
+                        Использовать GIT (30 т. руб. / мес.)
+                    </label>
+                    {% if canEdit %}
+                    <label class="checkbox-wrapper-item">
+                        <input {% if not canEdit or not project.repository  %}disabled="disabled" {% endif %}
+                        {% if settings.disable_commits_wo_tasks %}checked="checked" {% endif %}
+                        type="checkbox" value="1" name="settings_disable_commits_wo_tasks" >
+                        <span class="checkbox-wrapper-item-checkbox"></span>
+                        Запретить коммиты не в расчет
+                    </label>
+{#                    <label class="checkbox-wrapper-item">#}
+{#                        <input {% if not canEdit or not project.repository %}disabled="disabled" {% endif %}#}
+{#                        {% if settings.disable_commits_with_errors %}checked="checked" {% endif %}#}
+{#                        type="checkbox" value="1" name="settings_disable_commits_with_errors" >#}
+{#                        <span class="checkbox-wrapper-item-checkbox"></span>#}
+{#                        Запретить коммиты с ошибками#}
+{#                    </label>#}
+                    {% endif %}
+                </div>
+
+                <h6>Имя репозитория</h6>
+                <div class="input-with-label-wrapper clearfix js-hiddable" style="{% if not project.repository %} {% endif %}position: relative;">
+                    <div class="input-with-input">
+                        <input {% if not canEdit or project.repository %}disabled="disabled" {% endif %} type="text" name="repository"
+                    value="{% if project.repository %}{{ project.repository }}{% endif %}" class="form-control js-repository-value" {% if project.repository %}readonly{% endif %}/>
+                        <i class="fa fa-check input-with-icon input-icon"></i>
+                    </div>
+                    <div class="input-with-button">
+                        <input type="submit" value="Применить" name="integration_settings_save" class="btn btn-success js-integration-save" />
+                    </div>
+                </div>
+
+
+
+
+            </form>
+
+            <hr>
+
+
+            <h2>Сервер с автозагрузкой из GIT</h2>
+            <p>Все, что вы публикуете в одну из веток GIT, будет автоматически публиковаться на сервере.</p>
+
+            <div class="server-item-wrapper">
+                <div class="server-item-wrapper-left">
+                    <div class="server-item-wrapper-icon">
+                        <img src="/static/images/server.png">
+                    </div>
+                    <div class="server-item-wrapper-title">
+                        PHP + Apache + MySQL
+                    </div>
+                </div>
+                <div class="server-item-wrapper-right">
+                    <div class="server-item-wrapper-desc clearfix">
+                        {% if project.repository %}
+                        <div class="server-item-wrapper-desc-item">
+                            <a href="http://{{ project.repository }}.heliard-servers.ru">http://{{ project.repository }}.heliard-servers.ru</a>
+                        </div>
+                        {% endif %}
+                        <div class="server-item-wrapper-desc-item">1 Гб на жестком диске</div>
+                        <div class="server-item-wrapper-desc-item">
+                            Сервер{% if not project.api_key %} выключен{% else %} включен{% endif %}
+                            <div class="milestones-btn-wrapper {% if project.api_key %}active{% endif %}">
+                                <input type="checkbox" name="group" onclick="$(this).parent().toggleClass('active');"
+                                       disabled
+                                       {% if project.api_key %}checked{% endif %}
+                                       value="milestones" class="milestones-btn js-milestones-checkbox milestones-checkbox" id="mlst-checkbox">
+                                <label for="mlst-checkbox"><span>
+                                    {% if not project.api_key %}Включить{% else %}Выключить{% endif %}</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <h6>Автосбор данных из ветки</h6>
+                    <div class="input-with-label-wrapper clearfix">
+                        <div class="input-with-input">
+                            <input type="text" value="master" class="form-control" disabled />
+                            <i class="fa fa-check input-with-icon"></i>
+                        </div>
+                        <div class="input-with-button">
+                            <input type="submit" value="Сохранить" class="disabled btn btn-default" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            {% if project.repository and not project.api_key %}
+            <p class="colored-bg bg-info">Вы можете создать тестовый сервер с автоматической выгрузкой из GIT в публичную директорию</p>
+            {% elif project.api_key %}
+{#            <p class="colored-bg bg-success">Сервер создан <b>{{ project.repository }}.heliard-platform.ru</b> <a href="#" class="js-server-status">Проверить статус</a></p>#}
+            {% elif not project.repository %}
+            <p class="colored-bg bg-warning">Вы можете создать тестовый сервер только с использованием GIT</p>
+            {% endif %}
+
+            {% if project.repository and not project.api_key %}
+            <a href="#" class="btn btn-info {% if canEdit %}js-server-create{% else %}disabled{% endif %}" style="width:100%;">
+                Создать тестовый сервер
+            </a>
+            <div class="server-progress working js-working" style="display: none;">
+                <div class="progress progress-striped active">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                        <span class="sr-only">Запускаем сервер...</span>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+        </div><!--GIT-->
+        <div role="tabpanel" class="tab-pane" id="slack">
+            <h2>Slack</h2>
+            <h6>Url для отправки сообщений <a href="https://my.slack.com/services/new/incoming-webhook/" target="_blank">?</a></h6>
+            <form method="POST" name="integration" action="#integration">
+                <div class="input-with-label-wrapper clearfix">
+                    <div class="input-with-input">
+                        <input type="text" name="slack_url" value="{{ project.slackUrl }}" class="form-control js-slack-url" />
+                        <i class="fa fa-check input-with-icon"></i>
+                    </div>
+                    <div class="input-with-button">
+                        <input type="submit" value="Применить" name="integration_messangers_settings_save" class="btn btn-success" />
+                    </div>
+                </div>
+            </form>
+        </div><!--SLACK-->
+    </div>
+
+</div>

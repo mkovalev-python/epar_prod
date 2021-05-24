@@ -1,0 +1,148 @@
+{% load get_settings %}
+{% load number_ending %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Rubedite</title>
+</head>
+<style>
+    @font-face {
+        font-family: "Light";
+        src: url("{% get_settings "HTTP_ROOT_URL" %}/static/fonts/FiraSansCondensed/FiraSansCondensed-Light.woff");
+    }
+
+    @font-face {
+        font-family: "Bold";
+        src: url("{% get_settings "HTTP_ROOT_URL" %}/static/fonts/FiraSansCondensed/FiraSansCondensed-Bold.woff");
+    }
+</style>
+<body style="box-sizing: border-box;background-color: #1a1a1a;padding: 40px 0;margin: 0;">
+<table class="table" style="box-sizing: border-box;width:90vw;padding:0 2vw;max-width:888px;margin: 0 auto;border: none;border-spacing: 0;">
+    {% if show_rubedite %}
+        <tr>
+            <td style="box-sizing: border-box;position: relative;width: 100%;">
+                <div style="box-sizing: border-box;width:100%;padding: 0 32px;vertical-align: middle;margin-bottom: 32px;">
+                    <img src="{% get_settings "HTTP_ROOT_URL" %}/static/img/emails/logo.png" alt="" style="box-sizing: border-box;width:96px;vertical-align: middle;">
+                    <a href="{% get_settings "HTTP_ROOT_URL" %}/?project={{ sprint.project.id }}" style="box-sizing: border-box;display: block;float: right;line-height: 96px;text-decoration: none;">
+                        <span style="box-sizing: border-box;font-family: 'Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight:bold; color: #FF0000;font-size: 18px;margin-right: 5px;vertical-align: middle;">
+                            Перейти к проекту
+                        </span>
+                        <img src="{% get_settings "HTTP_ROOT_URL" %}/static/img/emails/arrow-icon.png" alt="" style="box-sizing: border-box;width:24px;height:24px;vertical-align: middle;">
+                    </a>
+                </div>
+            </td>
+        </tr>
+    {% endif %}
+    <tr>
+        <td style="box-sizing: border-box;position: relative;width: 100%;">
+            <div style="box-sizing: border-box;width:100%;padding: 0 32px;font-family: 'Light', 'Helvetica Neue', Helvetica, Arial, sans-serif;color: #fff;font-size: 24px;margin-bottom: 32px;">
+                {{ sprint.name }} в проекте {{ sprint.project.name }} начат
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td style="box-sizing: border-box;position: relative;width: 100%;">
+            <div style="box-sizing: border-box;width:100%;padding: 0 32px;font-family: 'Light', 'Helvetica Neue', Helvetica, Arial, sans-serif;color: #fff;font-size: 18px;margin-bottom: 20px;line-height: 1.4;">
+                Добрый день. Вы получили это письмо, потому что являетесь частью проектной команды "{{ sprint.project.name }}".
+            </div>
+            <div style="box-sizing: border-box;width:100%;padding: 0 32px;font-family: 'Light', 'Helvetica Neue', Helvetica, Arial, sans-serif;color: #fff;font-size: 18px;margin-bottom: 32px;line-height: 1.4;">
+                Команда приступила к работе над спринтом “{{ sprint.name }}”
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td style="box-sizing: border-box;position: relative;width: 100%;">
+            <div style="box-sizing: border-box;width:100%;padding: 24px 32px;background: #2F2F2F;margin-bottom: 20px;">
+                <div style="box-sizing: border-box;width: 100%;padding: 0 0 24px 0;border-bottom: 1px solid #444;">
+                    <p style="box-sizing: border-box;font-family: 'Light', 'Helvetica Neue', Helvetica, Arial, sans-serif;text-transform: uppercase;font-size: 16px;color: #fff;margin: 0 0 10px 0;">
+                        Основная цель спринта:
+                    </p>
+                    <p style="box-sizing: border-box;font-family: 'Light', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size: 18px;color: #fff;line-height: 1.4;margin: 0;">
+                        {{ sprint.target }}
+                    </p>
+                </div>
+                <div style="box-sizing: border-box;width: 100%;padding: 24px 0 24px 0;border-bottom: 1px solid #444;">
+                    <p style="box-sizing: border-box;font-family: 'Light', 'Helvetica Neue', Helvetica, Arial, sans-serif;text-transform: uppercase;font-size: 16px;color: #fff;margin: 0 0 10px 0;">
+                        Объем спринта:
+                    </p>
+                    <p style="box-sizing: border-box;font-family: 'Light', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size: 18px;color: #fff;line-height: 1.4;margin: 0;">
+                        {% get_hours_ending sprint.type %}
+                    </p>
+                </div>
+                <div style="box-sizing: border-box;width: 100%;padding: 24px 0 24px 0;">
+                    <p style="box-sizing: border-box;font-family: 'Light', 'Helvetica Neue', Helvetica, Arial, sans-serif;text-transform: uppercase;font-size: 16px;color: #fff;margin: 0 0 10px 0;">
+                        Плановая дата окончания:
+                    </p>
+                    <p style="box-sizing: border-box;font-family: 'Light', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size: 18px;color: #fff;line-height: 1.4;margin: 0;">
+                        {{ sprint.date|date:"j E Y" }}
+                    </p>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td style="box-sizing: border-box;position: relative;width: 100%;">
+            <p style="box-sizing: border-box;width:100%;padding: 0 32px;font-family: 'Light', 'Helvetica Neue', Helvetica, Arial, sans-serif;color: #fff;font-size: 18px;margin-bottom: 20px;line-height: 1.5;margin-bottom: 20px;">
+                Команда обязуется продемонстрировать в рабочем виде до
+                <span style="box-sizing: border-box;color: #FF0000;font-family: 'Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight:bold; ">{{ sprint.date|date:"j E Y" }} г.</span> включительно следующий набор задач:
+            </p>
+        </td>
+    </tr>
+    <tr>
+        <td style="box-sizing: border-box;position: relative;width: 100%;">
+            <div style="box-sizing: border-box;width:100%;padding: 0 32px;">
+                {% for task in tasks %}
+                    <div style="box-sizing: border-box;padding: 0;margin-bottom: 20px;">
+                        <img src="{% get_settings "HTTP_ROOT_URL" %}/static/img/emails/check-icon.png" alt="" style="width: 20px;height: 20px;object-fit: contain;display: inline-block;vertical-align: top;margin-right: 10px;margin-top: 4px;">
+                        <span style="box-sizing: border-box;font-family: 'Light', 'Helvetica Neue', Helvetica, Arial, sans-serif;color: #fff;font-size: 18px;line-height: 1.5;display: inline-block;width: calc(100% - 40px);">
+                                {{ task.name }}
+                            </span>
+                    </div>
+                {% endfor %}
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td style="box-sizing: border-box;position: relative;width: 100%;margin-bottom: 10px;">
+            <p style="box-sizing: border-box;width:100%;padding: 0 32px;font-family: 'Light', 'Helvetica Neue', Helvetica, Arial, sans-serif;color: #fff;font-size: 18px;line-height: 1.5;">
+                Если вы не согласны с объемом задач или сроками, пожалуйста, свяжитесь с проектным менеджером
+                (<a href="mailto:{{ sprint.manager.email }}" style="box-sizing: border-box;color:#fff;font-family: 'Bold', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight:bold; text-decoration: none;">{{ sprint.manager.get_full_name }})</a>
+                в течение текущего дня. Изменить ход работ в дальнейшем будет гораздо сложнее.
+            </p>
+        </td>
+    </tr>
+    <tr>
+        <td style="box-sizing: border-box;position: relative;width: 100%;">
+            <div style="box-sizing: border-box;width:100%;padding: 0 32px;">
+                <p style="box-sizing: border-box;width:100%;font-family: 'Light', 'Helvetica Neue', Helvetica, Arial, sans-serif;color: #fff;font-size: 18px;line-height: 1.5;margin: 0;padding-bottom: 20px;border-bottom: 1px solid #444;">
+                    Данное письмо сгенерировано автоматически.
+                </p>
+            </div>
+        </td>
+    </tr>
+    {% if show_rubedite %}
+        <tr>
+            <td style="box-sizing: border-box;position: relative;width: 100%;">
+                <div style="box-sizing: border-box;width:100%;padding: 20px 32px 0 32px;">
+                    <a href="https://rubedite.ru" style="box-sizing: border-box;text-decoration: none;line-height: 24px;margin-right: 10px;">
+                        <img src="{% get_settings "HTTP_ROOT_URL" %}/static/img/emails/globe-icon.png" alt="" style="box-sizing: border-box;width: 24px;height: 24px;object-fit: contain;margin-right: 5px;vertical-align: middle;">
+                        <span style="box-sizing: border-box;font-family: 'Light', 'Helvetica Neue', Helvetica, Arial, sans-serif;color: #fff;font-size: 18px;
+                        line-height: 24px;display: inline-block;vertical-align: middle;">
+                            rubedite.ru
+                        </span>
+                    </a>
+                    <a href="mailto:{% get_settings "INFO_EMAIL" %}" style="box-sizing: border-box;text-decoration: none;line-height: 24px;">
+                        <img src="{% get_settings "HTTP_ROOT_URL" %}/static/img/emails/mail-icon.png" alt="" style="box-sizing: border-box;width: 24px;height: 24px;object-fit: contain;margin-right: 5px;vertical-align: middle;">
+                        <span style="box-sizing: border-box;font-family: 'Light', 'Helvetica Neue', Helvetica, Arial, sans-serif;color: #fff;font-size: 18px;
+                        line-height: 24px;display: inline-block;vertical-align: middle;">
+                            {% get_settings "INFO_EMAIL" %}
+                        </span>
+                    </a>
+                </div>
+            </td>
+        </tr>
+    {% endif %}
+</table>
+</body>
+</html>

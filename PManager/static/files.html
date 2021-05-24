@@ -1,0 +1,327 @@
+{% load get_settings %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0" />
+<script type="text/javascript" src="/static/js/libs/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/libs/html5shiv.js"></script>
+<script type="text/javascript" src="/static/js/libs/jquery.history.min.js"></script>
+<script type="text/javascript" src="/static/js/libs/howler.min.js"></script>
+<script type="text/javascript" src="/static/js/pm/script.js"></script>
+<script type="text/javascript" src="/static/js/pm/main.js"></script>
+<script type="text/javascript" src="/static/js/libs/backbone.js"></script>
+<script type="text/javascript" src="/static/js/libs/backbone.iobind.js"></script>
+<script type="text/javascript" src="/static/js/libs/backbone.iosync.js"></script>
+<script type="text/javascript" src="/static/js/pm/panel.js"></script>
+<script type="text/javascript" src="/static/js/pm/tasks.js"></script>
+<script type="text/javascript" src="/static/js/pm/files.js"></script>
+<script type="text/javascript" src="/static/js/pm/beep.js"></script>
+<script type="text/javascript" src="/static/js/pm/hint.js"></script>
+<script type="text/javascript" src="/static/js/pm/user_dynamics.js"></script>
+<script type="text/javascript" src="/static/js/pm/sock_connector.js"></script>
+<script type="text/javascript" src="/static/js/pm/user-notice.js"></script>
+<script type="text/javascript" src="/static/js/libs/socket.io.js"></script>
+<script type="text/javascript" src="/static/js/pm/current_timer.js"></script>
+<script type="text/javascript" src="/static/js/pm/drowCanvas.js" xmlns="http://www.w3.org/1999/html"></script>
+<link type="text/css" rel="stylesheet" href="/static/css/reset.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/external/imgareaselect-animated.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/external/fancybox.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/external/carousel.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/external/bootstrap-responsive.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/external/bootstrap3.min.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/external/linecons/linecons.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/external/font-awesome.min.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/styles.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/add.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/panel.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/drowCanvas.css" />
+<title></title>
+
+<link rel="shortcut icon" href="/static/ico/favicon.ico" />
+</head>
+<body>
+<header>
+  <div class="header clearfix">
+    <div class="logo"> <a href="/"> <img src="/static/images/logo.png" alt="Экспертная компания" /> </a> </div>
+    <nav class="menu">
+      <ul>
+        <li class=""> <a href="/"> <span aria-hidden="true" class="fa fa-desktop"></span> <span>ГЛАВНАЯ</span> </a> </li>
+        <li class=""> <a href="/calendar/"> <span aria-hidden="true" class="fa fa-calendar-o"></span> <span>КАЛЕНДАРЬ</span> </a> </li>
+        <li class=""> <a href="/milestones/"> <span aria-hidden="true" class="fa fa-bar-chart-o"></span> <span>ЦЕЛИ</span> </a> </li>
+        <li class=""> <a href="/life/"> <span aria-hidden="true" class="fa fa-bolt"></span> <span>АКТИВНОСТЬ</span> </a> </li>
+        <li class=""> <a href="/gantt/"> <span aria-hidden="true" class="fa fa-tasks"></span> <span>ГРАФИК</span> </a> </li>
+        <li class="dropdown notifications"> <a href="#" data-toggle="dropdown" data-target="#" title="Личные сообщения"> <span class="js-notificator fa fa-sun-o "></span><!--<span class="fa fa-sun-o fa-spin"></span>--><b class="js-mes_qty">0</b> </a>
+          <div class="dropdown-menu">
+            <div class="container js-pmessages-list_empty ">Список сообщений пуст</div>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <div class="timer-wrapper clearfix">
+      <div class="timer js-currentTask"> <span> <span class="Time js-mainTimer" >00:01:28</span> &nbsp;&nbsp;<a class="js-play fa fa-pause" ></a>
+        <div class="dropdown-menu timer-popup pause_dialog js-mainTimerPopup" role="menu">
+          <h3 class="js-projectName">Экспертная компания</h3>
+          <hr>
+          <h5><a class="js-parentTaskName" href="/task_detail/?number=740&amp;project=2"> Сделать страницу аччивок </a></h5>
+          <p class="js-description"> </p>
+          <hr>
+          <p class="js-onlystarted">
+            <textarea placeholder="Оставить комментарий" name="comment" class="form-control" rows="3"></textarea>
+          </p>
+          <label class="js-onlystarted checkbox">
+            <input type="checkbox" name="solution" value="Y" >
+            Расчет готов</label>
+          <a class="js-onlystarted js-stop-timer pause_comment_success btn btn-success">Остановить таймер</a><a class="js-onlystarted js-cancel-timer pause_comment_cancel btn btn-danger">Отменить таймер</a> </div>
+        </span> </div>
+      <div class="user-menu"> <a href="/user_detail/?id=131" class="user-name">Алекс Мышкин</a> <a class="btn btn-danger btn-xs" href="/?logout=Y"><span>Выход<i class="fa fa-power-off"></i></span></a> </div>
+    </div>
+    <!--timer--> 
+    
+  </div>
+  <!--header--> 
+</header>
+<div class="container sub-menu">
+  <div class="row sub-menu_line">
+    <div class="sub-menu_line_section-user col-xs-8"> 
+      <!--<ul class="list-inline">
+                
+                <li>
+                    <a href="/new_task_wizard/" class="new_task js-taskWizard-opener bold">Создать расчет</a>
+                </li>
+                
+                
+                <li><a href="/user_list/" class="users-and-groups">Пользователи</a></li>
+                
+                <li><a href="/files/" class="files">Файлы</a></li>
+                
+            </ul>--> 
+      
+      <a href="/new_task_wizard/" class="js-taskWizard-opener btn btn-default"><i class="fa fa-file"></i><span>&nbsp;Создать расчет</span></a>&nbsp;&nbsp; <a href="/user_list/" class="btn btn-default"><i class="fa fa-users"></i><span>&nbsp;Команда</span></a>&nbsp;&nbsp; <a href="/files/" class="btn btn-default"><i class="fa fa-folder-open"></i><span>&nbsp;Файлы</span></a> </div>
+    <div class="sub-menu_line_section-tracker col-xs-4">
+      <ul class="list-inline navbar-right">
+        <li class="section-tracker_menu_name h5"><span>Проект:</span></li>
+        <li class="projects-list-menu">
+          <div class="dropdown">
+            <button type="button" class="btn btn-link tracker-choose" data-toggle="dropdown">Экспертная компания</button>
+            <ul class="dropdown-menu dropdown-right" role="menu" aria-labelledby="dropdownMenu1">
+              <li id="0" class=""> <a href="?project=0">Все проекты</a> </li>
+              <li id="74" class=""> <a href="?project=74"> complians.ru </a> </li>
+              <li id="137" class=""> <a href="?project=137"> Heliant.ru
+                &nbsp;<b>1</b> </a> </li>
+              <li id="2" class="active"> <a href="?project=2"> Экспертная компания
+                &nbsp;<b>7</b> </a> </li>
+              <li id="117" class=""> <a href="?project=117"> Интернет-магазин текстиля для дома </a> </li>
+              <li id="77" class=""> <a href="?project=77"> Посадочная страница Свадебные платья </a> </li>
+              <li id="124" class=""> <a href="?project=124"> Сайт LVFINANCE </a> </li>
+            </ul>
+            <a href="/project/2/" class="fa fa-cog" title="Параметры проекта"></a> </div>
+        </li>
+        <li class="projects-list-select">
+          <select class="form-control" onchange="document.location.href='/?project='+$(this).val();">
+            <option value="0"> Все проекты </option>
+            <option value="74">complians.ru</option>
+            <option value="137">Heliant.ru</option>
+            <option selected value="2">Экспертная компания</option>
+            <option value="117">Интернет-магазин текстиля для дома</option>
+            <option value="77">Посадочная страница Свадебные платья</option>
+            <option value="124">Сайт LVFINANCE</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- /container -->
+
+<hr style="margin-top:0px;">
+<div class="container">
+<script type="text/javascript" src="/widgets/js/user_list/script.js"></script> 
+<script type="text/javascript" src="/static/js/bootstrap/bootstrap-tooltip.js"></script> 
+<script>
+$(function() {
+		$('body').tooltip({
+			selector: "[rel=tooltip]", // можете использовать любой селектор
+			placement: "top" 
+		});
+	});
+</script>
+<div class="widget">
+  <h3>Файлы</h3>
+  <hr>
+  <div class="files-wrapper">
+  		<div class="files-wrapper-packs">
+        	<ul>
+            	<li class="separator">
+                	<a href="#">Интернет-магазин текстиля для дома </a>
+                    <ul>
+                        <li><a href="#" class="active">Верстка</a></li>
+                        <li><a href="#">Маркетинг-кит</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <p class="files-wrapper-packs-buttons"><a href="#" class="btn btn-default"><i class="fa fa-folder"></i>&nbsp;&nbsp;Создать папку</a></p>
+        </div><!--files-wrapper-packs-->
+        <div class="files-wrapper-files">
+            <div class="files-wrapper-list-navi-wrapper">
+                <div class="files-wrapper-list-navi">
+                	<a href="#">Экспертная компания</a> &raquo; Верстка
+            	</div>
+            </div>
+            <div class="files-wrapper-list box">
+                <ul>
+                    <li>
+                        <label>
+                            <input type="checkbox">
+                            <span class="files-wrapper-item-img-wrapper">
+                            	<span class="files-wrapper-item-img"><img src="{% get_settings "HTTP_ROOT_URL" %}/static/upload/projects/2/pasted_13_200x200.png"></span>
+                            </span>
+                            <span class="files-wrapper-item-settings">
+                                <a title="Загрузить новую версию" class="fa fa-repeat" href="#"></a>
+                                <a title="Скачать" class="fa fa-download" target="_blank" href="#"></a>
+                                <a title="Показать версии" class="fa fa-copy" href="#"></a>
+                            </span>
+                            <span class="files-wrapper-item-title">6_2ub1alBaM.jpg</span>
+                        </label>
+                        
+                    </li>
+                    <li>
+                        <label class="active">
+                            <input type="checkbox">
+                            <span class="files-wrapper-item-img-wrapper">
+                            	<span class="files-wrapper-item-img"><i class="fa fa-file-o"></i></span>
+                            </span>
+                            <span class="files-wrapper-item-settings">
+                                <a title="Загрузить новую версию" class="fa fa-repeat" href="#"></a>
+                                <a title="Скачать" class="fa fa-download" target="_blank" href="#"></a>
+                                <a title="Показать версии" class="fa fa-copy" href="#"></a>
+                            </span>
+                            <span class="files-wrapper-item-title">6_2ub1alBaM.jpg</span>
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="checkbox">
+                            <span class="files-wrapper-item-img-wrapper">
+                            	<span class="files-wrapper-item-img"><i class="fa fa-file-archive-o"></i></span>
+                            </span>
+                            <span class="files-wrapper-item-settings">
+                                <a title="Загрузить новую версию" class="fa fa-repeat" href="#"></a>
+                                <a title="Скачать" class="fa fa-download" target="_blank" href="#"></a>
+                                <a title="Показать версии" class="fa fa-copy" href="#"></a>
+                            </span>
+                            <span class="files-wrapper-item-title">6_2ub1alBaM.jpg</span>
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="checkbox">
+                            <span class="files-wrapper-item-img-wrapper">
+                            	<span class="files-wrapper-item-img"><i class="fa fa-file-word-o"></i></span>
+                            </span>
+                            <span class="files-wrapper-item-settings">
+                                <a title="Загрузить новую версию" class="fa fa-repeat" href="#"></a>
+                                <a title="Скачать" class="fa fa-download" target="_blank" href="#"></a>
+                                <a title="Показать версии" class="fa fa-copy" href="#"></a>
+                            </span>
+                            <span class="files-wrapper-item-title">6_2ub1alBaM.jpg</span>
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="checkbox">
+                            <span class="files-wrapper-item-img-wrapper">
+                            	<span class="files-wrapper-item-img"><i class="fa fa-file-pdf-o"></i></span>
+                            </span>
+                            <span class="files-wrapper-item-settings">
+                                <a title="Загрузить новую версию" class="fa fa-repeat" href="#"></a>
+                                <a title="Скачать" class="fa fa-download" target="_blank" href="#"></a>
+                                <a title="Показать версии" class="fa fa-copy" href="#"></a>
+                            </span>
+                            <span class="files-wrapper-item-title">6_2ub1alBaM.jpg</span>
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="checkbox">
+                            <span class="files-wrapper-item-img-wrapper">
+                            	<span class="files-wrapper-item-img"><i class="fa fa-file-excel-o"></i></span>
+                            </span>
+                            <span class="files-wrapper-item-settings">
+                                <a title="Загрузить новую версию" class="fa fa-repeat" href="#"></a>
+                                <a title="Скачать" class="fa fa-download" target="_blank" href="#"></a>
+                                <a title="Показать версии" class="fa fa-copy" href="#"></a>
+                            </span>
+                            <span class="files-wrapper-item-title">6_2ub1alBaM.jpg</span>
+                        </label>
+                    </li>
+                </ul>
+            </div><!--files-wrapper-list-->
+            <div class="files-wrapper-info">
+                <div class="files-wrapper-info-pc">
+                <p><b>Формат:</b> jpg</p>
+                <p><b>Дата создания:</b> 20.11.2013 11:59:37</p>
+                <p><b>Превью:</b><br></p>   
+                <hr>
+                </div>    
+            </div>
+            <div class="files-wrapper-list-navi-wrapper-footer">
+                <div class="files-wrapper-list-navi-footer">                	
+                    <div class="files-wrapper-list-control">
+                        <button type="button" class="btn btn-success js-replaceFiles"><font>Выберите папку&nbsp;&nbsp;</font><i class="fa fa-sign-out"></i></button>
+                        <button type="button" class="btn btn-danger js-deleteFiles"><font>Удалить&nbsp;&nbsp;</font><i class="fa fa-trash-o"></i></button>
+                    </div> 
+            	</div>
+            </div><!--files-wrapper-list-navi-wrapper-footer-->
+        </div><!--files-wrapper-files-->
+  </div>      
+</div><!--widget-->
+</div><!--container-->
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.js-taskWizard-opener').click(function(ev){
+            ev.preventDefault();
+            var url = $(this).attr('href');
+            $.get(url, function(response){
+                $('body').prepend(response);
+            });
+        });
+    });
+</script> 
+<img src="/static/images/loaders/loader_3.png" alt="Loader" class="loader medium" /> <img src="/static/images/loaders/loader_4.png" alt="Loader" class="loader small" /> <img src="/static/images/loaders/loader_5.png" alt="Loader" class="loader tiny" />
+<iframe id="fileinput" src="" style="display:none;"></iframe>
+<script src="/static/js/bootstrap/bootstrap.min.js"></script> 
+<script src="/static/js/bootstrap/typehead.js"></script> 
+<script src="/static/js/libs/boostrap.growl.js"></script>
+<link type="text/css" rel="stylesheet" href="/static/css/bootstrap-combobox.css" />
+<script type="text/javascript" src="/static/js/bootstrap/bootstrap-combobox.js"></script> 
+<script src="/static/js/libs/jquery.event.outside.min.js"></script> 
+<script src="/static/js/libs/apng-canvas.js"></script> 
+<script src="/static/js/libs/jquery.imgareaselect.min.js"></script> 
+<script src="/static/js/libs/jquery.form.js"></script> 
+<script src="/static/js/libs/jquery.cookie.js"></script> 
+<script src="/static/js/libs/fancybox.js"></script> 
+<!--[if lte IE 7]>
+    <link type="text/css" rel="stylesheet" href="/static/css/external/linecons/linecons-ie7.css" />
+    <script src="/static/js/linecons/lte-ie7.js"></script>
+<![endif]--> 
+
+<!-- Yandex.Metrika counter --><script type="text/javascript">(function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter26252781 = new Ya.Metrika({id:26252781, webvisor:true, clickmap:true, trackLinks:true, accurateTrackBounce:true, trackHash:true}); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks");</script>
+<noscript>
+<div><img src="//mc.yandex.ru/watch/26252781" style="position:absolute; left:-9999px;" alt="" /></div>
+</noscript>
+<!-- /Yandex.Metrika counter --> 
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-12015778-3', 'auto');
+  ga('send', 'pageview');
+
+</script>
+</body>
+</html>

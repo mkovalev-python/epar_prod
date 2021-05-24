@@ -1,0 +1,379 @@
+{% load jsonify thumbnail compressed %}
+{% compressed_js 'project_calendar' %}
+
+<div class="widget tasklist">
+<div class="modal-dialog green-popup js-form-modal" style="display:none;">
+    <div id="taskform" class="modal modal-content add-task js-form-modal" style="display:none;">
+        <div class="modal-header">
+            <button onclick="$('.js-form-modal').hide();return false;" aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+            <h3>Создать спринт</h3>
+        </div>
+        <form name="taskform" method="POST" action="/milestone_ajax/" id="postform" class="js-milestone-form form-horizontal">
+            {% csrf_token %}
+            <input type="hidden" name="GROUP_ID" value="" />
+            <input type="hidden" name="ID" value="" />
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="col-xs-3 control-label">Заголовок:</label>
+                    <div class="col-xs-9 controls">
+                        <input id='title_inp' class="form-control js-title-input" type="text" name="TITLE" value="" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-3 control-label">Исполнитель:</label>
+                    <div class="col-xs-9 controls">
+                        <select name="RESPONSIBLE_ID" class="form-control">
+                            {% for resp_user in project_calendar.users %}
+                            <option value="{{ resp_user.id }}">{{ resp_user.first_name }} {{ resp_user.last_name }} [{{ resp_user.username }}]</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-3 control-label">Важность:</label>
+                    <div class="col-xs-9 controls">
+                        <select name="PRIORITY" class="form-control">
+                            <option value="0">Низкая</option>
+                            <option value="1">Нормальная</option>
+                            <option value="2">Высокая</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-3 control-label">Дедлайн:</label>
+                    <div class="col-xs-9 controls">
+                        <input type="text" class="form-control" name="DEADLINE" value="" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-danger" href="#" onClick="$('.js-form-modal').hide();return false;">Закрыть</a>
+                <a class="btn btn-success submit js-milestone-submit" href="#">Сохранить</a>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="widget-control">
+    <a href="#" class="w-collapse">Свернуть</a>
+    <a href="#" class="w-close">Закрыть</a>
+</div>
+
+<h3>Календарь целей</h3>
+<hr>
+
+<div class="calendar-wrapper clearfix">
+    <div class="calendar-project-list-title-wrapper clearfix">
+        <div class="calendar-project-list">
+            <div class="calendar-project-list-empty">Проект</div>
+        </div>
+        <div class="calendar-dates-list">
+            <ul class="calendar-slider clearfix js-calendar-slider">
+                {% for day in project_calendar.arDays %}
+                    <li{% if day.weekdayMark == 'Sun' or day.weekdayMark == 'Sat' %} class="holiday"{% endif %}>
+                                <div class="calendar-slider-name">{{ day.weekday }}</div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="calendar-project-list-dates">
+        <div class="calendar-project-list">
+            {% for project in project_calendar.projects %}
+            <div class="calendar-project-list-item">
+                <h4>{{ project.name }}</h4>
+                <span style="background-image: url({% if project.imagePath %}{{ project.imagePath|thumbnail:"150x150" }}{% else %}/static/img/no-photo.png{% endif %});"></span>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="calendar-dates-list">
+            {% for project in project_calendar.projects %}
+            <div class="calendar-dates-list-item-title clearfix">
+
+                <span style="background-image: url({% if project.imagePath %}{{ project.imagePath|thumbnail:"150x150" }}{% else %}/static/img/no-photo.png{% endif %}) ;"></span>
+                <h4>{{ project.name }}</h4>
+            </div>
+            <ul class="calendar-slider clearfix js-calendar-slider-2">
+                {% for day in project_calendar.arDays %}
+                <li>
+                    <div class="calendar-slider-item-wrapper">
+                        <span class="no-aims-block">Целей нет</span>
+                        {% for milestone in project.milestoneSet %}
+                        {% if milestone.date|date:'d.m.Y' == day.date %}
+                        <div class="critically_{{ milestone.critically }} calendar-task js-milestone-{{ milestone.id }}">
+                            {% if project.isManaged %}<a href="#" onClick="return deleteTask('{{milestone.id}}');" class="delete-task"><i class="fa fa-trash-o"></i></a>{% endif %}
+                            <div class="calendar-task-date"><i class="fa fa-clock-o"></i>&nbsp;&nbsp;{{ milestone.date_create.date }}</div>
+                            <div class="bxec-event-actions">
+                                <div class="bxec-icon-cont-tl">
+                                    {% if project.isManaged %}<a onClick="return ShowForm(this,{'name':'{{ milestone.name }}','deadline':'{{ milestone.date|date:'d.m.Y' }}','project_id':{{ milestone.project.id }},'id':{{milestone.id}}});" href="#">{% else %}<b>{% endif %}
+                                        {{ milestone.name }}
+                                    {% if project.isManaged %}</a>{% else %}</b>{% endif %}
+                                </div>
+                            </div>
+                            {% for resp in milestone.respSet %}<div>{{ resp.first_name }} {{ resp.last_name }}</div>{% endfor %}
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                        {% if project.isManaged %}
+                            <p class="calendar-slider-item-button"><a href="" class="btn btn-success" onclick="return ShowForm(this,{'deadline':'{{ day.date }}','project_id':{{project.id}}});">Добавить</a></p>
+                        {% endif %}
+                    </div>
+
+                </li>
+                {% endfor %}
+            </ul>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</div>
+
+<style>
+    .sonet-user-profile-friend-box {table-layout:fixed;}
+    .sonet-user-profile-friend-box.table th {text-align:center;}
+    .calendar-task {padding:7px 10px;display:block;border-bottom:1px solid #eee; position:relative; margin-bottom:0px;}
+    .calendar-task .delete-task {opacity:0.3; -webkit-opacity:0.3; -moz-opacity:0.3; position:absolute; top:5px; right:7px; z-index:1;}
+    .critically_1 {background:#e8f3f7; border-bottom:1px solid #cbe7f2}
+    .critically_2 {background:#F4F2E4; border-bottom:1px solid #ece8cf;}
+    .critically_3 {background:#f8ece9; border-bottom:1px solid #efd2cc;}
+    .calendar-add-task {margin-top:10px; display: block; height: 32px; text-align: center; vertical-align: middle;}
+    .calendar-add-task span {width:74%;}
+    .calendar-task-date {font-size:11px; opacity:0.5; -moz-opacity:0.5; -webkit-opacity:0.5; position:relative; z-index:0;}
+    .calendar-task-date i {margin-top:0px; opacity:0.6; -moz-opacity:0.6; -webkit-opacity:0.6;}
+    .bxec-event-actions {margin:2px 0;}
+    .calendar-project-title h4 {margin-bottom:5px; font-weight:bold; font-size:18px;}
+    .calendar-project-title .calendar-project-img {
+        background: none repeat scroll 0 0 #fff;
+        border-radius: 50%;
+        -webkit-border-radius: 50%;
+        -moz-border-radius: 50%;
+        display: block;
+        height: 150px;
+        margin: 15px auto 0;
+        overflow: hidden;
+        position: relative;
+        width: 150px;
+        border: 1px solid #ddd;
+        box-shadow: 0px 0px 1px #ddd;
+    }
+    .calendar-project-title .calendar-project-img span {
+        display: table-cell;
+        height: 150px;
+        padding: 0;
+        vertical-align: middle;
+        width: 150px;
+    }
+    .calendar-project-title img {max-width: 100%; min-width: 150px; min-height: 150px}
+
+
+    .holiday {background:#fff7f7 !important; color:#e38787 !important;}
+
+    .calendar-wrapper {overflow: hidden;}
+    .calendar-project-list {
+        float: left;
+        width: 200px;
+        box-shadow: 0 0 5px rgba(1,1,1,0.3);
+        -moz-box-shadow: 0 0 5px rgba(1,1,1,0.3);
+        -webkit-box-shadow: 0 0 5px rgba(1,1,1,0.3);
+        position: relative;
+        z-index: 1;
+    }
+    .calendar-project-list-empty {
+        background: #318431 none repeat scroll 0 0;
+        color: #fff;
+        font-size: 12px;
+        font-weight: bold;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+    .calendar-project-list-item {
+        height: 236px;
+        background: #f9f9f9;
+        border-bottom: 1px solid #ddd;
+        padding: 20px;
+    }
+    .calendar-project-list-item h4 {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        height: 30px;
+        margin-bottom: 0px;
+        text-align: center;
+        font-size: 16px;
+    }
+    .calendar-project-list-item span {
+        display: block;
+        width: 160px;
+        height: 160px;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        border-radius: 50%;
+        -moz-border-radius: 50%;
+        -webkit-border-radius: 50%;
+        border: 3px solid #ffffff;
+        background: #ffffff;
+        box-shadow: 0 1px 1px rgba(1, 1, 1, 0.2);
+        -moz-box-shadow: 0 1px 1px rgba(1, 1, 1, 0.2);
+        -webkit-box-shadow: 0 1px 1px rgba(1, 1, 1, 0.2);
+    }
+
+    .calendar-dates-list {
+        background: #f1f1f1;
+        width: calc(100% - 200px);
+        float: left;
+        position: relative;
+        z-index: 0;
+    }
+    .calendar-slider-item-wrapper {
+        height: 236px;
+        border-bottom: 1px solid #ddd;
+        border-left: 1px solid #ddd;
+        position: relative;
+        background: #fff;
+        overflow-y: auto;
+    }
+
+    .calendar-dates-list-item-title {
+        background: #f4f4f4 none repeat scroll 0 0;
+        padding: 15px 0;
+        text-align: center;
+        position: relative;
+        display: none;
+    }
+
+    .calendar-dates-list-item-title > span {
+        background-color: #fff;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: 100% auto;
+        border: 4px solid #fff;
+        border-radius: 50%;
+        box-shadow: 0 1px 2px #ddd;
+        display: inline-block;
+        height: 50px;
+        margin-right: 10px;
+        vertical-align: middle;
+        width: 50px;
+    }
+
+    .calendar-dates-list-item-title > h4 {
+        display: inline-block;
+        margin: 0;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+    .calendar-dates-list-item-title:before {
+        box-shadow: 0 2px 2px rgba(1, 1, 1, 0.05) inset;
+        -moz-box-shadow: 0 2px 2px rgba(1, 1, 1, 0.05) inset;
+        -webkit-box-shadow: 0 2px 2px rgba(1, 1, 1, 0.05) inset;
+        content: "";
+        display: block;
+        height: 10px;
+        left: -4px;
+        position: absolute;
+        right: -4px;
+        top: 0;
+    }
+
+    .calendar-dates-list-item-title:after {
+        box-shadow: 0 -2px 2px rgba(1, 1, 1, 0.05) inset;
+        -moz-box-shadow: 0 -2px 2px rgba(1, 1, 1, 0.05) inset;
+        -webkit-box-shadow: 0 -2px 2px rgba(1, 1, 1, 0.05) inset;
+        content: "";
+        display: block;
+        height: 10px;
+        left: -4px;
+        position: absolute;
+        right: -4px;
+        bottom: 0;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .calendar-slider-item-button {text-align: center; display: none; position: absolute; top: 50%; left: 50%; margin-left: -42px; margin-top: -15px;}
+
+    .calendar-task + .calendar-slider-item-button {position: relative; top: 0px; left: 0px; margin: 10px 0;}
+
+    .calendar-slider-item-wrapper:hover .calendar-slider-item-button {display: block;}
+
+    .no-aims-block {color: #ccc; font-size: 13px; position: absolute; top: 110px; left: 0px; right: 0px; display: block; text-align: center;}
+    .calendar-slider-name {
+        background: #1d6e62 none repeat scroll 0 0;
+        border-left: 1px solid rgba(1, 1, 1, 0.1);
+        color: #fff;
+        font-size: 12px;
+        font-weight: bold;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+
+    .holiday .calendar-slider-name {background: #318431;}
+    .holiday .calendar-slider-item-wrapper {background: #f9f9f9;}
+
+    .calendar-slider {background: #fff;}
+
+    .calendar-dates-list .bx-wrapper .bx-controls-direction a {
+        bottom: 0;
+        font-size: 30px;
+        height: auto;
+        margin: 0;
+        top: 0;
+        width: 30px;
+        text-decoration: none;
+    }
+    .calendar-dates-list .bx-wrapper .bx-controls-direction a.disabled {display: none;}
+    .calendar-dates-list .bx-wrapper .bx-controls-direction a i,
+    .calendar-dates-list .bx-wrapper .bx-controls-direction a.disabled i{
+        background: rgba(1,1,1,0.15);
+        color: #fff;
+        font-size: 30px;
+        height: 30px;
+        line-height: 30px;
+        margin-left: 0;
+        margin-top: -15px;
+        position: absolute;
+        text-align: center;
+        top: 50%;
+        width: 30px;
+    }
+
+    .calendar-dates-list .bx-wrapper .bx-controls-direction a:hover i {
+        background: rgba(1,1,1,0.25);
+    }
+
+    .calendar-dates-list .bx-wrapper .bx-controls-direction a.bx-next i {
+        padding-left: 3px;
+    }
+
+    .calendar-dates-list .bx-wrapper .bx-controls-direction a.bx-prev {left: 0px;}
+    .calendar-dates-list .bx-wrapper .bx-controls-direction a.bx-next {right: 0px;}
+
+    .widget.tasklist .modal-dialog {position: fixed;}
+
+    .fixed {position: fixed; z-index: 3; top: 59px;}
+    .calendar-project-list-title-wrapper.fixed .calendar-dates-list {width: calc(100% - 235px);}
+    .top-30 {top: 30px; position: relative;}
+
+    @media (max-width:838px) {
+        .fixed {position: fixed; z-index: 3; top: 99px;}
+
+        .calendar-slider > li:first-child > div {border-left: 0;}
+        .calendar-dates-list-item-title {display: block;}
+        .calendar-project-list {display: none;}
+        .calendar-dates-list {width: 100%;}
+        .calendar-project-list-title-wrapper.fixed .calendar-dates-list {width: calc(100% - 35px);}
+    }
+
+
+    @media (max-width:576px) {
+        .calendar-project-list-title-wrapper.fixed .calendar-dates-list {width: calc(100% - 15px);}
+    }
+
+</style>

@@ -1,0 +1,30 @@
+{% extends "main/base.html" %}
+{% block content %}
+    <form action="" method="POST" xmlns="http://www.w3.org/1999/html">
+        {% csrf_token %}
+        Путь к файлу: <input type="text" name="path_to_file" />
+        Путь к директории: <input type="text" name="path_to_dir" />
+        <input type="submit" name="import_start" value="Начать импорт" />
+        {% for task in tasks %}
+            <p>
+            {% for k,v in task.iteritems %}
+                <div>
+                {% if k != 'comments' %}
+                    <b>{{ k }}:</b> {{ v }}
+                {% endif %}
+                </div>
+            {% endfor %}
+            <div>
+                <b>Комментарии:</b>
+                {% for comment in task.comments %}
+                    <div>
+                        {% for k1,v1 in comment.iteritems %}
+                            {{ k1 }}: {{ v1 }}<br />
+                        {% endfor %}
+                    </div><br >
+                {% endfor %}
+            </div>
+            </p>
+        {% endfor %}
+    </form>
+{% endblock %}

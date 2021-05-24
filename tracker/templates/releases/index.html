@@ -1,0 +1,53 @@
+{% extends 'main/base.html' %}
+{% block header %}
+    <script>
+    $(function() {
+        $('.js-remove-release').click(function() {
+            var t = this;
+            PM_AjaxPost(
+                    '/releases/',
+                    {
+                        'action': 'remove',
+                        'id': $(t).data('release')
+                    },
+                    function(data) {
+                        if (data =='ok') {
+                            $(t).closest('.js-release').remove();
+                        }
+                    }
+            );
+            return false;
+        });
+    })
+    </script>
+{% endblock %}
+{% block content %}
+<div class="widget milestones_summary">
+    <div class="widget-title"><h2>Версии</h2></div>
+    {% for project in projects %}
+        <div class="project-milestones">
+            <div class="project-milestones-title">
+                <h3 align="center">{{project.name}}</h3>
+
+            </div>
+
+            {% for release in project.releaseList %}
+            <div class="project-milestones-item js-release">
+                <a href="#" class="button red-button-color js-remove-release" style="float: right;" data-release="{{ release.id }}" data-project-id="{{ project.id }}"><i class="fa fa-close"></i></a>
+                <h4 class="clearfix">
+                    {{ release.name }}
+                </h4>
+                <div class="time">{{ release.date }}</div>
+                <ul style="padding-left: 40px;">
+                    {% for task in release.tasks.all %}
+                    <li><a href="{{ task.url }}">{{ task.name }}</a> </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% empty %}
+                <p>Здесь будут отображаться даты выхода ваших версий, которые можно назначить в <a href="/">списке задач</a>.</p>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

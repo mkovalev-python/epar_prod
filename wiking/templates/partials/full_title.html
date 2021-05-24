@@ -1,0 +1,8 @@
+<div class="pull-left">{{ article.get_title }}</div>
+<div class="pull-right">&nbsp;&nbsp;Владелец:
+    <a href="{{ article.owner.get_profile.url }}">
+        {{ article.owner.first_name }} {{ article.owner.last_name }}
+    </a>
+</div>
+<div class="pull-right">&nbsp;Создано: {{ article.created_at }}</div>
+<div class="clearfix"></div>

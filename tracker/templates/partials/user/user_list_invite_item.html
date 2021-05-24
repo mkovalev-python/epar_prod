@@ -1,0 +1,49 @@
+{% load jsonify %}
+<li class="invite-users-list-item js-user" data-id="{{ user.id }}">
+    <div class="invite-users-list-item-img">
+        <a href="/user_detail/?id={{ user.id }}">
+            <span class="user-avatar-wrapper">
+                {% if user.profile.avatarSrc %}
+                    <img alt="User Test" src="{{ user.profile.avatarSrc }}" class="img-rounded" style="height:100px;" />
+                {% else %}
+                    <img alt="User Test" src="/static/images/avatar_unknown.png" class="img-rounded" style="width:100px;" />
+                {% endif %}
+                {% if user.profile.account_total%}
+                    <span class="user-avatar-bonus">{% if user.profile.account_total > 0 %}+{% endif %}{{ user.profile.account_total }}</span>
+                {% endif %}
+            </span>
+        </a>
+    </div>
+    <div class="invite-users-list-item-text">
+        <div class="invite-users-list-item-text-name">
+            <a href="/user_detail/?id={{ user.id }}">
+                {% if user.last_name %}{{ user.last_name }} {{ user.first_name }}{% else %}{{ user.username }}{% endif %}
+            </a>
+        </div>
+
+    {% if user.profile.specialties.count %}
+        <div class="invite-users-list-item-specialities">
+        {% for spec in user.profile.specialties.all %}{% if not forloop.first %}, {% endif %}{{ spec.name }}{% endfor %}
+        </div>
+    {% endif %}
+
+        <p><b>Кол-во часов в день:</b>&nbsp;{{ user.hoursPerDay }}</p>
+
+        <div class="about-user-progress">
+            <b>Занятость: <strong>{{ user.allTasksQty|default_if_none:'0' }}</strong></b>
+            <div class="progress">
+                <div class="progress-bar progress-bar-{% if user.overMaxTasks %}danger{% else %}success{% endif %}" style="width: {% widthratio user.allTasksQtyForDivision allTasksQty 1 %}%;"
+                     aria-valuemax="100" aria-valuemin="0" aria-valuenow="{% widthratio user.allTasksQtyForDivision allTasksQty 1 %}" role="progressbar">
+                </div>
+            </div>
+        </div>
+        {% if not user.has_role %}
+        <a href="#" class="btn btn-default width-100 js-taskdraft-invite-user" data-userid="{{ user.id }}">
+            Добавить в проект&nbsp;&nbsp;<i class="fa fa-user-plus"></i>
+        </a>
+        {% endif %}
+    </div>
+</li>
+
+
+

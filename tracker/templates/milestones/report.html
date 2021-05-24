@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Feedback</title>
+    <link rel="shortcut icon" href="/static/ico/favicon.png"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="container ">
+    <div class="">
+        {% for project in m_projects %}
+        {% for milestone in project.openMilestones %}
+        {% if milestone.userHours.sum %}
+                <div class="row" style="margin-top: 15px; {% if milestone.daysLeft < -2 or milestone.userHours.sum > 100000 %}color: darkred;font-weight: bold;{% elif milestone.daysLeft < 2 %}color: orangered;{% else %}color: forestgreen{%endif%} ">
+                    <div class="col-4">
+                        {{project.name}}: {{ milestone.name }}
+                    </div>
+                    <div class="col-4">
+                        <div class="progress" style="overflow: hidden;">
+                        <div class="progress-bar progress-bar-success js-closed-tasks-progress" aria-valuenow="{{ milestone.percent }}"
+                             aria-valuemin="0" aria-valuemax="100" style="width: {{ milestone.percent }}%;">
+                            <span class="sr-only">{{ milestone.percent }}% Complete (closed)</span>
+                        </div>
+
+<!--                            <div class="progress-bar progress-bar-success" style="width:2.0000%;opacity:0.5;">-->
+<!--                                <span class="sr-only">2% Complete (ready)</span>-->
+<!--                            </div>-->
+
+                    </div>
+                    </div>
+                    <div class="col-2">
+                        {{ milestone.daysLeft }} дней
+                    </div>
+                    <div class="col-2">
+                        {{ milestone.userHours.sum }} руб
+                    </div>
+                </div>
+        {% endif %}
+         {% endfor %}
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>

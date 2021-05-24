@@ -1,0 +1,62 @@
+{% load compressed %}
+    <table border="1">
+    {% for user in user_statistic.users %}
+        <tr>
+        <td colspan="9">{{ user.last_name }} {{ user.first_name }}</td>
+        <tr>
+        <tr>
+            <th>
+                Дата создания
+            </th>
+            <th>
+                Позиция
+            </th>
+            <th>
+                План
+            </th>
+            <th>
+                Результат
+            </th>
+            <th>
+                Дата завершения
+            </th>
+            <th>
+                Комментариев&nbsp;({{ user.commentsQty }})
+            </th>
+            <th>
+                Файлов
+            </th>
+            <th>
+                На проверке
+            </th>
+            <th>
+                Завершено&nbsp;({{ user.closedTaskQty }})
+            </th>
+        </tr>
+        {% for taskTime in user.taskTime %}
+            <tr>
+                <td>{{ taskTime.date|date:"d.m.Y H:i:s" }}</td>
+                <td><b>{{ taskTime.task.project.name }}: {% if taskTime.task.parentTask %}<a href="{{ taskTime.task.parentTask.url }}">{{ taskTime.task.parentTask.name }}</a> / {% endif %}<a href="{{ taskTime.task.url }}">{{ taskTime.task.name }}</a></b></td>
+                <td>{% if taskTime.task.planTime %}{{ taskTime.task.planTime }}{% endif %}</td>
+                <td>{{ taskTime.timer.comment|safe }}</td>
+                <td>{% if taskTime.task.dateClose %}{{ taskTime.task.dateClose|date:"d.m.Y H:i:s" }}{% endif %}</td>
+                <td>{% if taskTime.comments_qty %}{{ taskTime.comments_qty }}{% endif %}</td>
+                <td>{{ taskTime.files_qty }}</td>
+                <td>{% if taskTime.task.status.code == 'ready' %}Да{% endif %}</td>
+                <td>{% if taskTime.task.closed %}Да{% endif %}</td>
+            </tr>
+        {% endfor %}
+            <tr>
+                <td><b>Итого</b></td>
+                <td></td>
+                <td><b>{% if user.allTime %}{{ user.allTime }}{% endif %}</b></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b>{% if user.all_comments_qty %}{{ user.all_comments_qty }}{% endif %}</b></td>
+                <td><b>{% if user.all_files_qty %}{{ user.all_files_qty }}{% endif %}</b></td>
+                <td></td>
+            </tr>
+        {% endfor %}
+    </table>

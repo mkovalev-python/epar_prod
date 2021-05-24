@@ -1,0 +1,42 @@
+
+<div class="widget draft">
+    <div class="widget-title clearfix">
+        <h3>Приглашения для фрилансеров</h3>
+    </div>
+    <div class="widget-body clearfix">
+    {% if not taskdrafts.drafts %}
+        <div class="empty"><i class="fa fa-paper-plane"></i><br>Нет открытых списков задач.</div>
+    {% else %}
+        {% for draft in taskdrafts.drafts %}
+                    <div class="task-message">
+                        <div class="message created">
+                            <div class="message-content">
+                                <span class="message-info-id">#{{ draft.id }}</span>
+                                <a class="message-info-name" href="/taskdraft/{{ draft.slug }}">
+                                    {{ draft.created_at }}
+                                    <span style="background:cornflowerblue; border-radius:3px;padding:3px;color:white">
+                                        {{ draft }}
+                                    </span>
+
+                                </a>
+                                <b class="message-desc-status">Статус:&nbsp;{{ draft.status_humanize }}</b>
+
+                                {% if draft.author.id == request.user.id %}
+                                <span class="message-actions">
+                                    <form action="/taskdraft/{{ draft.slug }}" method="POST">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="_method" value="DELETE"/>
+                                        <a href="" title="Удалить" onclick="javascript:$(this).parents('form').trigger('submit');return false;">
+                                            <i class="fa-trash-o fa"></i>
+                                        </a>
+                                    </form>
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+ </div>
+

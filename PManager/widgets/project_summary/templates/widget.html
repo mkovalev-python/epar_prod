@@ -1,0 +1,39 @@
+{% load compressed %}
+{% compressed_js 'project_summary' %}
+<div class="widget project_summary">
+<div class="chart">
+    
+</div>
+<h1>Сводка по проектам</h1>
+<h2>Всего комиссия с фрилансеров: {{ project_summary.feeAll }}</h2>
+<h2>Величина комиссии: {{ project_summary.comission }}</h2>
+<br />
+        <table class="table table-striped table-hover">
+            <tr>
+                <th>
+                    Проект
+                </th>
+                <th>
+                    Списано с клиента
+                </th>
+                <th>
+                    Начислено разработчикам
+                </th>
+                <th>
+                    Комиссия с разработчиков
+                </th>
+                <th>
+                    Комиссия с клиентов
+                </th>
+            </tr>
+            {% for project in project_summary.projects %}
+                <tr>
+                    <td><a href='/?project={{ project.id }}'>{{ project.name }}</a></td>
+                    <td>{{ project.projectSum }}</td>
+                    <td>{{ project.projectSumPayed }}</td>
+                    <td>{{ project.feeSum }}</td>
+                    <td>{{ project.feeClientSum }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+</div>

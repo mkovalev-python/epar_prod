@@ -1,0 +1,47 @@
+{% if send %}
+    <div class="modal-body">
+        <div class="modal-body-item clearfix">
+            <p align="center">Спасибо за обращение.</p>
+            <p align="center">Мы ответим на него в ближайшее время.</p>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+    </div>
+{% else %}
+    <form role="form" method="post" action="" class="js-feedback_form">
+        {% csrf_token %}
+        <div class="modal-body">
+            <div class="modal-body-item">Если у вас есть вопросы, пожелания либо предложения, вы можете
+                смело
+                написать нам и мы в самые кратчайшие сроки постараемся ответить на них.
+            </div>
+            <div class="modal-body-item{% if form.subject.errors %} error{% endif %} clearfix">
+                <div class="modal-body-item-left">Тема сообщения</div>
+                <div class="modal-body-item-right">
+					{{ form.subject }}
+                </div>
+                {% if form.subject.errors %}
+                    {% for error in form.subject.errors %}
+                    <div class="clearfix"></div><p class="error-text">{{ error|escape }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="modal-body-item{% if form.message.errors %} error{% endif %} clearfix">
+                <div class="modal-body-item-left">Ваше сообщение</div>
+                <div class="modal-body-item-right">
+					{{ form.message }}
+                </div>
+                {% if form.message.errors %}
+                {% for error in form.subject.errors %}
+                <div class="clearfix"></div><p class="error-text">{{ error|escape }}</p>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="modal-footer">
+            <input type="button" class="btn btn-success js-send_feedback" value="Отправить"/>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+        </div>
+    </form>
+{% endif %}

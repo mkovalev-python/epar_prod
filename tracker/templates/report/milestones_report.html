@@ -1,0 +1,99 @@
+{% extends "main/base_fluid.html" %}
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.2/css/buttons.dataTables.min.css">
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.flash.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.print.min.js"></script>
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 widget">
+                <table id="payment_table_id" class="display table">
+                    <thead>
+                    <tr>
+                        <th>ID спринта</th>
+                        <th>Проект</th>
+                        <th>Название (Номер спринта)</th>
+                        <th>Статус спринта</th>
+                        <th>Ответственный менеджер</th>
+                        <th>Дата начала</th>
+                        <th>Дата закрытия: план</th>
+                        <th>Дата закрытия: факт</th>
+                        <th>Просрочка закрытия (раб. дни), суммарная</th>
+                        <th>Просрочка закрытия (раб. дни), скорректированная</th>
+                        <th>Вычет из просрочки</th>
+                        <th>Просрочка закрытия (раб. дни), скорректированная/итоговая</th>
+                        <th>Тип спринта (кол-во часов)</th>
+                        <th>Доп. часы</th>
+                        <th>Сумма часов в спринте: тип+дополнительные (оплачиваемые клиентом)</th>
+
+                        <th>Сумма часов по задачам</th>
+
+                        <th>51%</th>
+                        <th>Груминг</th>
+
+                        <th>Ожидаемые выплаты (сумма)</th>
+                        <th>К оплате</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for milestone in milestones %}
+                        <tr>
+                            <td>{{ milestone.id }}</td>
+                            <td>{{ milestone.project }}</td>
+                            <td>{{ milestone.name }}</td>
+                            <td>{{ milestone.state }}</td>
+                            <td>{{ milestone.manager }}</td>
+                            <td>{{ milestone.start_date }}</td>
+                            <td>{{ milestone.plan_end_date }}</td>
+                            <td>{{ milestone.fact_end_date }}</td>
+                            <td>{{ milestone.delay }}</td>
+                            <td>{{ milestone.final_delay|default_if_none:'-' }}</td>
+                            <td>{{ milestone.delay_deduction }}</td>
+                            <td>{{ milestone.final_delay|default_if_none:'-' }}</td>
+                            <td>{{ milestone.base_hours }}</td>
+                            <td>{{ milestone.extra_hours }}</td>
+                            <td>{{ milestone.total_hours }}</td>
+
+                            <td>{{ milestone.tasks_hours }}</td>
+
+                            <td>{{ milestone.half_completed }}</td>
+                            <td>{{ milestone.grooming }}</td>
+
+                            <td>{{ milestone.credit }}</td>
+                            <td>{{ milestone.debit }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('#payment_table_id').DataTable({
+                dom: "<'row'<'col-sm-6'B>>" +
+                    "<'row'<'col-sm-6'l><'col-sm-6'f>>" +
+                    "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                buttons: [
+                    'copy',
+                    'csv',
+                    {
+                        extend: 'excelHtml5',
+                        title: 'milestones'
+                    },
+                ]
+            });
+        });
+    </script>
+{% endblock %}

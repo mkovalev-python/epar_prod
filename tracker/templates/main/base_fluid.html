@@ -1,0 +1,578 @@
+{% load thumbnail i18n jsonify less get_settings compressed %}{% load url from future %}
+<!DOCTYPE html>
+<html lang="ru" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0"/>
+    {% compressed_js 'base' %}
+    {% compressed_css 'base' %}
+    {% block stylesheets %}{% endblock %}
+    {% block header %}{% endblock %}
+    <title>{% block title %}{{ pageTitle }}{% endblock %}</title>
+    <script type="text/javascript">
+        window.heliardSettings = {
+            "HTTP_ROOT_URL": '{% get_settings "HTTP_ROOT_URL" %}',
+            "SERVER_IP": '{% get_settings "SERVER_IP" %}',
+            "SOCKET_SERVER_ADDRESS": '{% get_settings "SOCKET_SERVER_ADDRESS" %}',
+            'CSRF_TOKEN': $.cookie('csrftoken')
+        };
+        var CURRENT_TASK_VIEW;
+        var CURRENT_TASK_DATA;
+        var arTimers = {};
+        window.backurl = '{{ backurl }}';
+        {% if main.CURRENT_PROJECT %}
+            window.currentProject = {{ main.CURRENT_PROJECT.id }};
+        {% endif %}
+        window.baseUserParams = {
+            'userId': {{ user.id }}
+        };
+
+        WEB_SOCKET_SWF_LOCATION = '/static/WebSocketMain.swf';
+        $(function () {
+            APNG.ifNeeded(function () {
+                $("img.loader").each(function () {
+                    APNG.animateImage(this);
+                });
+            });
+        });
+        {% if user.is_authenticated %}
+            document.mainController = new mainControllerClass({
+                'userId':{{ user.id }},
+                'widgetsData': {}
+            });
+        {% endif %}
+        var oMyCurrentTimer = new PM_Timer({{ userTimer.jsonData|jsonify|safe }});
+        {% if userTimer %}
+            CURRENT_TASK_DATA = {
+                'id':{{ userTimer.task.id }},
+                'started':{{ userTimer.task.started|jsonify }},
+                'closed':{{ userTimer.task.closed|jsonify }},
+                'name':{{ userTimer.task.name|jsonify|safe }},
+                'project': {
+                    'name': {{ userTimer.task.project.name|jsonify|safe }}
+                }
+            };
+
+            {% if userTimer.task.parentTask %}
+                CURRENT_TASK_DATA['parentTask'] = {
+                    'name': {{ userTimer.task.parentTask.name|jsonify|safe }}
+                };
+            {% endif %}
+        {% endif %}
+        var ACCOUNT_TOTAL = {{ account_total|jsonify|safe }};
+    </script>
+    {% block scripts %}{% endblock %}
+    <link rel="shortcut icon" href="/static/ico/favicon.ico" />
+</head>
+<body>
+    <div class="modal fade js-feedback_modal" id="feedback-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content green-popup">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="myModalLabel">Напишите нам</h2>
+                </div>
+                <div class="js-modal_content">
+                    <div class="modal-body clearfix js-feedback_loader" style="height: 85px;width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% if main.CAN_INVITE %}
+    <div class="modal fade js-invite-popup" id="invite-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content green-popup">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h2 class="modal-title">Приглашение пользователей в проект</h2>
+                </div>
+                <div class="modal-body clearfix">
+                    <div class="inputs-wrapper js-invite-cont">
+                        <div class="with-input-and-plus">
+                            <input type="text" name="email" class="form-control js-email-invite"
+                                   placeholder="Введите email"/>
+                            <i class="fa fa-times" onclick="$(this).closest('.js-invite-cont').remove();"></i>
+                        </div>
+                        <ul class="list-inline">
+                            <li>
+                                <div class="checkbox">
+                                    <label>
+                                        <input class="js-role-check-invite"
+                                               name="roles" value="guest" type="radio">
+                                        <span class="fa fa-users"></span> Гость</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="checkbox">
+                                    <label>
+                                        <input class="js-role-check-invite"
+                                               name="roles" value="manager" type="radio">
+                                        <span class="fa fa-cogs"></span> Менеджер</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="checkbox">
+                                    <label>
+                                        <input class="js-role-check-invite"
+                                               name="roles" value="employee" checked type="radio">
+                                        <span class="fa fa-user"></span> Разработчик</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-wrapper">
+                        <div class="col-5"><a href="#" class="btn btn-default block"
+                                              onclick="$('.js-invite-cont:eq(0)').clone().find('.js-email-invite').val('').end().find(':checkbox').attr('checked', false).end().insertAfter($('.js-invite-cont:last'));return false;">Добавить
+                            еще</a></div>
+                        <div class="col-5"><a href="#" class="btn btn-success block"
+                                              onclick="return document.mainController.inviteUser($(this), $('.js-email-invite'), $('.js-role-check-invite'));">Пригласить</a>
+                        </div>
+                    </div>
+
+                    <hr class="margin-25"/>
+                    <h2>Роли полльзователей в проекте</h2>
+
+                    <p>От роли пользователя в проекте зависят доступные ему возможности:</p>
+                    <ol>
+                        <li>Менеджеры могут редактировать и просматривать любые задачи и сообщения.</li>
+                        <li>Разработчики имеют право просматривать только собственные задачи или задачи, в которые их пригласили в качестве наблюдателей.</li>
+                        <li>Гости проектов могут видеть только адресованные им сообщения и задачи, в которые их пригласили.</li>
+                    </ol>
+
+                </div>
+                <!--modal-body-->
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-danger" type="button">Закрыть</button>
+                </div>
+            </div>
+            <!--modal-content-->
+        </div>
+        <!--modal-dialog-->
+    </div><!--invite-popup-->
+{% endif %}
+
+<a href="#" class="feedback-button js-feedback" data-target="#feedback-popup" data-toggle="modal">
+    Тех. поддержка
+</a>
+{% if not user.first_name and main.FIRST_STEP_FORM %}
+    <div class="overflow"></div>
+    <!-- Google Code for &#1050;&#1083;&#1080;&#1082; &#1087;&#1086; &#1088;&#1077;&#1075;&#1080;&#1089;&#1090;&#1088;&#1072;&#1094;&#1080;&#1080; Conversion Page -->
+    <script type="text/javascript">
+        /* <![CDATA[ */
+        var google_conversion_id = 1036245549;
+        var google_conversion_language = "en";
+        var google_conversion_format = "3";
+        var google_conversion_color = "ffffff";
+        var google_conversion_label = "ayuYCLrew1YQrbSP7gM";
+        var google_remarketing_only = false;
+        /* ]]> */
+        $(function () {
+            if (window.yaCounter26252781) window.yaCounter26252781.reachGoal('registerEnter');
+        });
+    </script>
+    <script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js"></script>
+    <noscript>
+        <div style="display:inline;">
+            <img height="1" width="1" style="border-style:none;" alt=""
+                 src="//www.googleadservices.com/pagead/conversion/1036245549/?label=ayuYCLrew1YQrbSP7gM&amp;guid=ON&amp;script=0"/>
+        </div>
+    </noscript>
+<div class="popup green-popup create-poject-popup">
+    <form method="POST">
+        <div class="modal-header">
+            <h2 class="modal-title">Представьтесь, пожалуйста.</h2>
+        </div>
+        <div class="modal-body">
+            {% csrf_token %}
+            <div class="modal-body-item clearfix">
+                <div class="modal-body-item-left">Имя</div>
+                <div class="modal-body-item-right">
+                    <input required maxlength="200" name="name" placeholder="Введите имя" type="text" class="input-block-level form-control" />
+                </div>
+            </div>
+            <div class="modal-body-item clearfix">
+                <div class="modal-body-item-left">Фамилия</div>
+                <div class="modal-body-item-right">
+                    <input required maxlength="200" name="last_name" placeholder="Введите фамилию" type="text" class="input-block-level form-control" />
+                </div>
+            </div>
+            {% if main.IS_AUTHOR %}
+            <div class="modal-body-item clearfix">
+                <div class="modal-body-item-left">Название первого проекта</div>
+                <div class="modal-body-item-right">
+                    <input required maxlength="200" name="sitename" placeholder="Мой сайт" type="text" class="input-block-level form-control" />
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="modal-footer">
+            <input type="submit" value="Начать работу" class="btn  btn-large btn-success"/>
+        </div>
+    </form>
+</div>
+
+{% elif userAchievement %}
+    <div class="overflow"></div>
+    <div class="popup green-popup js-popup">
+        <div class="modal-header"><h2 class="modal-title">Новое достижение!</h2></div>
+        <div class="modal-body clearfix">
+        <img class="pull-left modal-body-img" src="{{ userAchievement.achievement.smallImageUrl }}" alt="{{ userAchievement.achievement.name }}"/><h4>{{ userAchievement.achievement.name }}</h4>
+        <p>{{ userAchievement.achievement.description|safe }}</p>
+        {% if userAchievement.text %}
+            <p>{{ userAchievement.text|safe }}</p>
+        {% endif %}
+        </div>
+        <div class="modal-footer">
+            <a href="{{ backurl }}" class="btn  btn-large btn-success"
+               onclick="$(this).closest('.js-popup').remove(); $('.overflow').hide(); return false;">Продолжить</a>
+        </div>
+    </div>
+{% endif %}
+<div class="modal fade js-projects" id="projects-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog projects-popup">
+        <div class="modal-content green-popup">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="$('.overflow, .js-projects').hide(); $('.js-inputProjectList').val(''); $('.projects-item').show();" data-dismiss="modal" aria-hidden="true">×</button>
+                <h2 class="modal-title">Ваши проекты</h2>
+            </div>
+            <div class="modal-body clearfix">
+
+                <table width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td>
+                            <div class="form-group find-a-project">
+                                <form>
+                                    <input type="email" placeholder="Введите название проекта" id=""
+                                           class="form-control js-inputProjectList">
+                                    <button class="find-a-project-button"><i class="fa fa-search"></i></button>
+                                </form>
+                            </div>
+                        </td>
+                        <td class="all-projects-link"><a href="{% if is_detail_page %}/{% endif %}?project=0">Все
+                            проекты<i class="fa fa-list-ul"></i></a></td>
+                    </tr>
+                </table>
+                <hr>
+                <div class="clearfix"></div>
+
+                <div class="projects-list">
+                    {% for project in projects %}
+                        <div class="projects-item clearfix">
+                            <div class="projects-list-img">
+                                <a href="{% if is_detail_page %}/{% endif %}?project={{ project.id }}"
+                                   style="background-image: url(
+                                           {% if project.imagePath %}{{ project.imagePath|thumbnail:"116x94" }}{% else %}/static/img/no-photo.png{% endif %});">
+                                    <!--<img src="{% if project.imagePath %}{{ project.imagePath|thumbnail:"116x94" }}{% else %}/static/img/no-photo.png{% endif %}" />-->
+                                </a>
+                            </div>
+                            <div class="projects-list-text">
+                                <span class="projects-list-control">
+                                    <a class="fa fa-cog" href="/project/{{ project.id }}/"></a>
+                                    <a class="fa fa-pencil" href="/project/edit/?id={{ project.id }}"></a>
+                                </span>
+                                <h4>
+                                    <a href="{% if is_detail_page %}/{% endif %}?project={{ project.id }}"
+                                       class="js-itemProjectName">
+                                        {{ project.name }}
+                                    </a>
+                                </h4>
+                                {% if project.tasksQty %}Открытых задач: <b>{{ project.tasksQty }}</b>{% endif %}
+                                {% if project.readyTaskQty %}На проверке: <b>{{ project.readyTaskQty }}</b>{% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="projects-item clearfix">
+                        <div class="projects-list-img">
+                            <a style="background-color: rgb(71, 164, 71);" href="/project/edit/">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                        </div>
+                        <div class="projects-list-text">
+                            <h4>
+                                <a href="/project/edit/">
+                                    Добавить проект
+                                </a>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<header>
+    <div class="header clearfix">
+        <div class="logo">
+            <a href="/">
+                <img src="/static/images/logo.png" alt="Экспертная компания"/>
+            </a>
+        </div>
+        {% if user.is_authenticated %}
+
+
+        <div class="timer-wrapper clearfix">
+            <span class="dropdown notifications">
+                <a href="#" data-toggle="dropdown" data-target="#" title="Личные сообщения">
+                    <span class="js-notificator fa fa-bell{% if messages_qty %} faa-ring animated faa-slow{% endif %}"
+                          {% if messages_qty %}style="color: #d9534f"{% endif %}></span>
+                    {% if messages_qty %}<b class="js-mes_qty mes-qty">{{ messages_qty }}</b>{% endif %}
+                </a>
+                <div class="dropdown-menu">
+                    <div class="container js-pmessages-list_empty {% if messages_qty > 0 %}hidden{% endif %}">Список
+                        сообщений пуст
+                    </div>
+                    {% if messages|length > 0 %}
+                        <div class="clearfix notifications-title">
+                            <div class="pull-left title">Сообщения</div>
+                            <div class="pull-right"></div>
+                        </div>
+                        <ul class="js-pmessages-dropdown notifications-ul">
+                            {% for mess in messages %}
+                                <li class="js-message">
+                                    <div class="clearfix">
+                                        <div class="pull-left"><span class="label label-warning">{{ mess.task.project.name }}</span>
+                                        </div>
+                                        <div class="pull-right"><a href="#" class="fa fa-times js-read-message"
+                                                                   rel="{{ mess.id }}"
+                                                                   title="Отметить как прочитанное"></a></div>
+                                    </div>
+                                    <div class="time-username">{{ mess.dateCreate }} / <a
+                                            href="/user_detail/?id={{ mess.author.id }}">
+                                        {% if mess.author.last_name %}{{ mess.author.last_name }}
+                                            {{ mess.author.first_name }}{% endif %}</a></div>
+                                    <h5><b><a href="{{ mess.task.url }}">{{ mess.task.name }}</a></b></h5>
+
+                                    <div class="text-message">{{ mess.text|safe }}</div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </span>
+            <div class="user-menu">
+                <a href="/user_detail/?id={{ user.id }}"
+                   class="user-name">{{ user.first_name }} {{ user.last_name }}</a>
+                <a class="btn btn-danger btn-xs" href="/login/?logout=Y"><span>Выход<i class="fa fa-power-off"></i></span></a>
+            </div>
+        </div><!--timer-->
+        {% endif %}
+    </div>
+    <!--header-->
+</header>
+{# -=========== ПОДМЕНЮ: пользователи, файлы ===========- #}
+<div class="container sub-menu">
+    <div class="row sub-menu_line clearfix">
+        {% if user.is_authenticated %}
+            <div class="sub-menu_line_section-user">
+
+<a href="/" class="{% if activeMenuItem == 'main' %} active{% endif %}"><i
+                        class="fa fa-list"></i><span>Расчет</span></a>
+                <a href="/kanban/" class="{% if activeMenuItem == 'kanban' %} active{% endif %}"><i
+                        class="fa fa-table"></i><span>Сравнение</span></a>
+{##}
+{#                <a href="/gantt/"#}
+{#                   class="hide-on-mobile {% if activeMenuItem == 'gantt' %} active{% endif %} {% if not main.CURRENT_PROJECT.id %}disabled{% endif %}">#}
+{#                    <i class="fa fa-tasks"></i><span>Загрузка</span>#}
+{#                </a>#}
+{#                <a href="/life/">#}
+{#                            <span aria-hidden="true" class="fa fa-bolt"></span>#}
+{#                            <span>Активность</span>#}
+{#                        </a>#}
+
+<!--                <a href="/life/" class="{% if activeMenuItem == 'life' %} active{% endif %}"><i-->
+<!--                        class="fa fa-bolt"></i><span>Активность</span></a>-->
+                <a href="/files/"
+                   class="{% if activeMenuItem == 'files' %} active{% endif %} {% if not main.CURRENT_PROJECT.id %}disabled{% endif %}"><i
+                        class="fa fa-folder-open"></i><span>Файлы</span></a>
+<!--                <a href="/stat/"-->
+<!--                   class="{% if activeMenuItem == 'stat' %} active{% endif %} {% if not main.IS_MANAGER %}disabled{% endif %}"><i-->
+<!--                        class="fa fa-bar-chart-o"></i><span>Отчеты</span></a>-->
+
+                <a href="/user_list/" class="{% if activeMenuItem == 'user_list' %} active{% endif %}"><i
+                        class="fa fa-users"></i><span>Команда</span></a>
+
+            </div>
+            <div class="sub-menu_line_section-tracker">
+                <ul class="list-inline navbar-right">
+                    {% if main.CURRENT_PROJECT %}
+                        <li class="section-tracker_menu_name h5"><span class="all-projects-link-main">Проект: &nbsp;
+{#                            <i class="fa fa-angle-right"></i>&nbsp; #}
+                        </span>
+                        </li>
+                    {% endif %}
+                    <li class="projects-list-menu">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-link tracker-choose ">
+                            <a data-target="#projects-popup" data-toggle="modal" class="js-openProjectList"
+
+                               href="#" style="text-decoration: none; border-bottom: 1px dashed #1d6e62;">
+                                {% if main.CURRENT_PROJECT %}
+                                    {{ main.CURRENT_PROJECT.name }}
+                                {% else %}
+                                    Все проекты
+                                {% endif %}
+                            </a>
+                            </button>
+                            <a data-target="#projects-popup" data-toggle="modal" title="Список проектов" class="fa fa-caret-down js-openProjectList" style="font-size: 15px; color: rgb(73, 73, 73); top: 3px; margin-right: 10px;"></a>
+{#                            <a class="fa fa-chevron-down js-openProjectList" title="Список проектов" data-toggle="modal" data-target="#projects-popup"></a>#}
+                            {% if main.CURRENT_PROJECT.id %}
+                                <a href="/project/{{ main.CURRENT_PROJECT.id }}/" class="fa fa-cog"
+                                   title="Параметры проекта"></a>
+                            {% endif %}
+                            <a href="/project/edit/" class="fa fa-plus" title="Добавить проект"></a>
+                            <a href="#" class="js-invite-popup {% if not main.CAN_INVITE %}disabled{% endif %}" data-target="#invite-popup" data-toggle="modal" title="Пригласить людей"><i class="fa fa-user-plus"></i></a>
+
+                        </div>
+                    </li>
+                    <li class="projects-list-select clearfix">
+                        <div class="left">
+                            <select class="form-control" onchange="document.location.href='/?project='+$(this).val();">
+                                <option{% if not main.CURRENT_PROJECT.id %} selected{% endif %} value="0">
+                                    Все проекты
+                                </option>
+                                {% for project in projects %}
+                                    <option{% if project.id == main.CURRENT_PROJECT.id %} selected{% endif %}
+                                                                                          value="{{ project.id }}">{{ project.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="right projects-list-menu">
+                            {% if main.CURRENT_PROJECT.id %}
+                                <a href="/project/{{ main.CURRENT_PROJECT.id }}/" class="fa fa-cog"
+                                   title="Параметры проекта"></a>
+                            {% endif %}
+                            <a href="#" class="js-invite-popup {% if not main.CAN_INVITE %}disabled{% endif %}"
+                               data-target="#invite-popup" data-toggle="modal" title="Пригласить людей"><i
+                                    class="fa fa-user-plus"></i></a>
+                            <a href="/new_task_wizard/" class="js-taskWizard-opener fa fa-plus" title="Добавить расчет"></a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</div>
+<!-- /container -->
+<hr style="margin-top:0px;">
+{# -=========== КОНТЕНТНАЯ ЧАСТЬ ===========- #}
+<div class="container-fluid" style="display: inline-block">
+    <div class="frame-container js-frame-mode" style="display:none;width:70%;z-index:100;position:fixed;right:0;top:0;">
+        <a href="#" style="padding: 15px 17px; font-size: 20px;width: 50px;height: 50px;top:50%;left:-50px;position: absolute;background: green;color: white;"
+           onclick="$('.js-frame').attr('src','').parent().hide();"><i class="fa fa-close"></i></a>
+        <iframe style="width:100%;" class="js-frame"></iframe>
+    </div>
+    {% block content %}{% endblock %}
+</div>
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2">
+                    <span class="copyright">© 2012-2020 Экспертная компания</span>
+
+                </div>
+                <div class="col-md-6">
+                    <ul class="list-inline quicklinks">
+                        <li><a href="mailto:admin@tracker.ru">admin@tracker.ru</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2">
+
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script type="text/javascript">
+        $(function () {
+            {% if current_notice %}
+            var popup = new hintObject({
+                'title': '{{ current_notice.name }}',
+                'text': '{{ current_notice.html|safe }}',
+                'image': '{{ current_notice.src }}',
+                'id': '{{ current_notice.id }}'
+            });
+            popup.show($('{{ current_notice.itemClass }}').get(0));
+            {% endif %}
+
+            $('.js-taskWizard-opener').click(function (ev) {
+                ev.preventDefault();
+                var url = $(this).attr('href');
+                $.get(url, function (response) {
+                    $('body').prepend(response);
+                });
+            });
+
+            var projectInput = $('.js-projects').find('.js-inputProjectList');
+            var projectName = $('.js-itemProjectName');
+
+            projectInput.keyup(function () {
+                var inputVal = $(this).val();
+                projectName.each(function () {
+                    $(this).parents('.projects-item').hide();
+                    var projectItem = $.trim($(this).text());
+                    var projectItemIndexOf = projectItem.toLowerCase().indexOf(inputVal.toLowerCase());
+                    var projectItemIndexOfKeybdConv = projectItem.toLowerCase().indexOf(inputVal.KeybdConv().toLowerCase());
+                    if (projectItemIndexOf != -1 || projectItemIndexOfKeybdConv != -1) {
+                        $(this).parents('.projects-item').show();
+                    }
+                });
+            });
+            $('#projects-popup').on('shown.bs.modal', function() {
+                    $('.js-inputProjectList').focus();
+                });
+
+        {% if agreementForApprove %}
+            $('.js-agreement-approve').click(function(){
+                var $t = $(this);
+                $t.pushTheButton();
+                PM_AjaxPost(
+                        '/agreements/',
+                        {
+                            'action': 'approve_agreement',
+                            'id': $(this).data('agreement')
+                        },
+                        function(data) {
+                            $t.pullTheButton();
+                            if (data.id) {
+                                $('.js-agreement-title').text('Пользовательское соглашение №' + data.id);
+                                $('.js-agreement').html(data.text);
+                                $('.js-agreement-approve').data('agreement', data.id);
+                            } else {
+                                $('.js-current-agreement').remove();
+                            }
+                        },
+                        'json'
+                );
+                return false;
+            });
+        {% endif %}
+        });
+    </script>
+    <img src="/static/images/loaders/loader_3.png" alt="Loader" class="loader medium" />
+    <img src="/static/images/loaders/loader_4.png" alt="Loader" class="loader small" />
+    <img src="/static/images/loaders/loader_5.png" alt="Loader" class="loader tiny" />
+    <iframe id="fileinput" src="" style="display:none;"></iframe>
+    <link type="text/css" rel="stylesheet" href="/static/css/bootstrap-combobox.css" />
+
+
+{% if agreementForApprove %}
+    <div class="modal js-current-agreement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true" style="display: block;">
+        <div class="modal-dialog">
+            <div class="modal-content green-popup">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="myModalLabel">Пользовательское соглашение №{{ agreementForApprove.id }}</h2>
+                </div>
+                <div class="modal-body clearfix js-agreement" data-agreement="{{ agreementForApprove.id }}" style="height: 250px; overflow-y:auto;">{{ agreementForApprove.text|safe }}</div>
+                <div class="modal-footer"> <a href="#" data-agreement="{{ agreementForApprove.id }}" class="btn btn-success js-agreement-approve" >Принять</a> </div>
+
+            </div>
+        </div>
+    </div>
+{% endif %}
+</body>
+</html>

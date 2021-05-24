@@ -1,0 +1,5 @@
+<span class="text-nowrap">Ответственный: {{ milestone.manager.get_full_name }} |</span>
+<span class="text-nowrap"> Дата завершения расчета:</span>
+<span class="text-nowrap"> план {{ milestone.date|date }} |</span>
+
+<span class="text-nowrap" {%if milestone.hrs > 56 %}style="color: red;"{% endif %}> {{milestone.hrs}} руб.</span>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>B24Support</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script src="https://api.bitrix24.com/api/v1/"></script>
+    <script src="https://tracker.ru/static/support/support.js"></script>
+    <link rel="stylesheet" href="https://tracker.ru/static/support/style.css"/>
+</head>
+<body>
+<div class="header">
+    <form action="#" method="GET" id="ticket_f" name="ticket_f">
+        <input type="hidden" name="lamp" value="lamp"/>
+        <input type="hidden" name="ajax" value="Y"/>
+
+        <div class="header-left">Обращения</div>
+        {#        <div class="header-right">#}
+        {#            <ul>#}
+        {#                <li><select style="width:150px;" onChange="sendAjaxForm($('#ticket_f'), $('#wrapper'));return false;"#}
+        {#                            name="category" id="category">#}
+        {#                    <option value="">Все категории</option>#}
+        {#                    <option value="categoryid">Category</option>#}
+        {#                </select></li>#}
+        {#                <li><span style="cursor:pointer;text-decoration:underline;"#}
+        {#                          onClick="document.ticket_f.lamp.value='';sendAjaxForm($('#ticket_f'),$('#wrapper'));return false;">все рабочие</span>#}
+        {#                </li>#}
+        {#                <li class="fast"><span style="cursor:pointer;text-decoration:underline;"#}
+        {#                                       onClick="document.ticket_f.lamp.value='red';sendAjaxForm($('#ticket_f'),$('#wrapper'));return false;">вы не ответил</span>#}
+        {#                </li>#}
+        {#                <li class="week"><span style="cursor:pointer;text-decoration:underline;"#}
+        {#                                       onClick="document.ticket_f.lamp.value='green';sendAjaxForm($('#ticket_f'),$('#wrapper'));return false;">вы ответили</span>#}
+        {#                </li>#}
+        {#                <li class="today"><span style="cursor:pointer;text-decoration:underline;"#}
+        {#                                        onClick="document.ticket_f.lamp.value='grey';sendAjaxForm($('#ticket_f'),$('#wrapper'));return false;">закрытые</span>#}
+        {#                </li>#}
+        {#            </ul>#}
+        {#        </div>#}
+    </form>
+</div>
+<div class="items js-items">
+    <div class="item js-item-tpl">
+        <div class="item-top">
+            <div style="cursor:pointer;" onClick="return slideTicket($(this).closest('.js-item-tpl').data('id'));"
+                 class="item-top-time lamp ">
+                <span class="js-task-date"></span>
+                <b class="js-task-owner"></b>
+            </div>
+            <div class="item-top-icons">
+                <ul>
+
+                    <li><a href="#" title="Решено" class="app js-task-close">Назначить
+                        ответственного</a></li>
+
+                    <li><a href="#" title="Ответить"
+                           onClick="return slideTicket($(this).closest('.js-item-tpl').data('id'));"
+                           class="ans">Ответить</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="item-center">
+            <h3 style="cursor:pointer;color:#444;"
+                onClick="return slideTicket($(this).closest('.js-item-tpl').data('id'));">
+                <span class="js-ticket-id"></span> <span class="js-ticket-title"></span></h3>
+        </div>
+        <div class="js-comments" style="display:none;">
+            <div class="js-comments-list">
+                <div class="item-center js-comment-item">
+                    <div class="textarea" style="margin-top:0;">
+                        <p style="font-size:12px;margin:0;padding:2px;"><b class="js-owner"></b> <span
+                                style="float:right" class="js-date"></span>
+
+                        <div style="clear:both;"></div>
+                        </p>
+                        <p class="js-message"></p>
+
+                        <div class="support-paperclip"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="item-center">
+                <div class="textarea">
+                    <div style="color:red;" id="error_ticketid"></div>
+                    <form class="answerform" enctype="multipart/form-data" name="answer_ticketid" method="POST"
+                          action="#ticketid">
+
+                        <table>
+                            <tr>
+                                <td class="field-name">Сообщение <span class="starrequired">*</span>:</td>
+                                <td>
+                                </td>
+                            </tr>
+                        </table>
+                        <textarea class="js-comment-input"></textarea>
+                        <br/>
+                        <input type="button" class="send js-send-comment" value="Ответить"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="arr"><a href="#" class="down"
+                            onClick="return slideTicket($(this).closest('.js-item-tpl').data('id'));">Развернуть/Свернуть</a>
+        </div>
+        <div class="item-bottom">&nbsp;</div>
+    </div>
+</div>
+<div class="item-center">
+    <div class="textarea">
+        <div style="color:red;" id="error_ticketid"></div>
+        <form class="answerform" enctype="multipart/form-data" name="answer_ticketid" method="POST"
+              action="#ticketid">
+            <table>
+                <tr>
+                                <td class="field-name">Категория <span class="starrequired">*</span>:</td>
+                                <td>
+                                    <select class="js-category">
+
+                                    </select>
+                                </td>
+                            </tr>
+                <tr>
+                    <td class="field-name">Создать обращение <span class="starrequired">*</span>:</td>
+                    <td>
+                    </td>
+                </tr>
+            </table>
+            <textarea class="js-task-text-input"></textarea>
+            <br/>
+            <input type="button" class="send js-add-task" value="Создать"/>
+        </form>
+    </div>
+</div>
+<script>
+    $(function () {
+        BX24.callMethod('sonet_group.get', {
+            'ORDER': {
+                'NAME': 'ASC'
+            },
+            'FILTER': {
+                'CLOSED': 'N'
+            }
+        }, function (res) {
+            var groups = res.data();
+            $.each(groups, function (k, data) {
+                $('.js-category').append(
+                        '<option value="' + data.ID + '">' + data.NAME + '</option> '
+                );
+            })
+        });
+
+        var $messageTplOne = $('.js-comment-item');
+        window.$messageTpl = $messageTplOne.clone();
+        window.$taskTpl = $('.js-item-tpl').hide().appendTo('body');
+        $messageTplOne.remove();
+        BX24.callMethod('user.current', {}, function (res) {
+            window.user = res.data();
+            clientCheck();
+        });
+        $(document).on('click', '.js-send-comment', function () {
+            var $ticket = $(this).closest('.js-item-tpl'),
+                    ticketId = $ticket.data('id'),
+                    $form = $(this).closest('form');
+
+            var oComment = {
+                'POST_MESSAGE_HTML': $form.find('.js-comment-input').val()
+            };
+
+            $form.find('.js-comment-input').val('');
+
+            BX24.callMethod(
+                    'task.commentitem.add',
+                    [
+                        ticketId,
+                        {
+                            'POST_MESSAGE': oComment.POST_MESSAGE_HTML
+                        }
+                    ],
+                    function (result) {
+                        console.info(result.data());
+                        console.log(result);
+                    }
+            );
+
+            addCommentTpl(oComment, $ticket);
+
+            return false;
+        }).on('click', '.js-add-task', function () {
+            var $taskText = $('.js-task-text-input'),
+                    taskText = $taskText.val();
+
+            $taskText.val('');
+
+            if (taskText) {
+                BX24.callMethod(
+                        'task.item.add',
+                        [
+                            {
+                                TITLE: taskText,
+                                RESPONSIBLE_ID: 192,
+                                DEADLINE: '2019-05-13T16:06:06+03:00',
+                                GROUP_ID: $('.js-category').val()
+                            }
+                        ],
+                        function (result) {
+                            result = result.data();
+                            BX24.callMethod(
+                                    'task.item.getdata',
+                                    [result],
+                                    function (result) {
+                                        result = result.data();
+                                        addTaskTpl(result);
+                                    }
+                            );
+                        }
+                );
+            }
+
+            return false;
+        }).on('click', '.js-task-close', function () {
+            var $task = $(this).closest('.js-item-tpl');
+
+            BX24.callMethod(
+                    'task.item.update',
+                    [
+                        $task.data('id'),
+                        {
+                            STATUS: 5
+                        }
+                    ],
+                    function (result) {
+                        $task.remove();
+                    }
+            );
+        });
+    });
+
+    function clientCheck() {
+        BX24.callMethod(
+                'task.item.list',
+                [
+                    {
+                        'STATUS': 'desc'
+                    },
+                    {
+                        'STATUS': 2,
+                        'CREATED_BY': window.user.ID
+                    }
+                ],
+                function (r) {
+                    var task;
+                    for (var i in r.answer.result) {
+                        task = r.answer.result[i];
+                        addTaskTpl(task);
+                    }
+                }
+        );
+    }
+
+
+    function addCommentTpl(elem, $ticket) {
+        var $comment = window.$messageTpl.clone().show();
+        $comment.find('.js-owner').text(elem.AUTHOR_NAME);
+        $comment.find('.js-message').text(elem.POST_MESSAGE_HTML);
+        $comment.find('.js-date').text(elem.POST_DATE);
+        $comment.appendTo($ticket.find('.js-comments-list'));
+    }
+
+    function addTaskTpl(task) {
+        var $taskTpl = window.$taskTpl.clone().attr('data-id', task.ID);
+        $taskTpl.find('.js-ticket-id').text(task.ID);
+        $taskTpl.find('.js-ticket-title').text(task.TITLE);
+        $taskTpl.find('.js-task-date').text(task.CREATED_DATE);
+        $taskTpl.find('.js-task-owner').text(task.CREATED_BY_LAST_NAME + ' ' + task.CREATED_BY_NAME);
+
+        $taskTpl.appendTo('.js-items').show();
+    }
+
+    function slideTicket(ticketId) {
+        var $ticket = $('[data-id=' + ticketId + ']');
+        $ticket.find('.js-comments').toggle();
+
+        if (!$ticket.data('commentsloaded')) {
+            $ticket.data('commentsloaded', true);
+
+            BX24.callMethod(
+                    'task.commentitem.getlist',
+                    [
+                        ticketId,
+                        {'ID': 'asc'}
+                    ],
+                    function (result) {
+                        $.each(result.data(), function (i, elem) {
+                            addCommentTpl(elem, $ticket);
+                        });
+                    }
+            );
+        }
+    }
+</script>
+</body>
+</html>

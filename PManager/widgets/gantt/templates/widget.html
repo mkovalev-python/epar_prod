@@ -1,0 +1,471 @@
+{% load arraytags jsonify compressed %}
+{% compressed_js 'gantt' %}
+<script>
+  $(document).ready(function(){
+    $.get('/ajax/milestone_create/', function(response){
+      $('body').append(response);
+    });
+  });
+</script>
+
+<!--calendar-bar-tools-->
+<div class="widget gantt" style="overflow:hidden;">
+    <div class="widget-control"><a href="#" onclick="FULLSCREEN.fullScreenElement($(this).closest('.widget').get(0));return false;"><i class="fa fa-arrows-alt"></i></a>
+    </div>
+    <h3 class="widget-title">Календарный план</h3>
+
+    <style>
+        .gantt-container {
+            width: 100%;
+			overflow: hidden;
+			padding: 0px;
+			position: relative;
+            border: 1px solid #EEEEEE;
+        }
+		
+		/* СТРЕЛКИ, СКРЫЛИ
+		.gantt-container:after {
+			width: 0;
+			height: 0;
+			border-style: solid;
+			border-width: 16px 15px 16px 0;
+			border-color: transparent #ddd transparent transparent;
+			content: "";
+			display: block;
+			margin-top: -15px;
+			position: absolute;
+			left: 0;
+			top: 50%;
+			cursor:pointer;
+		}
+
+		.gantt-container:before {
+			width: 0;
+			height: 0;
+			border-style: solid;
+			border-width: 16px 0 16px 15px;
+			border-color: transparent transparent transparent #ddd;
+			content: "";
+			display: block;
+			margin-top: -15px;
+			position: absolute;
+			right: 0;
+			top: 50%;
+			cursor:pointer;
+		}*/
+
+		
+		.gantt-top-sub-dates {height:30px !important; line-height:30px !important; background:#eee;} 
+		.gantt-top-dates {height:30px !important; line-height:30px !important; background:#f9f9f9;}
+
+
+        .gantt-overflow,
+        .gantt-dates-top,
+        .gantt-dates-bottom {
+            width: 100%;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+
+        .gantt-overflow {
+            min-height: 290px;
+        }
+		
+		.gantt-dates-top {overflow:hidden;}
+		
+		.gantt-dates-top {
+			z-index:1;
+		}
+		
+        .gantt-overflow {
+            overflow-y: hidden;
+        }
+
+        .gantt-top-dates,
+        .gantt-top-sub-dates {
+            position: relative;
+        }
+{#        .gantt-overflow {#}
+{#           max-height: 600px;#}
+{#        }#}
+		
+		.gantt-event .fa-ellipsis-v {position:absolute; left:4px; top:3px;}
+
+        
+
+        .gantt-event {
+            height: 22px;
+			font-size:12px;
+			line-height:22px;
+			color:#fff !important;
+			padding:0 8px;
+			margin:0 !important;
+            z-index: 5;
+            position: absolute;
+            overflow: hidden;
+            text-align: right;
+			background-position:0px 0px !important;  
+  background-color: #0e90d2;
+  background-image: -moz-linear-gradient(top, #149bdf, #0480be);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#149bdf), to(#0480be));
+  background-image: -webkit-linear-gradient(top, #149bdf, #0480be);
+  background-image: -o-linear-gradient(top, #149bdf, #0480be);
+  background-image: linear-gradient(to bottom, #149bdf, #0480be);
+  background-repeat: repeat-x;
+  border: 1px solid #cccccc;
+  *border: 0;
+  border-color: #e6e6e6 #e6e6e6 #bfbfbf;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  border-bottom-color: #b3b3b3;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  *zoom: 1;
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+     -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+            cursor: default;
+        }
+		
+		.gantt-event a {color:#fff !important;display: inline-block; padding-left: 5px; outline:none;}
+
+        .gantt-event.ready, 
+		.gantt-event.ready a {
+			color:#fff !important;
+        }
+		
+		.gantt-event.not_my_started {
+            background-color: #8699a4;
+            *background-color: #8699a4;
+  background-image: -moz-linear-gradient(top, #ffffff, #8699a4);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#8699a4));
+  background-image: -webkit-linear-gradient(top, #ffffff, #8699a4);
+  background-image: -o-linear-gradient(top, #ffffff, #8699a4);
+  background-image: linear-gradient(to bottom, #ffffff, #8699a4);
+        }
+        .gantt-event.my_not_started {
+            background-color: rgba(14,144,210, 0.5);
+            background-image: -moz-linear-gradient(top, #ffffff, rgba(14,144,210, 0.5));
+            background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(rgba(14,144,210, 0.5)));
+            background-image: -webkit-linear-gradient(top, #ffffff, rgba(14,144,210, 0.5));
+            background-image: -o-linear-gradient(top, #ffffff, rgba(14,144,210, 0.5));
+            background-image: linear-gradient(to bottom, rgba(255,255,255, 0.5), rgba(14,144,210, 0.5));}
+
+		.gantt-event.not_my_not_started {
+  background-color: rgba(230,230,230, 0.5);
+  background-image: -moz-linear-gradient(top, #ffffff, rgba(230,230,230, 0.5));
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(rgba(230,230,230, 0.5)));
+  background-image: -webkit-linear-gradient(top, #ffffff, rgba(230,230,230, 0.5));
+  background-image: -o-linear-gradient(top, #ffffff, rgba(230,230,230, 0.5));
+  background-image: linear-gradient(to bottom, rgba(255,255,255, 0.5), rgba(230,230,230, 0.5));}
+		
+		.gantt-event.not_my_not_started,
+		.gantt-event.not_my_not_started a {
+			color:black  !important;
+        }
+		
+		.gantt-event-plantime {font-size:11px;}
+		
+
+        table {max-width: none;}
+		
+
+        .gantt-reponsibles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200px;
+            z-index: 9000;
+            border-right: 1px solid #bce8f1;
+            background:#fcf8e3;
+			box-shadow:2px 0 2px rgba(1, 1, 1, 0.1);
+			-moz-box-shadow:2px 0 2px rgba(1, 1, 1, 0.1);
+			-webkit-box-shadow:2px 0 2px rgba(1, 1, 1, 0.1);
+        }
+		.gantt-responsibles-row {
+            height: 29px;
+            position: relative;
+        }
+        .day-line {
+            background-color: #ddd;
+            width: 1px;
+        }
+        .holyday-line {
+            background-color: #fdcfcd;
+            opacity: 0.5;
+            margin-right: 1px;
+            border-left: 1px solid #d4a6a4;
+        }
+        .today-line {
+            width: 2px;
+            background-color: #F1D031;
+        }
+        .top-row {
+            border-top: 1px solid #ddd;
+        }
+		.gantt-resp-block.top-row {position:absolute; /*margin:15px 0;*/ width:100%; padding:10px;}
+		.gantt-resp-block.top-row img {display:block; font:0px; line-height:0px; margin-bottom:10px;}
+		.gantt-resp-block.top-row a {display:block; line-height:16px;}
+
+        .gantt-dates-container {
+            cursor: move;
+        }
+
+        .gantt-dates-container tr td > div,
+        .gantt-event-desk tr td > div {
+            width: 100%;
+			height:29px;
+			line-height:29px;
+            position: relative;
+            cursor: move;
+        }
+		
+		 .gantt-top-dates, 
+		.gantt-top-sub-dates {
+            height: 24px !important;
+			line-height:24px !important;
+			font-size:11px;
+			color:#555;
+			background:none repeat scroll 0 0 #fcf8e3;
+			border-bottom:1px solid #fbeed5;
+			color:#c09853;}
+
+        .gantt-event-desk tr > td > div,
+        .gantt-dates-container tr > td > div, {
+            position: relative;
+        }
+
+
+        .gantt-event.activated {
+    height: auto !important;
+    z-index: 100 !important;
+        }
+
+
+	.diagramma {position:relative; margin:0 30px; height:80px; }
+	.diagramma .bar {
+  float: left;
+  width: 0;
+  height: 100%;
+  font-size: 12px;
+  color: #ffffff;
+  text-align: center;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #0e90d2;
+  background-image: -moz-linear-gradient(top, #149bdf, #0480be);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#149bdf), to(#0480be));
+  background-image: -webkit-linear-gradient(top, #149bdf, #0480be);
+  background-image: -o-linear-gradient(top, #149bdf, #0480be);
+  background-image: linear-gradient(to bottom, #149bdf, #0480be);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff149bdf', endColorstr='#ff0480be', GradientType=0);
+  -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+     -moz-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+          box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  -webkit-transition: width 0.6s ease;
+     -moz-transition: width 0.6s ease;
+       -o-transition: width 0.6s ease;
+          transition: width 0.6s ease;
+		  border-radius:4px;
+		  -moz-border-radius:4px;
+		  -webkit-border-radius:4px;
+}
+
+.scroll-bar-left:before, 
+.scroll-bar-right:after {content:""; display:block; position:absolute; top:50%; margin-top:-27px; height:49px; width:10px;}
+
+.scroll-bar-left:before {left:5px; background:url(/static/images/resizer-left.png) 0px 0px no-repeat; }
+.scroll-bar-right:after {right:5px; background:url(/static/images/resizer-right.png) 0px 0px no-repeat; }
+
+
+div.dates-bar-item::selection {
+	background:#FFF;
+}
+	
+div.dates-bar-item::-moz-selection {
+	background:#FFF;
+}
+
+
+.gantt-event.highlighted {box-shadow:0px 0px 10px #ff5b56; -moz-box-shadow:0px 0px 10px #ff5b56; -webkit-box-shadow:0px 0px 10px #ff5b56;}
+
+.fa-star.mini.highlighted {background:url(/static/images/stars-mini.png) 0px 0px no-repeat !important;}
+.fa-star.mini.red.highlighted {background:url(/static/images/stars-mini.png) 0px -48px no-repeat !important;}
+.fa-star.mini.green.highlighted {background:url(/static/images/stars-mini.png) 0px -24px no-repeat !important;}
+
+.new-milestone {background:url(/static/images/new-milestone.png) 0px 0px no-repeat; height:64px; width:64px; display:inline-block; text-indent:-99999em;}
+.task-detail-comment, .task-detail-text {
+    overflow: hidden;
+    max-height: 45px;
+}
+    .gantt-top-sub-dates, .gantt-label {
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        user-select: none;
+    }
+    </style>
+
+    {% if gantt.project %}
+    <div class="row-fluid">
+
+    <div class="tasks-and-deals-control-buttons">
+        <p><a href="#" class="new-milestone" data-toggle="modal" data-target="#new-milestone">Создать цель</a></p>
+{#        <a href="#" class="js-goToNow">Сегодня</a>#}
+    </div>
+
+    <div class="gant-top-thumb-container js-top-thumb-container">
+    <div class="diagramma" style="margin:0px !important;">
+
+        <div class="scroll-bar" style="display: none;">
+            <span class="scroll-bar-left"></span>
+            <span class="scroll-bar-right"></span>
+        </div>
+
+        <div class="dates-subtasks" style="width: 100%;" >
+            <div class="js-stars">
+{#            <a class="fa fa-star red" style="left:800px;" href="#"></a>#}
+{#            <a class="fa fa-star green" style="left:600px;" href="#"></a>#}
+            </div>
+            <div class="progress">
+                <div class="bar" style="width: 0px;"></div>
+            </div>
+            <div class="dates-bar" >
+
+            </div><!--dates-bar-->
+            <div class="planlet-container">
+
+            </div><!--plantlet-container-->
+        </div>
+
+    </div>
+    </div>
+
+
+    <div class="row-fluid calendar-bar-tools">
+    <!--pull-left-->
+    <div class="pull-right">
+    </div>
+    <!--pull-right-->
+</div>
+
+    <div class="gantt-container">
+        	<!--ДЕТАЛИ ЗАДАЧИ: НАЧАЛО -->
+            <div class="task-details js-event-detail" style="display: none">
+            
+              <div class="row-fluid border-shadow">
+                	<span class="js-options_popup task-manage pull-right">
+                        <a class="fa fa-times-circle-o js-close" href="#"></a>
+{#                        <a class="btn_manage dropdown-toggle js-task_menu">#}
+{#                            <span class="fa fa-gear"></span>#}
+{#                        </a>#}
+{#                        <ul class="dropdown-menu pull-right text-left task-menu">#}
+{#                            <li><a class="Edit"><i class="fa fa-edit"></i>&nbsp;&nbsp;Изменить</a></li>#}
+{#                            <li><a class="BringPlanning"><i class="fa fa-eye"></i>&nbsp;&nbsp;Наблюдаю</a></li>#}
+{#                            <li><a class="BringPlanning"><i class="fa fa-users"></i>&nbsp;&nbsp;Вывести на планирование</a></li><li><a class="Critically"><i class="fa fa-ban"></i>&nbsp;&nbsp;Не критичная</a></li>#}
+{#                        </ul>#}
+               		 </span>
+                    <h3><a href="#" class="js-e-d-title"></a></h3>
+                    <span class="task-details-time-user">[<span class="js-e-d-date-create">08.04.2013 12:36</span> / <a class="js-e-d-author" href="/user_datail/?id=2">Васютин Евгений</a>]</span>
+              </div>
+              
+                <div class="row-fluid">
+                    <div>
+                        <p class="border-shadow task-detail-desc js-e-d-desc"><a href="#">подробнее &raquo;</a></p>
+                        <div class="last-message border-shadow js-e-d-last-mes" >
+                            <h5>Последнее сообщение: </h5>
+                            <hr>
+                            <p class="last-message-info">
+                                <b><a class="js-e-d-last-mes-author" href="#"></a></b><br>
+                                <small class="js-e-d-last-mes-date"></small>
+                            </p>
+                            <p class="task-detail-comment js-e-d-last-mes-text"></p>
+                        </div>
+                    </div>
+                    <div class="border-shadow">
+                        <b>Ответственный</b><br />
+                        <a href="#" class="js-e-d-resp">Нет ответственного</a>
+                    </div>
+                    <div>
+                        <p><b>Добавить комментарий</b></p>
+                        <input class="js-event-id" type="hidden" value="" />
+                    	<p><textarea name="comment" class="form-control js-comment" rows="3"></textarea></p>
+                        <button class="btn btn-success js-send-message" type="button">Ответить</button>
+                	</div>
+                </div>
+                
+            </div>
+            <!--ДЕТАЛИ ЗАДАЧИ: КОНЕЦ -->
+        <div class="gantt-dates-top"></div>
+        <div class="gantt-overflow">        	
+
+        </div>
+    </div>
+</div>
+    {% else %}
+    <p>Выберите проект</p>
+    {% endif %}
+<script type="text/javascript">
+var GANTT_TASKS = [
+    {% for task in gantt.tasks %}
+        {% if task.endTime|date:"Y" %}
+            {
+                dates: [
+                    new Date({{ task.dateCreateGantt|date:"Y" }}, ({{ task.dateCreateGantt|date:"m" }} * 1 - 1), {{ task.dateCreateGantt|date:"d" }}, {{ task.dateCreateGantt|date:"H" }}, {{ task.dateCreateGantt|date:"i" }},
+                    {{ task.dateCreateGantt|date:"s" }}),
+                    new Date({{ task.endTime|date:"Y" }}, ({{ task.endTime|date:"m" }} * 1 - 1), {{ task.endTime|date:"d" }}, {{ task.endTime|date:"H" }}, {{ task.endTime|date:"i" }},
+                    {{ task.endTime|date:"s" }})
+                ],
+                project: {{ task.project__name|jsonify|safe }},
+                title: {{ task.name|jsonify|safe }},
+                url: {{ task.url|jsonify|safe }},
+                author: {
+                    first_name: "{{ task.author__first_name }}",
+                    last_name: "{{ task.author__last_name }}"
+                },
+                date_create: "{{ task.dateCreate }}",
+                status: "{{ task.status__code }}",
+                isMyProject: {{ task.isMyProject|yesno:"true,false" }},
+            isMilestoneStarted: {{ task.isMilestoneStarted|yesno:"true,false" }},
+            planTime: 4,
+                responsible: {{ task.resp__id|jsonify|safe }},
+                otherProject: {{ task.otherProject|jsonify|safe }},
+                description: {{ task.text|jsonify|safe }},
+                section: 1,
+                closed: {{ task.closed|yesno:"true,false" }},
+                id: {{ task.id }},
+                lastMessage: {
+                    author: {{ task.last_message.author|jsonify|safe }},
+                    text: {{ task.last_message.text|jsonify|safe }}
+                },
+            }{% if not forloop.last %},{% endif %}
+        {% endif %}
+    {% endfor %}
+];
+var AR_USERS = {};
+{% for user in gantt.users %}
+AR_USERS[{{ user.id }}] = '{{ user.last_name }} {{ user.first_name }}';
+{% endfor %}
+
+var MILESTONES = [
+{% for milestone in gantt.milestones %}
+    {
+        id: {{ milestone.id }},
+        date: new Date(
+                {{ milestone.date|date:"Y" }},
+                ({{ milestone.date|date:"m" }} * 1 - 1),
+                {{ milestone.date|date:"d" }},
+                {{ milestone.date|date:"H" }},
+                {{ milestone.date|date:"i" }},
+                {{ milestone.date|date:"s" }}),
+        closed: {{ milestone.closed|jsonify }},
+        name: {{ milestone.name|jsonify|safe }},
+        tasksId: {{ milestone.tasksId|jsonify|safe }}
+    }
+    {% if not forloop.last %},{% endif %}
+{% endfor %}
+];
+</script>

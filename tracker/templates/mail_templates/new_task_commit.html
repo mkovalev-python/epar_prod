@@ -1,0 +1,28 @@
+{% extends 'mail_templates/default_template.html' %}
+{% load htmlemail %}
+{% load get_settings %}
+{% load thumbnail %}
+{% block subject %}Новый коммит в вашей задаче!{% endblock %}
+
+{% block top_running_title %}
+    <strong>{{ task.message.author }}</strong><br>{{ task.dateCreate }}
+{% endblock %}
+
+{% block title %}Пользователь загрузил изменение{% endblock %}
+
+{% block content %}
+    <p style="font-size:14px; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; line-height:20px; color:#3b3f4a;">Новый коммит в задаче "<a style="color:#51A351" href="{% get_settings "HTTP_ROOT_URL" %}{{ task.task_url }}">{{ task.name }}</a>"!
+        <br /><br />
+        <div style="font-style:italic">
+        {% autoescape off %}
+        {{ task.message.text|htmlemail }}</div>
+        {% endautoescape %}
+    </p>
+
+    <p>
+        <a href="{% get_settings "HTTP_ROOT_URL" %}{{ task.task_url }}"
+          style="background-color: #429C03; background-image: linear-gradient(to bottom, #7FBB0A, #429C03); background-repeat: repeat-x; border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25); color: #FFFFFF; text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25); padding:4px 12px; vertical-align:middle; font-size:14px;font-family: Helvetica Neue, Helvetica, Arial, sans-serif; line-height:20px; border-radius:4px 4px 4px 4px; -webkit-border-radius:4px 4px 4px 4px; -moz-border-radius:4px 4px 4px 4px; text-decoration:none; border-style:solid; border-width:1px; box-shadow:0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05); -webkit-box-shadow:0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05); -moz-box-shadow:0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05); -moz-border-bottom-colors: none;   -moz-border-left-colors: none;  -moz-border-right-colors: none; -moz-border-top-colors: none;" >
+                Перейти к задаче
+        </a>
+    </p>
+{% endblock %}

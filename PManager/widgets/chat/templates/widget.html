@@ -1,0 +1,109 @@
+{% load jsonify compressed %}
+{% compressed_js 'chat' %}
+<script>
+    var widget_chat,
+        widget_chat_log_item_templates = {{ chat.templates|jsonify|safe }};
+</script>
+<div class="widget chat" id="chat" data-tab-title="Лента">
+    <a name="comments"></a>
+    <div class="widget-tasklist-header">
+        <div class="widget-title"><h2>История</h2></div>
+        <ul class="widget-tasklist-functions clearfix">
+            <li>
+                <a href="#" class="widget-tab js-widgets-tab btn" data-widget="tasklist"><i class="fa fa-list-ol" aria-hidden="true"></i><span class="to-hide-768">&nbsp;&nbsp;Задачи</span></a>
+            </li>
+            <li>
+                <a href="#" class="widget-tab active js-widgets-tab btn" data-widget="chat"><i class="fa fa-bell" aria-hidden="true"></i><span class="to-hide-768">&nbsp;&nbsp;История изменений</span></a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="TopPanel">
+        <a href="#" class="RollUp"></a>
+        <a href="#" class="Close"></a>
+    </div>
+    
+    <div class="clearfix chat-nav js-feed-options">
+        {% if main.CURRENT_PROJECT %}
+        <div class="pull-left radio-checkbox-block">
+            {% if main.CURRENT_PROJECT %}
+            <label class="checkbox-inline">
+                <input type="checkbox" class="js-other-projects" name="OTHER_PROJECTS" value="Y" {% if chat.options.OTHER_PROJECTS %}checked="checked"{% endif %}> Все проекты
+            </label>
+            {% endif %}
+        </div>
+        {% endif %}
+    	<div class="pull-right radio-checkbox-block">
+            <label class="checkbox-inline">
+              <input type="radio" class="js-comments-filter-input" name="MESSAGE_TYPE" value="ALL" {% if chat.options.MESSAGE_TYPE == 'ALL' or not chat.options.MESSAGE_TYPE %}checked="checked"{% endif %}> Все сообщения
+            </label>
+        	<label class="checkbox-inline">
+              <input type="radio" class="js-comments-filter-input" name="MESSAGE_TYPE" value="SYSTEM_MESSAGES" {% if chat.options.MESSAGE_TYPE == 'SYSTEM_MESSAGES' %}checked="checked"{% endif %}> Системные сообщения
+            </label>
+            <label class="checkbox-inline">
+              <input type="radio" class="js-comments-filter-input" name="MESSAGE_TYPE" value="USER_MESSAGES" {% if chat.options.MESSAGE_TYPE == 'USER_MESSAGES' %}checked="checked"{% endif %}> Сообщения участников
+            </label>
+{#	        <label class="checkbox-inline">#}
+{#              <input type="radio" class="js-comments-filter-input" name="MESSAGE_TYPE" value="COMMITS" {% if chat.options.MESSAGE_TYPE == 'COMMITS' %}checked="checked"{% endif %}> Изменения кода#}
+{#            </label>#}
+            <label class="checkbox-inline">
+              <input type="radio" class="js-comments-filter-input" name="MESSAGE_TYPE" value="TODO" {% if chat.options.MESSAGE_TYPE == 'TODO' %}checked="checked"{% endif %}> На согласовании
+            </label>
+            <label class="checkbox-inline">
+              <input type="radio" class="js-comments-filter-input" name="MESSAGE_TYPE" value="BUGS" {% if chat.options.MESSAGE_TYPE == 'BUGS' %}checked="checked"{% endif %}> Выявленные ошибки
+            </label>
+            <label class="checkbox-inline">
+              <input type="radio" class="js-comments-filter-input" name="MESSAGE_TYPE" value="FILES" {% if chat.options.MESSAGE_TYPE == 'FILES' %}checked="checked"{% endif %}> Файлы
+            </label>
+        </div>
+    </div>
+
+    
+    <div class="Chat">
+        <table width="100%">
+            <tr>
+                <td class="UserListTD" style="display:none;">
+                    <div id="ScrollBar" class="UserList">
+                        <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+                        <div class="viewport">
+                            <div class="overview userList">
+                                <ul>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="ChatWindowWrap">
+                        <div id="ScrollBarCat" class="ChatWindow">
+                            <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+                            <div class="viewport">
+                                <div class="overview" id="chatWindow">
+{#                                    <script>#}
+{#                                        widget_chat_arLogMessages = [];#}
+{#                                        {% for message in chat.messages %}#}
+{#                                            widget_chat_arLogMessages.push({{ message|jsonify|safe }});#}
+{#                                        {% endfor %}#}
+{#                                    </script>#}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="InputBlock">
+                            <input type="text" id="wc_chat_message" data-blur="Напишите текст или перетащите файл (Enter)" value="Напишите текст или перетащите файл (Enter)" />
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(function(){
+        $('#wc_chat_message').addFilePaste(function(data){
+            data = $.parseJSON(data);
+            $(this).val('#'+data.fid+'#');
+        });
+    })
+</script>

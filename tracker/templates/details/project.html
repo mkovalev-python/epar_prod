@@ -1,0 +1,229 @@
+{% extends "main/base.html" %}
+{% load thumbnail get_settings compressed %}
+{% block content %}
+{% compressed_css 'project_detail' %}
+{% compressed_js 'project_edit' %}
+{% compressed_js 'project_detail' %}
+<script type="text/javascript">
+    window.heliardData = {
+        project: {{ project.id }}
+    };
+</script>
+<div class="widget">
+<div class="project-info-area clearfix">
+    <div class="project-info-left">
+        <span class="project-info-avatar">
+            <span class="project-info-avatar-upload">
+                <input type="file" class="js-avatar_upload">
+                <a href="" class="btn btn-success">Выбрать</a>
+            </span>
+            {% if project.imagePath %}
+                <img width="100px" src="{{ project.imagePath|thumbnail:'100x100' }}" class="js-avatar"/>
+            {% else %}
+                <img width="100px" src="/static/img/no-photo.png"  class="js-avatar" />
+            {% endif %}
+        </span>
+
+    </div>
+    <div class="project-info-right">
+        <h1>
+            {% if canEdit %}
+            <a href="/project/edit/?id={{ project.id }}"></a>
+            <span class="project-edit-link-editable">{{ project.name }}<i class="fa fa-pencil"></i></span>
+            <input type="text" class="project-edit-input form-control js-project-name" value="{{ project.name }}" />
+            {% else %}
+            {{ project.name }}
+            {% endif %}
+        </h1>
+        <p class="editable-textarea-wrapper">
+            {% if canEdit %}
+            <span class="editable-textarea-click">{{ project.description }}<i class="fa fa-pencil"></i></span>
+            <textarea class="editable-textarea form-control js-project-description">{{ project.description }}</textarea>
+            {% else %}
+            {{ project.description }}
+            {% endif %}
+        </p>
+    </div>
+</div>
+<hr class="clearfix">
+<ul id="myTab" role="tablist" class="user-list-settings clearfix">
+    <li role="accesses" class="active">
+        <a data-toggle="tab" aria-controls="accesses" href="#accesses" aria-expanded="true"><i class="fa fa-wrench"></i><span>Доступы</span></a>
+    </li>
+    {% if bCurUserIsAuthor %}
+    <li role="participants_and_rates">
+        <a data-toggle="tab" aria-controls="participants_and_rates" href="#participants_and_rates" aria-expanded="false"><i class="fa fa-users"></i><span>Участники</span></a>
+    </li>
+    {% endif %}
+<!--    <li role="integration">-->
+<!--        <a data-toggle="tab" aria-controls="integration" href="#integration" aria-expanded="false"><i class="fa fa-cloud-upload"></i><span>Интеграция</span></a>-->
+<!--    </li>-->
+    <li role="additional_settings">
+        <a data-toggle="tab" aria-controls="additional_settings" href="#additional_settings" aria-expanded="false"><i class="fa fa-cogs"></i><span>Дополнительно</span></a>
+    </li>
+<!--    <li role="achievements">-->
+<!--        <a data-toggle="tab" aria-controls="achievements" href="#achievements" aria-expanded="false"><i class="fa fa-thumbs-up"></i><span>Значки</span></a>-->
+<!--    </li>-->
+</ul>
+<div class="tab-content settings-tab">
+        <div id="accesses" class="tab-pane active" role="tabpanel">
+            {% include 'partials/project_detail/accesses.html' %}
+        </div>
+        {% if bCurUserIsAuthor %}
+            <div id="participants_and_rates" class="tab-pane" role="tabpanel">
+                {% include 'partials/project_detail/participants_rates.html' %}
+            </div>
+        {% endif %}
+        <div id="integration" class="tab-pane" role="tabpanel">
+            {% include 'partials/project_detail/integration.html' %}
+        </div>
+        <div id="additional_settings" class="tab-pane" role="tabpanel">
+            {% include 'partials/project_detail/additional_params.html' %}
+        </div>
+        <div id="achievements" class="tab-pane" role="tabpanel">
+            {% include 'partials/project_detail/achievements.html' %}
+        </div>
+    </div>
+</div><!--widget-->
+<script>
+    $(function () {
+        var timerCheckFields = false,
+                $projectNameInput = $('.js-project-name');
+
+        $('.js-repository').click(function (ev) {
+            if (!$(this).prop('checked')) {
+                $('.js-repository-value').val('');
+            } else {
+                $('.js-repository-value').val(transliterate($('.js-project-name').val())).focus();
+            }
+            checkFields();
+        });
+
+        $projectNameInput.keyup(function () {
+            var projectName = $(this).val();
+            var repoName = transliterate(projectName);
+            if (in_sync) {
+                $('.js-repository-value').val(repoName);
+                unmarkRepName();
+                setCheckFieldsTimer();
+            }
+
+        }).change(function () {
+            unmarkRepName();
+        });
+        function unmarkRepName() {
+            $('.js-repository-value').next('i').removeClass('fa-check-circle fa-exclamation-circle fa-spinner fa-spin').css('color', 'black');
+        }
+
+        function markSuccessRepName() {
+            $('.js-repository-value').parent().removeClass('error').end().next('i').addClass('fa-check-circle').removeClass('fa-exclamation-circle fa-spinner fa-spin').css('color', 'green');
+        }
+
+        function markErrorRepName() {
+            $('.js-repository-value').parent().addClass('error').end().next('i').addClass('fa-exclamation-circle').removeClass('fa-check-circle fa-spinner fa-spin').css('color', 'red');
+        }
+
+        function enableSubmit() {
+            $('.js-integration-save').removeAttr('disabled');
+        }
+
+        function disableSubmit() {
+            $('.js-integration-save').attr('disabled', 'disabled');
+        }
+
+        function setCheckFieldsTimer() {
+            if (timerCheckFields) {
+                clearTimeout(timerCheckFields);
+            }
+            timerCheckFields = setTimeout(checkFields, 700);
+        }
+
+        function checkFields() {
+            var projectName = $('.js-project-name').val(),
+                    isRepo = $('.js-repository').is(':checked'),
+                    repoName,
+                    $repoNameInput = $('.js-repository-value');
+
+            if (!isRepo) {
+                $repoNameInput.val('');
+                enableSubmit();
+                unmarkRepName();
+                return false;
+            }
+
+            if (in_sync) {
+                repoName = transliterate($repoNameInput.val()) || transliterate(projectName);
+            }
+            else {
+                repoName = transliterate($repoNameInput.val());
+            }
+
+            $repoNameInput.val(repoName).next('i').addClass('fa-spinner fa-spin');
+
+            PM_AjaxPost(
+                    '/project/edit/check_repository_name',
+                    {
+                        'repoName': repoName
+                    },
+                    function (response) {
+                        if (response == "OK") {
+                            markSuccessRepName();
+                            enableSubmit();
+                        } else if (response == "ERROR") {
+                            markErrorRepName();
+                            disableSubmit();
+                        } else {
+                            $('.js-repository-value').val(response);
+                            markSuccessRepName();
+                            enableSubmit();
+                        }
+                    }
+            );
+        }
+        disableSubmit();
+
+        $projectNameInput.blur(checkFields);
+        var in_sync = true;
+        $('.js-repository-value').focus(function() {
+            in_sync = ($(this).val() == transliterate($projectNameInput.val()));
+        }).keyup(function() {
+            setCheckFieldsTimer();
+            in_sync = ($(this).val() == transliterate($projectNameInput.val()));
+        }).blur(function(ev) {
+            checkFields();
+        });
+        checkFields();
+
+        $('a[data-toggle="tab"]').on('click', function(e) {
+            history.pushState(null, null, $(this).attr('href'));
+        });
+        // navigate to a tab when the history changes
+        window.addEventListener("popstate", function(e) {
+            var activeTab = $('[href=' + location.hash + ']');
+            if (activeTab.length) {
+                activeTab.tab('show');
+            } else {
+                $('.nav-tabs a:first').tab('show');
+            }
+        });
+        if (location.hash) {
+            var activeTab = $('[href=' + location.hash + ']');
+            if (activeTab.get(0)) {
+                activeTab.tab('show');
+            }
+        }
+
+
+        //TODO: исправить отправку снятых чекбоксов в проекте вместо этого блока
+        $('form').submit(function(){
+            $(this).find('[type=checkbox]').each(function() {
+                if ($(this).attr('name').indexOf('settings_') > -1) {
+                    if (!$(this).is(':checked')) {
+                        $(this).replaceWith('<input type="hidden" name="'+$(this).attr('name')+'" value="N" />');
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

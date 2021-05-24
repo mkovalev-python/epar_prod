@@ -1,0 +1,97 @@
+@font-face {
+	font-family: 'icomoon';
+	src:url('../fonts/helifont/icomoon.eot?-ns0ubf1');
+	src:url('../fonts/helifont/icomoon.eot?#iefix-ns0ubf1') format('embedded-opentype'),
+		url('../fonts/helifont/icomoon.woff?-ns0ubf1') format('woff'),
+		url('../fonts/helifont/icomoon.ttf?-ns0ubf1') format('truetype'),
+		url('../fonts/helifont/icomoon.svg?-ns0ubf1#icomoon') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+    font-family: 'icomoon';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-screen:before {
+    content: "\e615";
+}
+.icon-robot:before {
+    content: "\e616";
+}
+.icon-hosting:before {
+    content: "\e617";
+}
+.icon-guarantee:before {
+    content: "\e614";
+}
+.icon-fast:before {
+    content: "\e613";
+}
+.icon-cheap:before {
+    content: "\e612";
+}
+.icon-facebook:before {
+    content: "\e610";
+}
+.icon-vkontakte:before {
+    content: "\e611";
+}
+.icon-draw:before {
+    content: "\e60f";
+}
+.icon-cloud2:before {
+    content: "\e60c";
+}
+.icon-cloud3:before {
+    content: "\e60d";
+}
+.icon-git:before {
+    content: "\e60e";
+}
+.icon-send:before {
+    content: "\e60b";
+}
+.icon-adjust:before {
+    content: "\e607";
+}
+.icon-ckecked:before {
+    content: "\e608";
+}
+.icon-clip:before {
+    content: "\e609";
+}
+.icon-lock:before {
+    content: "\e60a";
+}
+.icon-register:before {
+    content: "\e606";
+}
+.icon-cloud:before {
+    content: "\e600";
+}
+.icon-live:before {
+    content: "\e601";
+}
+.icon-graphic:before {
+    content: "\e602";
+}
+.icon-responsive:before {
+    content: "\e603";
+}
+.icon-analyze:before {
+    content: "\e604";
+}
+.icon-wiki:before {
+    content: "\e605";
+}

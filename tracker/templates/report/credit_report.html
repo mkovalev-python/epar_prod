@@ -1,0 +1,57 @@
+{% extends "main/base.html" %}
+{% block header %}
+{% endblock %}
+{% block content %}
+<div class="widget" id="chat">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Позиция</th>
+                <th>Дата</th>
+                <th>Мы должны</th>
+                <th>Сумма</th>
+                <th>Нам должны</th>
+                <th>Сумма</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for credit in credits %}
+            <tr>
+                <td><a href='{{ credit.task.url }}'>{{ credit.task.name }}</a></td>
+                <td>{{ credit.date }}</td>
+                <td><a href="?user={{ credit.user.id }}">{{ credit.user.last_name }}</a></td>
+                <td>{% if credit.user.last_name %}{{ credit.value }}{% endif %}</td>
+                <td><a href="?payer={{ credit.payer.id }}">{{ credit.payer.last_name }}</a></td>
+                <td>{% if credit.payer.last_name %}{{ credit.value }}{% endif %}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Итого</th>
+                <th></th>
+                <th>{{ sum.plan_cost }}</th>
+                <th>{{ sumTo }}</th>
+                <th>{{ sum.plan_cost }}</th>
+                <th>{{ sumFrom }}</th>
+            </tr>
+            <tr>
+                <th>Доля менеджера</th>
+                <th>{{ sumManager }}</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tr>
+                <th>Прибыль</th>
+                <th>{{ total }}</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+{% endblock %}

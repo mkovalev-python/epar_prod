@@ -1,0 +1,327 @@
+# -*- coding:utf-8 -*-
+# Django settings for tracker project.
+__author__ = 'Rayleigh'
+
+import os.path
+from pipeline_settings import *
+# SITE ID
+# todo: ADD PURPOSE TO THIS
+SITE_ID = 1
+
+# DEBUG MODE
+DEBUG = False
+
+# TEMPLATE DEBUG MODE
+TEMPLATE_DEBUG = False
+
+# list of admins
+ADMINS = (
+    ('admin', 'admin@email.com'),
+)
+
+# list of managers
+MANAGERS = ADMINS
+# ######################## TIME_SETTINGS ###########################
+# Local time zone for this installation. Choices can be found here:
+# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
+# although not all choices may be available on all operating systems.
+# In a Windows environment this must be set to your system time zone.
+TIME_ZONE = 'Europe/Moscow'
+
+# Language code for this installation. All choices can be found here:
+# http://www.i18nguy.com/unicode/language-identifiers.html
+LANGUAGE_CODE = 'ru-ru'
+
+# If you set this to False, Django will make some optimizations so as not
+# to load the internationalization machinery.
+USE_I18N = True
+
+# If you set this to False, Django will not format dates, numbers and
+# calendars according to the current locale.
+USE_L10N = True
+
+# If you set this to False, Django will not use timezone-aware datetimes.
+USE_TZ = True
+
+DATE_FORMAT = 'd E Y'
+
+# ####################### PATHS_SETTINGS ###############################
+# ROOT PATH
+PROJECT_ROOT = '/home/heliard/heliard/'
+# Absolute filesystem path to the directory that will hold user-uploaded files.
+# Example: "/home/media/media.lawrence.com/media/"
+MEDIA_ROOT = PROJECT_ROOT + 'tracker/media/'
+
+# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# trailing slash.
+# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
+MEDIA_URL = '/media/'
+
+# Absolute path to the directory static files should be collected to.
+# Don't put anything in this directory yourself; store your static files
+# in apps' "static/" subdirectories and in STATICFILES_DIRS.
+# Example: "/home/media/media.lawrence.com/static/"
+STATIC_ROOT = PROJECT_ROOT + 'tracker/static'
+
+# URL prefix for static files.
+# Example: "http://media.lawrence.com/static/"
+STATIC_URL = '/static/'
+
+# Additional locations of static files
+STATICFILES_DIRS = (
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+)
+
+# template locations
+TEMPLATE_DIRS = (
+    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+    PROJECT_ROOT + 'tracker/templates',
+    PROJECT_ROOT + 'PManager/widgets'
+)
+
+# ######################### DJANGO CONFIGURATIONS ################################
+# List of finder classes that know how to find static files in
+# various locations.
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
+)
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = 'SECRET KEY'
+
+# List of callables that know how to import templates from various sources.
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+    # 'django.template.loaders.eggs.Loader',
+)
+
+# todo: ADD DESCRIPTION
+MIDDLEWARE_CLASSES = (
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+)
+
+# todo: ADD DESCRIPTION
+ROOT_URLCONF = 'tracker.urls'
+
+# Python dotted path to the WSGI application used by Django's runserver.
+WSGI_APPLICATION = 'tracker.wsgi.application'
+
+INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'django.contrib.humanize',
+    'django.contrib.admin',
+    'rest_framework',
+    # 'robokassa',
+    'PManager',
+    'pymorphy',
+    'django.contrib.humanize',
+    'south',
+    'django_notify',
+    'mptt',
+    'sorl.thumbnail',
+    'gunicorn',
+    'less',
+    'pipeline',
+    'sekizai',
+    'support_page',
+)
+
+# todo: ADD DESCRIPTION
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "PManager.context_processors.get_current_path",
+    "PManager.context_processors.get_head_variables",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.request",
+    "django.core.context_processors.static",
+    "django.core.context_processors.tz",
+    "django.contrib.messages.context_processors.messages",
+    "sekizai.context_processors.sekizai",
+)
+
+# todo: ADD DESCRIPTION
+PYMORPHY_DICTS = {
+    'ru': {'dir': os.path.join(os.path.dirname(__file__), '../PManager/dicts/ru.sqlite-json')},
+}
+
+# A sample logging configuration. The only tangible logging
+# performed by this configuration is to send an email to
+# the site admins on every HTTP 500 error when DEBUG=False.
+# See http://docs.djangoproject.com/en/dev/topics/logging for
+# more details on how to customize your logging configuration.
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',   # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'tracker',                      # Or path to database file if using sqlite3.
+        'USER': 'root',                         # Not used with sqlite3.
+        'PASSWORD': 'root',                     # Not used with sqlite3.
+        'HOST': 'localhost',                    # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '3306',                         # Set to empty string for default. Not used with sqlite3.
+        'OPTIONS': {"init_command": "SET foreign_key_checks = 0;"} #it save our code for every storage engines
+    }
+}
+
+# todo: ADD DESCRIPTION
+AUTH_PROFILE_MODULE = 'PManager.PM_User'
+
+# Allowed hosts for this application
+ALLOWED_HOSTS = [
+    'tracker.ru', 'heliard'
+]
+
+# Socket server address
+SOCKET_SERVER_ADDRESS = 'tracker.ru'
+
+# Server root url
+SERVER_ROOT_URL = 'tracker.ru'
+HTTP_ROOT_URL = 'http://tracker.ru'
+SERVER_IP = '188.225.74.214'
+
+# Site default email url
+SITE_EMAIL = 'admin@tracker.ru'
+ADMIN_EMAIL = 'admin@tracker.ru'
+INFO_EMAIL = 'admin@tracker.ru'
+NO_REPLY_EMAIL = 'no-reply@tracker.ru'
+FEEDBACK_EMAIL = 'feedback@tracker.ru'
+
+# ######################### COOKIES SETTINGS #############################
+# todo: ADD DESCRIPTION
+SESSION_COOKIE_HTTPONLY = False
+
+# todo: ADD DESCRIPTION
+SESSION_COOKIE_SECURE = False
+
+# todo: ADD DESCRIPTION
+SET_COOKIE = {}
+
+# todo: ADD DESCRIPTION
+SESSION_COOKIE_DOMAIN = 'tracker.ru'
+
+# ######################### REDIS SETTINGS ##############################
+# REDIS SERVER HOST
+ORDERS_REDIS_HOST = 'localhost'
+
+# REDIS SERVER PORT
+ORDERS_REDIS_PORT = 6379
+
+# REDIS SERVER PASSWORD
+ORDERS_REDIS_PASSWORD = None
+
+# REDIS SERVER DB NAME
+ORDERS_REDIS_DB = None
+
+# #################### ROBOKASSA SETTINGS ##################################
+# ROBOKASSA_LOGIN
+ROBOKASSA_LOGIN = 'Экспертная компанияErp'
+
+# ROBOKASSA PASS
+ROBOKASSA_PASSWORD1 = ''
+
+# ROBOKASSA PASS 2
+ROBOKASSA_PASSWORD2 = ''
+
+# ROBOKASSA TEST MODE
+ROBOKASSA_TEST_MODE = True
+
+# ROBOKASSA EXTRA PARAMS ARRAY
+ROBOKASSA_EXTRA_PARAMS = ['user']
+
+# todo: ADD DESCRIPTION
+COMISSION = 1
+
+# ########################## GIT MODULE SETTINGS ######################################
+# GIT MODULE IS ENABLED
+USE_GIT_MODULE = True
+
+#DOCKER
+DOCKER_USER_NAME = 'dockhost'
+DOCKER_HOST = 'heliard-servers.ru:8079'
+DOCKER_APP_KEY = ''
+
+# Gitolite admin repository path
+GITOLITE_ADMIN_REPOSITORY = '/home/heliard/gitolite-admin'
+# Gitolite ssh url credentials and domain string
+GITOLITE_ACCESS_URL = 'heliard@tracker.ru'
+# Gitolite users repositories path
+GITOLITE_REPOS_PATH = '/home/heliard/repositories'
+# Gitolite default user for docker
+GITOLITE_DEFAULT_USER = 'id_rsa'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'formatters': {
+        'verbose': {
+            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s\n",
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
+        'simple': {
+            'format': '%(levelname)s : %(message)s'
+        }
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'file_handler': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'invites.log',
+            'formatter': 'verbose'
+        },
+
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'task_draft_log': {
+            'handlers': ['file_handler'],
+            'level': 'DEBUG'
+        }
+    }
+}
+
+TELEGRAM_API_URL = 'https://api.telegram.org/bot1160494410:AAEAo1Ab6vEgLDqe-qY9Lu5bPC54fasmK3E/sendMessage'
+TELEGRAM_MANAGER_CHAT_ID = -433614812   # test chat
+TELEGRAM_UPSALE_CHAT_ID = -441669318   # updasle chat
+TELEGRAM_BOT_ID = ''
+TELEGRAM_WEBHOOK_URL = ''
+
+
+# maildump for development
+if DEBUG:
+    EMAIL_HOST = '127.0.0.1'
+    EMAIL_HOST_USER = ''
+    EMAIL_HOST_PASSWORD = ''
+    EMAIL_PORT = 1025
+    EMAIL_USE_TLS = False

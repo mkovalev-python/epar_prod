@@ -1,0 +1,17 @@
+{% extends 'main/base.html' %}
+{% load compressed %}
+{% block content %}
+    {% compressed_js 'markdown' %}
+    {% compressed_css 'markdown' %}
+    {% block wiking_js %}{% endblock %}
+    <div class="widget inner">
+        <div class="widget-title">{% block wiking_title %}{% endblock %}</div>
+        <div class="widget-body">
+            {% block wiking_breadcrumbs %}{% endblock %}
+            {% block wiking_childs %}{% endblock %}
+            {% block wiking_content %}{% endblock %}
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    {% block wiking_after %}{% endblock %}
+{% endblock %}

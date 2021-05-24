@@ -1,0 +1,196 @@
+{% load floattags jsonify humanize compressed %}
+{% load number_ending %}
+{% compressed_js 'project_graph' %}
+{% if project_graph.paymentYaForm %}
+    <form action="https://demomoney.yandex.ru/eshop.xml"
+          method="POST" name="ya" style="display: none;">
+        {{ project_graph.paymentYaForm.as_p }}
+    </form>
+    <script>document.forms.ya.submit();</script>
+{% else %}
+    <style>
+        .project_graph .well .role-titles h5:not(.active) {
+            display: none;
+        }
+    </style>
+    <script>
+    $(function() {
+        $('.js-toggle-button').click(function(){
+            $('.js-icons-inline').toggleClass('icons-inline');
+            $('.js-to-show-2').slideToggle('to-show');
+            $('.js-to-show').slideToggle('fast');
+            $('.js-toggle-button').toggleClass('open');
+            $('.js-toggle-button i').toggleClass('fa-chevron-up fa-chevron-down');
+            return false;
+        });
+    });
+    </script>
+    <div class="row project_graph">
+        <div class="col-sm-6 to-hide-768">
+            <div class="well" style="border-left-color: #f0ad4e;">
+                <h4>НВВ</h4>
+                <div class="row icons-inline js-icons-inline">
+                    {% for ms in project_graph.categories %}
+                    <div class="col-sm-4 clearfix two-line">
+                        <i class="fa fa-circle-css fa-code" aria-hidden="true" data-toggle="popover" title="ToDo"
+                           data-content="Оценка, поступившая от сетевой организации"></i>
+                        {{ ms.title }}:
+                        <b><a href="#comments" class="js-view-comments" >{{ ms.sum_formatted }} руб.</a></b>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="row to-show js-to-show" style="margin-bottom: 15px;">
+                    <div class="col-sm-4 clearfix two-line">
+                        Оценка, поступившая от сетевой организации
+                    </div>
+                    <div class="col-sm-4 clearfix two-line">
+                        Оценка, произведенныя регулирующим органом
+                    </div>
+                    <div class="col-sm-4 clearfix two-line">
+                        Суммарная оценка, произведенная экспертной организацией
+                    </div>
+                </div>
+                <a href="#" class="toggle-button js-toggle-button"><i class="fa fa-chevron-down" aria-hidden="true"></i></a>
+            </div>
+        </div>
+        {% if project_graph.project %}
+        <div class="col-sm-6 to-hide-768">
+            <div class="well" style="border-left-color: #f0ad4e;">
+                <h4>Различия по типам затрат</h4>
+                <div class="row icons-inline js-icons-inline">
+                    {% for v in project_graph.types %}
+                    <div class="col-sm-4 clearfix two-line">
+                        <i class="fa fa-circle text-color {{v.code}}"  aria-hidden="true" data-toggle="popover" title="ToDo"
+                           data-content="Оценка, поступившая от сетевой организации"></i>
+                        {{ v.name }}:<br />
+                        <b><a href="#comments" style="{% if v.price < 0 %}color: darkred;{% endif %}" class="js-view-comments" >{{ v.price_formatted }} руб.</a></b>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="row to-show js-to-show" style="margin-bottom: 15px;">
+                    <div class="col-sm-4 clearfix two-line">
+
+                    </div>
+                    <div class="col-sm-4 clearfix two-line">
+
+                    </div>
+                    <div class="col-sm-4 clearfix two-line">
+
+                    </div>
+                </div>
+                <a href="#" class="toggle-button js-toggle-button"><i class="fa fa-chevron-down" aria-hidden="true"></i></a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="row project_graph">
+        {% if False and project_graph.roles %}
+            <div class="col-sm-6">
+                <div class="well hide-on-mobile">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="role-titles">
+                                {% for role in project_graph.roles %}
+                                    <h5 class="{% if forloop.first %}active{% endif %} js-select-role"
+                                        data-role="{{ role.role.code }}">
+                                        <i class="fa fa-user"></i>&nbsp;&nbsp;Роль: {{ role.role.name }}
+                                        {% if project_graph.isPro and role.role.code == 'employee' %}
+                                            <a href="/pro/" class="pro-icon"><i class="fa fa-star"></i></a>{% endif %}
+                                    </h5>
+                                {% endfor %}
+                                {% if project_graph.roles|length > 1 %}
+                                    <a href="#" class="js-change-role project_graph__change_role"><i
+                                            class="fa fa-user"></i><i class="fa fa-chevron-right"></i> </a>
+                                {% endif %}
+                            </div>
+                            {% for role in project_graph.roles %}
+                                <div class="role-{{ role.role.code }} js-role" data-role="{{ role.role.code }}"
+                                     {% if not forloop.first %}style="display: none;" {% endif %}>
+                                    <div class="role-content">
+                                        <div class="role-content-tab">
+                                            {% if project_graph.isPro and role.role.code != 'client' %}
+                                                <strong>Цена часа:</strong> &nbsp;
+                                                <span class="stavka {% if project_graph.rating < 0 %}danger{% else %}success{% endif %}">{{ role.rate }}
+                                                    {% if role.rate and project_graph.rating != 0 %}
+                                                        <span class="bonus">{% if project_graph.rating < 0 %}{% else %}
+                                                            +{% endif %}{{ project_graph.rating }}
+                                                </span>
+                                                    {% else %}
+                                                        &nbsp;
+                                                    {% endif %}
+                                        </span>
+                                                {% if project_graph.fine %}
+                                                    &nbsp;&nbsp;Штраф:&nbsp;{{ project_graph.fine }}
+                                                {% endif %}
+                                                <br/>
+                                            {% elif role.role.code == 'employee' %}
+                                                При закрытии задач вам начисляется рейтинг специалиста.
+                                            {% endif %}
+                                            {% if role.role.code == 'client' or project_graph.isPro %}
+                                                {% if role.role.code == 'client' %}
+                                                    Все расходы по проекту списываются с вашего счета
+                                                {% else %}
+                                                    <span
+                                                            style="margin-top: 8px;display: inline-block;"><strong>Счет:</strong> <b
+                                                            style="position: relative; top: 1px;">{{ project_graph.allPrice|intcomma }}</b>
+                                                        {% if project_graph.allProjectPrice %}
+                                                            <small>{{ project_graph.allProjectPrice|intcomma }}</small>{% endif %}</span>
+                                                    <a href="/wiki/bonuses">?</a>
+                                                {% endif %}
+                                            {% elif role.role.code == 'manager' %}
+                                                Вы видите все задачи и можете их закрывать.
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-xs-6" style="border-left: 1px solid #efefef;">
+                            {% for role in project_graph.roles %}
+                                <div class="js-graph-{{ role.role.code }}">
+                                    {% if role.role.code == 'employee' %}
+                                        <h5>Рейтинг специалиста</h5>
+                                        Закрыто задач всего:
+                                        <b style="color:#172942;">{{ project_graph.allTaskQty }}</b><br>
+                                        Компетентность:
+                                        <b style="color:#999;">{{ project_graph.taskTagCoefficient }}</b> (
+                                        <b style="color:#172942;">{{ project_graph.taskTagPosition }}</b>-е место )
+                                    {% elif role.role.code == 'manager' %}
+                                        <h5>Время открытых задач</h5>
+                                        <table width="100%;">
+                                            <tr>
+                                                <td><strong>Реальное</strong></td>
+                                                <td><strong>Плановое</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <b style="color:{% if project_graph.allOpenRealTime >= project_graph.allOpenPlanTime %}#172942{% else %}#172942;{% endif %}">
+                                                        {{ project_graph.allOpenRealTime }}
+                                                        ч.
+                                                    </b>
+                                                </td>
+                                                <td><b style="color:#999;">{{ project_graph.allOpenPlanTime }} ч.</b>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    {% elif role.role.code == 'client' %}
+                                        <h5>Счет</h5>
+                                        <div class="role-content-tab">
+                                            <span style="display: inline-block;margin-right: 15px;">Баланс: <b>{{ project_graph.allPrice|intcomma }}</b> руб.</span>
+                                            <a href="#" data-toggle="modal" data-target="#payment-popup"><i
+                                                    class="fa fa-credit-card"></i>&nbsp;Пополнить</a>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <a href="/stat/"><i class="fa fa-list"></i>&nbsp;Отчет</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endif %}

@@ -1,0 +1,50 @@
+<h2>Дополнительные параметры проекта</h2>
+<hr>
+<form method="POST" name="additional">
+{% if request.user.id == project.payer.id %}
+    <p class="checkbox">
+        <label>
+            <input {% if not canEdit or not canDelete %}disabled="disabled" {% endif %}
+            {% if project.closed %}checked="checked" {% endif %}
+            type="checkbox" name="is_closed" value="1" >&nbsp;
+            Перенести проект в архив (операция необратима)
+        </label>
+    </p>
+{% endif %}
+{#    <p class="checkbox">#}
+{#        <label>#}
+{#            <input {% if not canEdit %}disabled="disabled" {% endif %}#}
+{#            {% if settings.autohide_messages %}checked="checked" {% endif %}#}
+{#            type="checkbox" value="1" name="settings_autohide_messages" >&nbsp;#}
+{#            Скрывать сообщения клиента и исполнителя друг от друга#}
+{#        </label>#}
+{#    </p>#}
+
+    {% if request.user.is_superuser %}
+    <p class="checkbox">
+        <label>
+            Наценка на расходы для инвестора <input {% if not canEdit %}disabled="disabled" {% endif %} type="text" name="settings_client_comission" value="{{ settings.client_comission }}" /> %
+        </label>
+    </p>
+    {% endif %}
+    <h2>Категории расчетов</h2>
+    <hr>
+{#    <p class="checkbox">#}
+{#        <label>#}
+{#            <input {% if not canEdit %}disabled="disabled" {% endif %}#}
+{#            {% if settings.use_colors_in_kanban %}checked="checked" {% endif %}#}
+{#            type="checkbox" value="1" name="settings_use_colors_in_kanban" >&nbsp;#}
+{#            Использовать категории в канбане вместо статусов#}
+{#        </label>#}
+{#    </p>#}
+    <div class="project-colors">
+    {% for color_code, color in colors %}
+        <p><span class="color-block {{ color_code }}" style="float: left; margin-right: 10px;"></span> <input {% if not canEdit %}disabled="disabled" {% endif %}type="text" name="settings_color_name_{{ color_code }}" value="{{ color }}" class="form-control" style="width: 96%;" placeholder="Введите название категории" /> </p>
+    {% endfor %}
+    </div>
+
+    {% if canEdit %}
+    <hr>
+    <p><input type="submit" value="Применить" name="settings_save" class="btn btn-success" /></p>
+    {% endif %}
+</form>

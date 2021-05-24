@@ -1,0 +1,234 @@
+.dropdown.notifications span {
+    color: white !important;
+}
+
+.DetailCommentText.Img
+{
+    margin: 0 0 0 105px;
+}
+.DetailCommentText
+{
+    margin: 0;
+}
+
+.DetailCommentInfo
+{
+    overflow: hidden;
+    zoom:1;
+}
+.pull-left.Avatar
+{
+    margin:0 15px 0 0;
+}
+
+.option.task_start {
+    background-position:center left;
+}
+
+.option.task_stop {
+    background-position:bottom left;
+}
+
+a.option.task_close {
+    background-position:center right;
+}
+
+.option.task_open {
+    background-position:top right;
+}
+
+.closed .taskName {
+    color:#a9a9a9 !important;
+}
+.loader {
+    position: absolute;
+    z-index:99999;
+    display:none;
+}
+.option.task_start, .option.task_stop {
+    margin-left:0;
+}
+.newEvent .task_name{
+    font-weight:bold;
+}
+
+img.thumbnail {
+    max-width: 100px;
+}
+/*ОКНО ДОБАВЛЕНИЯ КАРТИНКИ*/
+div.preview_img_form {
+    width:700px;
+    /*margin-left:-385px;*/
+    padding:15px;
+    top:40px;
+}
+div.preview_img_form h2 {
+    background: #1d6e62 none repeat scroll 0 0;
+    border-radius: 5px 5px 0 0;
+    color: #fff;
+    font-size: 24px;
+    line-height: 24px;
+    margin: -15px -15px 10px;
+    padding: 18px 0;
+    text-align: center;
+}
+.picture_container {
+    position: relative;
+    /*overflow-y:auto; */
+    /*max-height:325px; */
+    margin-bottom:25px; text-align:center;}
+.picture_container img {display:inline-block; max-height: 420px;}
+div.preview_img_form .edit {
+    background: #fff none repeat scroll 0 0;
+    line-height: 22px;
+    padding: 5px 8px;
+    position: absolute;
+    right: 57px;
+    top: 13px;
+    color:#1d6e62;
+    width: 35px;
+    text-shadow: 0px 0px 0px #fff;
+    -moz-text-shadow: 0px 0px 0px #fff;
+    -webkit-text-shadow: 0px 0px 0px #fff;
+}
+div.preview_img_form .edit:hover,
+div.preview_img_form .edit:focus,
+div.preview_img_form .edit:active {
+    background: #f9f9f9;
+}
+div.preview_img_form .close {
+    line-height: 22px;
+    padding: 5px 8px;
+    position: absolute;
+    right: 15px;
+    top: 13px;
+    color:#fff;
+    width: 35px;
+    text-shadow: 0px 0px 0px #fff;
+    -moz-text-shadow: 0px 0px 0px #fff;
+    -webkit-text-shadow: 0px 0px 0px #fff;
+}
+div.preview_img_form .btn-mini [class^="icon-"],
+div.preview_img_form .btn-mini [class*=" icon-"] {margin:0px;}
+
+
+
+/* иконки к файлам */
+.icon-download-alt { display: inline-block; vertical-align: bottom; width: 20px; height: 20px; background: url("../images/ext.png") no-repeat scroll; }
+.icon-download-alt[class*=" icon-undefined"] { background-position: 0px 0px; }
+.icon-download-alt[class*=" icon-txt"]  { background-position: 0 -60px; }
+.icon-download-alt[class*=" icon-doc"]  { background-position: 0px -1200px; }
+.icon-download-alt[class*=" icon-jpg"], .icon-download-alt[class*=" icon-png"]  { background-position: 0 -540px; }
+.icon-download-alt[class*=" icon-xls"],
+.icon-download-alt[class*=" icon-xlsx"]{ background-position: 0 -960px; }
+.icon-download-alt[class*=" icon-zip"],
+.icon-download-alt[class*=" icon-rar"],
+.icon-download-alt[class*=" icon-7z"] { background-position: 0 -120px; }
+.icon-download-alt[class*=" icon-php"], .icon-download-alt[class*=" icon-js"], .icon-download-alt[class*=" icon-html"], .icon-download-alt[class*=" icon-css"] { background-position: 0 -660px; }
+.icon-download-alt[class*=" icon-flv"] {background-position:0 -1020px;} 
+.icon-download-alt[class*=" icon-avi"],
+.icon-download-alt[class*=" icon-mov"],
+.icon-download-alt[class*=" icon-mp4"] { background-position: 0px -600px; }
+
+.icon-download-alt[class*=" icon-pdf"] { background-position: 0 -1080px; }
+.icon-download-alt[class*=" icon-ppt"] { background-position: 0 -840px; }
+.icon-download-alt[class*=" icon-mp3"] { background-position: 0 -240px; }
+/* --- */
+
+.statusImg {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+	position: absolute;;
+	top:6px;
+    left: 6px;
+    background: #eee;
+    border-radius: 50%;
+}
+[data-status="online"] .statusImg {
+    background: #1d6e62;
+}
+.profile-edit-responsible {
+    margin-bottom: 10px;
+}
+.task-tab-filter > li .widget-control {
+    display:none;
+}
+.task-tab-filter > li.active .widget-control {
+    display:block;
+}
+
+a {
+    cursor:pointer;
+}
+
+.img-polaroid {
+    margin: 5px;
+    max-width: 200px;
+}
+
+
+
+/*#chatWindow .task-message .message_task_name {display:block;}*/
+#chatWindow .task-message .alert .message_task_name {display:inline;}
+#chatWindow .task-message .alert .message-author {
+    border-right: 1px solid #CCCCCC;
+    margin-right: 5px;
+    padding-right: 10px;
+}
+#chatWindow .task-message p {margin:0px !important; padding:0px;}
+#chatWindow .task-message .chatDate {
+    border-right: 1px solid #CCCCCC;
+    color: #999999;
+    font-size: 11px;
+    font-style: italic;
+    margin-right: 5px;
+    padding-right: 10px;
+}
+#chatWindow .task-message .message-text {
+    border-right: 1px solid #CCCCCC;
+    margin-right: 5px;
+    padding-right: 10px;
+}
+
+.Task_Detail .widget-title .fa-pause:not(.disabled) {
+    color: orange;
+}
+.disabled .fa {
+    color: lightgrey;
+}
+
+.transparent {
+    opacity: 0;
+}
+
+.js-drag-task {
+    cursor: move;
+}
+
+.task-wrapper.task-group-project {
+    color: #000000;
+    /*text-align: left;*/
+}
+
+rect.selected {
+    fill: red;
+}
+
+.closed .task_play {
+    display: none;
+}
+
+a, input, button {
+    outline: none !important;
+}
+
+.widget-tab {
+            float: left;
+            margin-right: 10px;
+            color: #333;
+        }
+
+.task-details-text {
+    margin-bottom: 20px;
+}

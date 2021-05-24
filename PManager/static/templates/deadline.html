@@ -1,0 +1,45 @@
+<div class="modal fade js-set-deadline green-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title">Установить сроки</h3>
+            </div>
+            <div class="modal-body clearfix deadline-wrapper">
+                <h5>№#TASK_NUMBER# — #TASK_NAME#</h5>
+                <hr class="clearfix" />
+                <div class="deadline-block">
+                    <h6>Крайний срок</h6>
+
+                    <div class="deadline-input">
+                        <input type="text" class="js-deadlinedate form-control" maxlength="10" name="deadline_date"
+                               placeholder="ДД.ММ.ГГГГ ЧЧ:ММ"/>
+                        <a class="fa fa-calendar" href="javascript:void(0);" onclick="$(this).prev().focus();"></a>
+                    </div>
+                    <a href="#" class="js-changeDeadlineDate" data-time="today">Сегодня</a>&nbsp;&nbsp;&nbsp;
+                    <a href="#" class="js-changeDeadlineDate" data-time="tomorrow">Завтра</a>&nbsp;&nbsp;&nbsp;
+                    <a href="#" class="js-changeDeadlineDate" data-time="week">Неделя</a>
+                </div>
+                <div class="deadline-block">
+                    <h6>Напомнить</h6>
+
+                    <div class="deadline-input">
+                        <input type="text" class="js-reminderdate form-control" maxlength="10" name="reminder_date"
+                               placeholder="ДД.ММ.ГГГГ ЧЧ:ММ" />
+                        <a class="fa fa-calendar" href="javascript:void(0);" onclick="$(this).prev().focus();"></a>
+                    </div>
+                    <a href="#" class="js-changeReminderDate" data-time="hour">За час</a>&nbsp;&nbsp;&nbsp;
+                    <a href="#" class="js-changeReminderDate" data-time="day">За день</a>&nbsp;&nbsp;&nbsp;
+                    <a href="#" class="js-changeReminderDate" data-time="week">За неделю</a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="submit" name="deadline" class="btn btn-success js-save_date" data-dismiss="modal"
+                       value="Сохранить"/>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>

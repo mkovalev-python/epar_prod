@@ -1,0 +1,1458 @@
+{% load thumbnail i18n jsonify less get_settings compressed %}{% load url from future %}
+<!DOCTYPE html>
+<html lang="ru" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0"/>
+    {% compressed_js 'base' %}
+    {% compressed_css 'base' %}
+    {% block stylesheets %}{% endblock %}
+    {% block header %}{% endblock %}
+    <title>{% block title %}{{ pageTitle }}{% endblock %}</title>
+    <script type="text/javascript">
+        window.heliardSettings = {
+            "HTTP_ROOT_URL": '{% get_settings "HTTP_ROOT_URL" %}',
+            "SERVER_IP": '{% get_settings "SERVER_IP" %}',
+            "SOCKET_SERVER_ADDRESS": '{% get_settings "SOCKET_SERVER_ADDRESS" %}',
+            'CSRF_TOKEN': $.cookie('csrftoken')
+        };
+        var CURRENT_TASK_VIEW;
+        var CURRENT_TASK_DATA;
+        var arTimers = {};
+        window.backurl = '{{ backurl }}';
+        {% if main.CURRENT_PROJECT %}
+            window.currentProject = {{ main.CURRENT_PROJECT.id }};
+        {% endif %}
+        window.baseUserParams = {
+            'userId': {{ user.id }}
+        };
+
+        WEB_SOCKET_SWF_LOCATION = '/static/WebSocketMain.swf';
+        $(function () {
+            APNG.ifNeeded(function () {
+                $("img.loader").each(function () {
+                    APNG.animateImage(this);
+                });
+            });
+        });
+        {% if user.is_authenticated %}
+            document.mainController = new mainControllerClass({
+                'userId':{{ user.id }},
+                'widgetsData': {}
+            });
+        {% endif %}
+        var oMyCurrentTimer = new PM_Timer({{ userTimer.jsonData|jsonify|safe }});
+        {% if userTimer %}
+            CURRENT_TASK_DATA = {
+                'id':{{ userTimer.task.id }},
+                'started':{{ userTimer.task.started|jsonify }},
+                'closed':{{ userTimer.task.closed|jsonify }},
+                'name':{{ userTimer.task.name|jsonify|safe }},
+                'project': {
+                    'name': {{ userTimer.task.project.name|jsonify|safe }}
+                }
+            };
+
+            {% if userTimer.task.parentTask %}
+                CURRENT_TASK_DATA['parentTask'] = {
+                    'name': {{ userTimer.task.parentTask.name|jsonify|safe }}
+                };
+            {% endif %}
+        {% endif %}
+        var ACCOUNT_TOTAL = {{ account_total|jsonify|safe }};
+    </script>
+    {% block scripts %}{% endblock %}
+    <link rel="shortcut icon" href="/static/ico/favicon.png"/>
+</head>
+<body>
+<div class="modal fade js-feedback_modal" id="feedback-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content green-popup">
+            <div class="modal-header">
+                <h2 class="modal-title" id="myModalLabel">Напишите нам</h2>
+            </div>
+            <div class="js-modal_content">
+                <div class="modal-body clearfix js-feedback_loader" style="height: 85px;width: 100%;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% if main.CAN_INVITE %}
+    <div class="modal fade js-invite-popup" id="invite-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content green-popup">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h2 class="modal-title">Приглашение пользователей в проект</h2>
+                </div>
+                <div class="modal-body clearfix">
+                    <div class="inputs-wrapper js-invite-cont">
+                        <div class="with-input-and-plus">
+                            <input type="text" name="email" class="form-control js-email-invite"
+                                   placeholder="Введите email"/>
+                            <i class="fa fa-times" onclick="$(this).closest('.js-invite-cont').remove();"></i>
+                        </div>
+                        <ul class="list-inline">
+                            <li>
+                                <div class="checkbox">
+                                    <label>
+                                        <input class="js-role-check-invite"
+                                               name="roles" value="guest" type="radio">
+                                        <span class="fa fa-users"></span> Гость</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="checkbox">
+                                    <label>
+                                        <input class="js-role-check-invite"
+                                               name="roles" value="manager" type="radio">
+                                        <span class="fa fa-cogs"></span> Руководитель</label>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="checkbox">
+                                    <label>
+                                        <input class="js-role-check-invite"
+                                               name="roles" value="employee" checked type="radio">
+                                        <span class="fa fa-user"></span> Участник</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-wrapper">
+                        <div class="col-5"><a href="#" class="btn btn-default block"
+                                              onclick="$('.js-invite-cont:eq(0)').clone().find('.js-email-invite').val('').end().find(':checkbox').attr('checked', false).end().insertAfter($('.js-invite-cont:last'));return false;">Добавить
+                            еще</a></div>
+                        <div class="col-5"><a href="#" class="btn btn-success block"
+                                              onclick="return document.mainController.inviteUser($(this), $('.js-email-invite'), $('.js-role-check-invite'));">Пригласить</a>
+                        </div>
+                    </div>
+
+                    <hr class="margin-25"/>
+                    {#                    <h2>Роли полльзователей в проекте</h2>#}
+                    {##}
+                    {#                    <p>От роли пользователя в проекте зависят доступные ему возможности:</p>#}
+                    {#                    <ol>#}
+                    {#                        <li>Менеджеры могут редактировать и просматривать любые задачи и сообщения.</li>#}
+                    {#                        <li>Разработчики имеют право просматривать только собственные задачи или задачи, в которые их пригласили в качестве наблюдателей.</li>#}
+                    {#                        <li>Гости проектов могут видеть только адресованные им сообщения и задачи, в которые их пригласили.</li>#}
+                    {#                    </ol>#}
+
+                </div>
+                <!--modal-body-->
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-danger" type="button">Закрыть</button>
+                </div>
+            </div>
+            <!--modal-content-->
+        </div>
+        <!--modal-dialog-->
+    </div><!--invite-popup-->
+{% endif %}
+
+{#<a href="#" class="feedback-button js-feedback" data-target="#feedback-popup" data-toggle="modal">#}
+{#    Тех. поддержка#}
+{#</a>#}
+{% if not user.first_name and main.FIRST_STEP_FORM %}
+    <div class="overflow"></div>
+    <!-- Google Code for &#1050;&#1083;&#1080;&#1082; &#1087;&#1086; &#1088;&#1077;&#1075;&#1080;&#1089;&#1090;&#1088;&#1072;&#1094;&#1080;&#1080; Conversion Page -->
+    <script type="text/javascript">
+        /* <![CDATA[ */
+        var google_conversion_id = 1036245549;
+        var google_conversion_language = "en";
+        var google_conversion_format = "3";
+        var google_conversion_color = "ffffff";
+        var google_conversion_label = "ayuYCLrew1YQrbSP7gM";
+        var google_remarketing_only = false;
+        /* ]]> */
+        $(function () {
+            if (window.yaCounter26252781) window.yaCounter26252781.reachGoal('registerEnter');
+        });
+    </script>
+    <script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js"></script>
+    <noscript>
+        <div style="display:inline;">
+            <img height="1" width="1" style="border-style:none;" alt=""
+                 src="//www.googleadservices.com/pagead/conversion/1036245549/?label=ayuYCLrew1YQrbSP7gM&amp;guid=ON&amp;script=0"/>
+        </div>
+    </noscript>
+    <div class="popup green-popup create-poject-popup">
+        <form method="POST">
+            <div class="modal-header">
+                <h2 class="modal-title">Представьтесь, пожалуйста.</h2>
+            </div>
+            <div class="modal-body">
+                {% csrf_token %}
+                <div class="modal-body-item clearfix">
+                    <div class="modal-body-item-left">Имя</div>
+                    <div class="modal-body-item-right">
+                        <input required maxlength="200" name="name" placeholder="Введите имя" type="text"
+                               class="input-block-level form-control"/>
+                    </div>
+                </div>
+                <div class="modal-body-item clearfix">
+                    <div class="modal-body-item-left">Фамилия</div>
+                    <div class="modal-body-item-right">
+                        <input required maxlength="200" name="last_name" placeholder="Введите фамилию" type="text"
+                               class="input-block-level form-control"/>
+                    </div>
+                </div>
+                {% if main.IS_AUTHOR %}
+                    <div class="modal-body-item clearfix">
+                        <div class="modal-body-item-left">Название первого проекта</div>
+                        <div class="modal-body-item-right">
+                            <input required maxlength="200" name="sitename" placeholder="Мой сайт" type="text"
+                                   class="input-block-level form-control"/>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <input type="submit" value="Начать работу" class="btn  btn-large btn-success"/>
+            </div>
+        </form>
+    </div>
+
+{% elif userAchievement %}
+    <div class="overflow"></div>
+    <div class="popup green-popup js-popup">
+        <div class="modal-header"><h2 class="modal-title">Новое достижение!</h2></div>
+        <div class="modal-body clearfix">
+            <img class="pull-left modal-body-img" src="{{ userAchievement.achievement.smallImageUrl }}"
+                 alt="{{ userAchievement.achievement.name }}"/><h4>{{ userAchievement.achievement.name }}</h4>
+            <p>{{ userAchievement.achievement.description|safe }}</p>
+            {% if userAchievement.text %}
+                <p>{{ userAchievement.text|safe }}</p>
+            {% endif %}
+        </div>
+        <div class="modal-footer">
+            <a href="{{ backurl }}" class="btn  btn-large btn-success"
+               onclick="$(this).closest('.js-popup').remove(); $('.overflow').hide(); return false;">Продолжить</a>
+        </div>
+    </div>
+{% endif %}
+<div class="modal fade js-projects" id="projects-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog projects-popup">
+        <div class="modal-content green-popup">
+            <div class="modal-header">
+                <button type="button" class="close"
+                        onclick="$('.overflow, .js-projects').hide(); $('.js-inputProjectList').val(''); $('.projects-item').show();"
+                        data-dismiss="modal" aria-hidden="true">×
+                </button>
+                <h2 class="modal-title">Ваши проекты</h2>
+            </div>
+            <div class="modal-body clearfix">
+
+                <table width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td>
+                            <div class="form-group find-a-project">
+                                <form>
+                                    <input type="email" placeholder="Введите название проекта" id=""
+                                           class="form-control js-inputProjectList">
+                                    <button class="find-a-project-button"><i class="fa fa-search"></i></button>
+                                </form>
+                            </div>
+                        </td>
+                        <td class="all-projects-link"><a href="{% if is_detail_page %}/{% endif %}?project=0">Все
+                            проекты<i class="fa fa-list-ul"></i></a></td>
+                    </tr>
+                </table>
+                <hr>
+                <div class="clearfix"></div>
+
+                <div class="projects-list">
+                    {% for project in projects %}
+                        <div class="projects-item clearfix">
+                            <div class="projects-list-img">
+                                <a href="{% if is_detail_page %}/{% endif %}?project={{ project.id }}"
+                                   style="background-image: url(
+                                           {% if project.imagePath %}{{ project.imagePath|thumbnail:"116x94" }}{% else %}/static/img/no-photo.png{% endif %});">
+                                    <!--<img src="{% if project.imagePath %}{{ project.imagePath|thumbnail:"116x94" }}{% else %}/static/img/no-photo.png{% endif %}" />-->
+                                </a>
+                            </div>
+                            <div class="projects-list-text">
+                                <span class="projects-list-control">
+                                    <a class="fa fa-cog" href="/project/{{ project.id }}/"></a>
+                                    <a class="fa fa-pencil" href="/project/edit/?id={{ project.id }}"></a>
+                                </span>
+                                <h4>
+                                    <a href="{% if is_detail_page %}/{% endif %}?project={{ project.id }}"
+                                       class="js-itemProjectName">
+                                        {{ project.name }}
+                                    </a>
+                                </h4>
+                                {% if project.tasksQty %}Открытых задач: <b>{{ project.tasksQty }}</b>{% endif %}
+                                {% if project.readyTaskQty %}На проверке: <b>{{ project.readyTaskQty }}</b>{% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="projects-item clearfix">
+                        <div class="projects-list-img">
+                            <a style="background-color: rgb(71, 164, 71);" href="/project/edit/">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                        </div>
+                        {% if user.is_staff %}
+                        <div class="projects-list-text">
+                            <h4>
+                                <a href="/project/edit/">
+                                    Добавить проект
+                                </a>
+                            </h4>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<header style="background: #144d49; color: white;">
+    <div class="header clearfix">
+        <div class="logo">
+            <a href="/">
+                <img style="max-height: 30px" src="/static/images/logo.png" alt="Экспертная компания"/>
+            </a>
+        </div>
+        {% if user.is_authenticated %}
+
+
+            <div class="timer-wrapper clearfix">
+            <span class="dropdown notifications">
+                <a href="#" data-toggle="dropdown" data-target="#" title="Личные сообщения">
+                    <span class="js-notificator fa fa-bell{% if messages_qty %} faa-ring animated faa-slow{% endif %}"
+                          style="color: {% if messages_qty %}#d9534f{% else %}white{% endif %}"></span>
+                    {% if messages_qty %}<b class="js-mes_qty mes-qty">{{ messages_qty }}</b>{% endif %}
+                </a>
+                <div class="dropdown-menu">
+                    <div class="container js-pmessages-list_empty {% if messages_qty > 0 %}hidden{% endif %}">Список
+                        сообщений пуст
+                    </div>
+                    {% if messages|length > 0 %}
+                        <div class="clearfix notifications-title">
+                            <div class="pull-left title">Сообщения</div>
+                            <div class="pull-right"></div>
+                        </div>
+                        <ul class="js-pmessages-dropdown notifications-ul">
+                            {% for mess in messages %}
+                                <li class="js-message">
+                                    <div class="clearfix">
+                                        <div class="pull-left"><span
+                                                class="label label-warning">{{ mess.task.project.name }}</span>
+                                        </div>
+                                        <div class="pull-right"><a href="#" class="fa fa-times js-read-message"
+                                                                   rel="{{ mess.id }}"
+                                                                   title="Отметить как прочитанное"></a></div>
+                                    </div>
+                                    <div class="time-username">{{ mess.dateCreate }} / <a
+                                            href="/user_detail/?id={{ mess.author.id }}">
+                                        {% if mess.author.last_name %}{{ mess.author.last_name }}
+                                            {{ mess.author.first_name }}{% endif %}</a></div>
+                                    <h5><b><a href="{{ mess.task.url }}">{{ mess.task.name }}</a></b></h5>
+
+                                    <div class="text-message">{{ mess.text|safe }}</div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </span>
+                <div class="user-menu">
+                    <a style="color: white;" href="/user_detail/?id={{ user.id }}"
+                       class="user-name">{{ user.first_name }} {{ user.last_name }}</a>
+                    <a class="btn btn-danger btn-xs" href="/login/?logout=Y"><span>Выход<i class="fa fa-power-off"></i></span></a>
+                </div>
+            </div><!--timer-->
+        {% endif %}
+    </div>
+    <!--header-->
+</header>
+
+{# -=========== ПОДМЕНЮ: пользователи, файлы ===========- #}
+<div class="container sub-menu">
+    <div class="row sub-menu_line clearfix">
+        {% if user.is_authenticated %}
+            <div class="sub-menu_line_section-user">
+
+                <a href="/" class="{% if activeMenuItem == 'main' %} active{% endif %}"><i
+                        class="fa fa-list"></i><span>Расчет</span></a>
+                <a href="/kanban/" class="{% if activeMenuItem == 'kanban' %} active{% endif %}"><i
+                        class="fa fa-table"></i><span>Сравнение</span></a>
+                {##}
+                <a href="/gantt/"
+                   class="hide-on-mobile {% if activeMenuItem == 'gantt' %} active{% endif %} {% if not main.CURRENT_PROJECT.id %}disabled{% endif %}">
+                    <i class="fa fa-tasks"></i><span>Загрузка</span>
+                </a>
+                {#                <a href="/life/">#}
+                {#                            <span aria-hidden="true" class="fa fa-bolt"></span>#}
+                {#                            <span>Активность</span>#}
+                {#                        </a>#}
+
+                <a href="/files/"
+                   class="{% if activeMenuItem == 'files' %} active{% endif %} {% if not main.CURRENT_PROJECT.id %}disabled{% endif %}"><i
+                        class="fa fa-folder-open"></i><span>Файлы</span></a>
+                <a href="/xls/?project={{ main.CURRENT_PROJECT.id }}"
+                   class="{% if activeMenuItem == 'stat' %} active{% endif %} {% if not main.IS_MANAGER %}disabled{% endif %}"><i
+                        class="fa fa-bar-chart-o"></i><span>Отчет</span></a>
+
+                <a href="/user_list/" class="{% if activeMenuItem == 'user_list' %} active{% endif %}"><i
+                        class="fa fa-users"></i><span>Участники</span></a>
+
+            </div>
+            <div class="sub-menu_line_section-tracker">
+                <ul class="list-inline navbar-right">
+                    {% if main.CURRENT_PROJECT %}
+                        <li class="section-tracker_menu_name h5"><span class="all-projects-link-main">Расчет: &nbsp;
+{#                            <i class="fa fa-angle-right"></i>&nbsp; #}
+                        </span>
+                        </li>
+                    {% endif %}
+                    <li class="projects-list-menu">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-link tracker-choose ">
+                                <a data-target="#projects-popup" data-toggle="modal" class="js-openProjectList"
+
+                                   href="#" style="text-decoration: none; border-bottom: 1px dashed #1d6e62;">
+                                    {% if main.CURRENT_PROJECT %}
+                                        {{ main.CURRENT_PROJECT.name }}
+                                    {% else %}
+                                        Все расчеты
+                                    {% endif %}
+                                </a>
+                            </button>
+                            <a data-target="#projects-popup" data-toggle="modal" title="Список проектов"
+                               class="fa fa-caret-down js-openProjectList"
+                               style="font-size: 15px; color: rgb(73, 73, 73); top: 3px; margin-right: 10px;"></a>
+                            {#                            <a class="fa fa-chevron-down js-openProjectList" title="Список проектов" data-toggle="modal" data-target="#projects-popup"></a>#}
+                            {% if main.CURRENT_PROJECT.id %}
+                                <a href="/project/{{ main.CURRENT_PROJECT.id }}/" class="fa fa-cog"
+                                   title="Параметры расчета"></a>
+                            {% endif %}
+                            {% if user.is_staff %}
+                            <a href="/project/edit/" class="fa fa-plus" title="Добавить проект"></a>
+                            {% endif %}
+                            <a href="#" class="js-invite-popup {% if not main.CAN_INVITE %}disabled{% endif %}"
+                               data-target="#invite-popup" data-toggle="modal" title="Пригласить людей"><i
+                                    class="fa fa-user-plus"></i></a>
+
+                        </div>
+                    </li>
+                    <li class="projects-list-select clearfix">
+                        <div class="left">
+                            <select class="form-control" onchange="document.location.href='/?project='+$(this).val();">
+                                <option{% if not main.CURRENT_PROJECT.id %} selected{% endif %} value="0">
+                                    Все проекты
+                                </option>
+                                {% for project in projects %}
+                                    <option{% if project.id == main.CURRENT_PROJECT.id %} selected{% endif %}
+                                                                                          value="{{ project.id }}">{{ project.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="right projects-list-menu">
+                            {% if main.CURRENT_PROJECT.id %}
+                                <a href="/project/{{ main.CURRENT_PROJECT.id }}/" class="fa fa-cog"
+                                   title="Параметры проекта"></a>
+                            {% endif %}
+                            <a href="#" class="js-invite-popup {% if not main.CAN_INVITE %}disabled{% endif %}"
+                               data-target="#invite-popup" data-toggle="modal" title="Пригласить людей"><i
+                                    class="fa fa-user-plus"></i></a>
+                            <a href="/new_task_wizard/" class="js-taskWizard-opener fa fa-plus"
+                               title="Добавить расчет"></a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</div>
+<!-- /container -->
+<hr style="margin-top:0px;">
+{# -=========== КОНТЕНТНАЯ ЧАСТЬ ===========- #}
+<div class="container">
+    <div class="frame-container js-frame-mode" style="display:none;width:70%;z-index:100;position:fixed;right:0;top:0;">
+        <a href="#"
+           style="padding: 15px 17px; font-size: 20px;width: 50px;height: 50px;top:50%;left:-50px;position: absolute;background: green;color: white;"
+           onclick="$('.js-frame').attr('src','').parent().hide();"><i class="fa fa-close"></i></a>
+        <iframe style="width:100%;" class="js-frame"></iframe>
+    </div>
+    {% block content %}{% endblock %}
+</div>
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2">
+                <span class="copyright">© 2012-2020 Экспертная компания</span>
+
+            </div>
+            <div class="col-md-6">
+                <ul class="list-inline quicklinks">
+                    <li><a href="mailto:admin@tracker.ru">admin@tracker.ru</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2">
+
+            </div>
+        </div>
+    </div>
+</footer>
+<script type="text/javascript">
+    $(function () {
+        {% if current_notice %}
+            var popup = new hintObject({
+                'title': '{{ current_notice.name }}',
+                'text': '{{ current_notice.html|safe }}',
+                'image': '{{ current_notice.src }}',
+                'id': '{{ current_notice.id }}'
+            });
+            popup.show($('{{ current_notice.itemClass }}').get(0));
+        {% endif %}
+
+        $('.js-taskWizard-opener').click(function (ev) {
+            ev.preventDefault();
+            var url = $(this).attr('href');
+            $.get(url, function (response) {
+                $('body').prepend(response);
+            });
+        });
+
+        var projectInput = $('.js-projects').find('.js-inputProjectList');
+        var projectName = $('.js-itemProjectName');
+
+        projectInput.keyup(function () {
+            var inputVal = $(this).val();
+            projectName.each(function () {
+                $(this).parents('.projects-item').hide();
+                var projectItem = $.trim($(this).text());
+                var projectItemIndexOf = projectItem.toLowerCase().indexOf(inputVal.toLowerCase());
+                var projectItemIndexOfKeybdConv = projectItem.toLowerCase().indexOf(inputVal.KeybdConv().toLowerCase());
+                if (projectItemIndexOf != -1 || projectItemIndexOfKeybdConv != -1) {
+                    $(this).parents('.projects-item').show();
+                }
+            });
+        });
+        $('#projects-popup').on('shown.bs.modal', function () {
+            $('.js-inputProjectList').focus();
+        });
+
+        {% if agreementForApprove %}
+            $('.js-agreement-approve').click(function () {
+                var $t = $(this);
+                $t.pushTheButton();
+                PM_AjaxPost(
+                    '/agreements/',
+                    {
+                        'action': 'approve_agreement',
+                        'id': $(this).data('agreement')
+                    },
+                    function (data) {
+                        $t.pullTheButton();
+                        if (data.id) {
+                            $('.js-agreement-title').text('Пользовательское соглашение №' + data.id);
+                            $('.js-agreement').html(data.text);
+                            $('.js-agreement-approve').data('agreement', data.id);
+                        } else {
+                            $('.js-current-agreement').remove();
+                        }
+                    },
+                    'json'
+                );
+                return false;
+            });
+        {% endif %}
+    });
+</script>
+<img src="/static/images/loaders/loader_3.png" alt="Loader" class="loader medium"/>
+<img src="/static/images/loaders/loader_4.png" alt="Loader" class="loader small"/>
+<img src="/static/images/loaders/loader_5.png" alt="Loader" class="loader tiny"/>
+<iframe id="fileinput" src="" style="display:none;"></iframe>
+<link type="text/css" rel="stylesheet" href="/static/css/bootstrap-combobox.css"/>
+
+
+{% if agreementForApprove %}
+    <div class="modal js-current-agreement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true" style="display: block;">
+        <div class="modal-dialog">
+            <div class="modal-content green-popup">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="myModalLabel">Пользовательское соглашение
+                        №{{ agreementForApprove.id }}</h2>
+                </div>
+                <div class="modal-body clearfix js-agreement" data-agreement="{{ agreementForApprove.id }}"
+                     style="height: 250px; overflow-y:auto;">{{ agreementForApprove.text|safe }}</div>
+                <div class="modal-footer"><a href="#" data-agreement="{{ agreementForApprove.id }}"
+                                             class="btn btn-success js-agreement-approve">Принять</a></div>
+
+            </div>
+        </div>
+    </div>
+{% endif %}
+<div class="body__chat">
+    <div class="JSchatWindow body__chatWindow" style="display: none;">
+        <div class="chat">
+            <div class="chat__block">
+                <div class="chat__head"><img class="JSchatAction chat__close" src="/static/images/chat-close-icon.svg"
+                                             alt="" data-action="close">
+                    <p class="chat__headName">Чаты</p>
+                </div>
+                <div class="chat__content">
+                    <ul class="JSchatList chat__list">
+                        <li class="JSchatListItem chat__listItem" data-id="0">
+                            Тамбовская область<span class="itemCounterChat">2</span></li>
+                        <li class="JSchatListItem chat__listItem" data-id="1">Челябинская область<span
+                                class="itemCounterChat">3</span>
+                        </li>
+                        <li class="JSchatListItem chat__listItem" data-id="2">Кировская область<span
+                                class="itemCounterChat">1</span></li>
+                        <li class="JSchatListItem chat__listItem" data-id="3">Курганская область<span
+                                class="itemCounterChat">2</span></li>
+                        <li class="JSchatListItem chat__listItem" data-id="4">Новосибирская область<span
+                                class="itemCounterChat">2</span></li>
+                        <li class="JSchatListItem chat__listItem" data-id="5">Ульяновская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="6">Кабардино-Балкарская республика</li>
+                        <li class="JSchatListItem chat__listItem" data-id="7">Республика Северная Осетия - Алания</li>
+                        <li class="JSchatListItem chat__listItem" data-id="8">Республика Мордовия</li>
+                        <li class="JSchatListItem chat__listItem" data-id="9">Республика Коми</li>
+                        <li class="JSchatListItem chat__listItem" data-id="10">Республика Карелия</li>
+                        <li class="JSchatListItem chat__listItem" data-id="11">Республика Калмыкия</li>
+                        <li class="JSchatListItem chat__listItem" data-id="12">Республика Бурятия</li>
+                        <li class="JSchatListItem chat__listItem" data-id="13">Республика Дагестан</li>
+                        <li class="JSchatListItem chat__listItem" data-id="14">Тюменская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="15">Карачаево-Черкесская республика</li>
+                        <li class="JSchatListItem chat__listItem" data-id="16">Ярославская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="17">Тульская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="18">Чукотский автономный округ</li>
+                        <li class="JSchatListItem chat__listItem" data-id="19">Забайкальский край</li>
+                        <li class="JSchatListItem chat__listItem" data-id="20">Республика Башкортостан</li>
+                        <li class="JSchatListItem chat__listItem" data-id="21">Краснодарский край</li>
+                        <li class="JSchatListItem chat__listItem" data-id="22">Республика Татарстан</li>
+                        <li class="JSchatListItem chat__listItem" data-id="23">Республика Крым</li>
+                        <li class="JSchatListItem chat__listItem" data-id="24">Ханты-Мансийский автономный округ</li>
+                        <li class="JSchatListItem chat__listItem" data-id="25">Ненецкий автономный округ</li>
+                        <li class="JSchatListItem chat__listItem" data-id="26">Еврейская автономная область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="27">Чувашская республика</li>
+                        <li class="JSchatListItem chat__listItem" data-id="28">Республика Марий Эл</li>
+                        <li class="JSchatListItem chat__listItem" data-id="29">Республика Адыгея</li>
+                        <li class="JSchatListItem chat__listItem" data-id="30">Псковская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="31">Московская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="32">Иркутская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="33">Севастополь</li>
+                        <li class="JSchatListItem chat__listItem" data-id="34">Архангельская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="35">Алтайский край</li>
+                        <li class="JSchatListItem chat__listItem" data-id="36">Костромская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="37">Республика Саха (Якутия)</li>
+                        <li class="JSchatListItem chat__listItem" data-id="38">Чеченская республика</li>
+                        <li class="JSchatListItem chat__listItem" data-id="39">Республика Хакасия</li>
+                        <li class="JSchatListItem chat__listItem" data-id="40">Удмуртская республика</li>
+                        <li class="JSchatListItem chat__listItem" data-id="41">Республика Тыва</li>
+                        <li class="JSchatListItem chat__listItem" data-id="42">Республика Алтай</li>
+                        <li class="JSchatListItem chat__listItem" data-id="43">Сахалинская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="44">Смоленская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="45">Вологодская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="46">Калужская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="47">Тверская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="48">Калининградская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="49">Республика Ингушетия</li>
+                        <li class="JSchatListItem chat__listItem" data-id="50">Ивановская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="51">Нижегородская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="52">Воронежская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="53">Волгоградская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="54">Кемеровская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="55">Владимирская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="56">Брянская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="57">Белгородская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="58">Астраханская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="59">Амурская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="60">Хабаровский край</li>
+                        <li class="JSchatListItem chat__listItem" data-id="61">Ставропольский край</li>
+                        <li class="JSchatListItem chat__listItem" data-id="62">Приморский край</li>
+                        <li class="JSchatListItem chat__listItem" data-id="63">Камчатский край</li>
+                        <li class="JSchatListItem chat__listItem" data-id="64">Томская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="65">Свердловская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="66">Оренбургская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="67">Красноярский край</li>
+                        <li class="JSchatListItem chat__listItem" data-id="68">Саратовская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="69">Рязанская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="70">Ростовская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="71">Пермский край</li>
+                        <li class="JSchatListItem chat__listItem" data-id="72">Пензенская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="73">Орловская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="74">Омская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="75">Самарская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="76">Новгородская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="77">Мурманская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="78">Москва</li>
+                        <li class="JSchatListItem chat__listItem" data-id="79">Магаданская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="80">Липецкая область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="81">Ленинградская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="82">Санкт-Петербург</li>
+                        <li class="JSchatListItem chat__listItem" data-id="83">Курская область</li>
+                        <li class="JSchatListItem chat__listItem" data-id="84">Ямало-Ненецкий автономный округ</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="JSchatMessages chat__block _message">
+                <div class="chat__head"><img class="JSchatAction chat__close" src="/static/images/chat-close-icon.svg"
+                                             alt="" data-action="close"><img class="JSchatAction chat__headBack"
+                                                                             src="/static/images/chat-arrow-prev.svg" alt=""
+                                                                             data-action="closeMessages">
+                    <p class="JSchatCurrentRegion chat__headName"></p>
+                </div>
+                <div class="JSchatBox chat__messages"></div>
+                <div class="chat__action">
+                    <label class="chat__actionFile">
+                    </label>
+                    <input class="JSchatInput chat__actionInput" type="text" placeholder="Написать сообщение..."><img
+                        class="JSchatSend chat__actionSend _dis" src="/static/images/chat-send-icon.svg" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="JSchatAction body__chatIcon" data-counter="1" data-action="open">
+        <span class="itemCounterChatLink" style="display: none">0</span>
+    </div>
+</div>
+<style>
+    .body__chat, .body__chat * {
+        padding: 0;
+        margin: 0;
+        list-style-type: none;
+        text-decoration: none;
+        outline: none;
+        line-height: 1;
+        border: none;
+        background: none;
+        border-radius: 0;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        letter-spacing: unset;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        font-weight: 400;
+        -webkit-appearance: none;
+        -webkit-font-smoothing: antialiased
+    }
+
+    .chat__head, .chat__messageLoader, .chat__action {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        -webkit-box-align: start;
+        -ms-flex-align: start;
+        align-items: flex-start
+    }
+
+    .chat__block, .chat__message {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        -webkit-box-align: start;
+        -ms-flex-align: start;
+        align-items: flex-start
+    }
+
+    .body__chat {
+        position: fixed;
+        bottom: 50px;
+        right: 50px;
+        z-index: 10
+    }
+
+    .body__chatWindow {
+        width: 350px;
+        height: 514px;
+        display: none;
+        z-index: 5;
+        position: relative
+    }
+
+    .body__chatIcon {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 64px;
+        height: 64px;
+        background: #144d49;
+        border-radius: 50%;
+        -webkit-box-shadow: 0px 4px 35px rgba(0, 0, 0, 0.14);
+        box-shadow: 0px 4px 35px rgba(0, 0, 0, 0.14);
+        cursor: pointer
+    }
+
+    .body__chatIcon::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        width: 35px;
+        height: 35px;
+        background: url("/static/images/chat-message-icon.svg") no-repeat;
+        background-size: contain;
+        background-position: center
+    }
+
+    .body__chatIcon._new::after {
+        content: attr(data-counter);
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        font-size: 14px;
+        line-height: 1.3;
+        font-family: 'Arial';
+        color: white;
+        background: #144d49;
+    }
+
+    .chat {
+        width: 100%;
+        height: 100%;
+        -webkit-box-shadow: 0 4px 35px rgba(0, 0, 0, 0.14);
+        box-shadow: 0 4px 35px rgba(0, 0, 0, 0.14);
+        border-radius: 16px;
+        overflow: hidden;
+        position: relative;
+        z-index: 4
+    }
+
+    .chat__close {
+        position: absolute;
+        top: 50%;
+        -webkit-transform: translate(0, -50%);
+        transform: translate(0, -50%);
+        right: 16px;
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        -o-object-fit: contain;
+        object-fit: contain;
+        z-index: 6
+    }
+
+    .chat__block {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        z-index: 4;
+        -webkit-transition: .5s ease-in-out;
+        transition: .5s ease-in-out
+    }
+
+    .chat__block._message {
+        z-index: 5;
+        -webkit-transform: translate(100%, 0);
+        transform: translate(100%, 0)
+    }
+
+    .chat__block._message._active {
+        -webkit-transform: translate(0, 0);
+        transform: translate(0, 0)
+    }
+
+    .chat__head {
+        width: 100%;
+        height: 56px;
+        padding: 20px;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        position: relative;
+        border-bottom: 1px solid #E4EAEC
+    }
+
+    .chat__headName {
+        font-size: 14px;
+        font-family: 'Arial';
+        font-weight: 600;
+        color: #3B4256
+    }
+
+    .chat__headBack {
+        position: absolute;
+        top: 50%;
+        -webkit-transform: translate(0, -50%);
+        transform: translate(0, -50%);
+        left: 20px;
+        width: 12px;
+        height: 12px;
+        cursor: pointer
+    }
+
+    .chat__block._message .chat__head {
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        padding: 20px 50px
+    }
+
+    .chat__content {
+        width: 100%;
+        height: calc(100% - 56px);
+        overflow-y: auto;
+        padding: 0 16px
+    }
+
+    .chat__list {
+        width: 100%
+    }
+
+    .chat__listItem {
+        width: 100%;
+        padding: 18.5px 0;
+        font-size: 14px;
+        font-family: 'Arial';
+        line-height: 1.3;
+        color: #3B4256;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        position: relative
+    }
+
+    .chat__listItem::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        -webkit-transform: translate(0, -50%);
+        transform: translate(0, -50%);
+        right: 5px;
+        width: 12px;
+        height: 12px;
+        background: url("/static/images/chat-arrow-next.svg") no-repeat;
+        background-size: contain;
+        background-position: center
+    }
+
+    .chat__listItem._new::after {
+        content: attr(data-counter);
+        font-size: 14px;
+        line-height: 24px;
+        font-family: 'Arial';
+        width: 24px;
+        height: 24px;
+        display: inline-block;
+        background: #144d49;
+        border-radius: 50%;
+        margin-left: 10px;
+        text-align: center;
+        color: white;
+    }
+
+    .chat__listItem + .chat__listItem {
+        border-top: 1px solid #E4EAEC
+    }
+
+    .chat__messages {
+        width: 100%;
+        height: calc(100% - 112px);
+        padding: 16px;
+        overflow-y: auto;
+        position: relative
+    }
+
+    .chat__messages._null::before {
+        content: 'Сообщения отсутствуют';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        font-size: 14px;
+        font-family: 'Arial';
+        line-height: 24px;
+        color: #A3AFB7
+    }
+
+    .chat__message {
+        width: 100%;
+        position: relative;
+        padding: 0 40px 0 0
+    }
+
+    .chat__message._me {
+        padding: 0 0 0 40px
+    }
+
+    .chat__messageAvatar {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        overflow: hidden
+    }
+
+    .chat__messageAvatarImage {
+        width: 32px;
+        height: 32px;
+        -o-object-fit: cover;
+        object-fit: cover;
+    }
+
+    .chat__message._me .chat__messageAvatar {
+        left: 0
+    }
+
+    .chat__messageName {
+        width: 100%;
+        font-size: 14px;
+        line-height: 24px;
+        color: #3B4256;
+        font-family: 'Arial';
+        margin-bottom: 5px;
+        text-align: right
+    }
+
+    .chat__message._me .chat__messageName {
+        text-align: left
+    }
+
+    .chat__messageBox {
+        max-width: 100%;
+        min-width: 56px;
+        background: #E4EAEC;
+        border-radius: 5px;
+        padding: 8px 16px
+    }
+
+    .chat__message._me .chat__messageBox {
+        background: #F1F4F5
+    }
+
+    .chat__messageContent {
+        width: 100%;
+        font-size: 14px;
+        color: #3B4256;
+        font-family: 'Arial';
+        line-height: 24px;
+        margin-bottom: 10px;
+        text-overflow: ellipsis;
+        overflow-x: hidden;
+    }
+
+    .chat__messageDate {
+        width: 100%;
+        font-family: 'Arial';
+        font-size: 10px;
+        line-height: 18px;
+        color: #76838F
+    }
+
+    .chat__messageLoader {
+        margin: auto;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        padding: 5px 0
+    }
+
+    @-webkit-keyframes writing {
+        0% {
+            opacity: 0
+        }
+        50% {
+            opacity: 1
+        }
+        100% {
+            opacity: 0
+        }
+    }
+
+    @keyframes writing {
+        0% {
+            opacity: 0
+        }
+        50% {
+            opacity: 1
+        }
+        100% {
+            opacity: 0
+        }
+    }
+
+    .chat__messageLoaderItem {
+        border: 2px solid #76838F;
+        border-radius: 50%;
+        -webkit-animation: writing 1.2s infinite linear;
+        animation: writing 1.2s infinite linear;
+        opacity: 0
+    }
+
+    .chat__messageLoaderItem:nth-child(1) {
+        -webkit-animation-delay: 0s;
+        animation-delay: 0s
+    }
+
+    .chat__messageLoaderItem:nth-child(2) {
+        -webkit-animation-delay: .4s;
+        animation-delay: .4s
+    }
+
+    .chat__messageLoaderItem:nth-child(3) {
+        -webkit-animation-delay: .8s;
+        animation-delay: .8s
+    }
+
+    .chat__messageLoaderItem + .chat__messageLoaderItem {
+        margin-left: 5px
+    }
+
+    .chat__message + .chat__message {
+        margin-top: 10px
+    }
+
+    .chat__action {
+        width: 100%;
+        height: 56px;
+        padding: 10px 20px;
+        border-top: 1px solid #E4EAEC;
+        margin-top: auto;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center
+    }
+
+    .chat__actionFile {
+        margin-right: 10px;
+        cursor: pointer
+    }
+
+    .chat__actionFileInput {
+        display: none
+    }
+
+    .chat__actionFileIcon {
+        width: 20px;
+        height: 20px
+    }
+
+    .chat__actionInput {
+        width: calc(100% - 50px);
+        margin: -4px 5px 0 5px;
+        font-family: 'Arial';
+        font-size: 14px;
+        line-height: 1.3;
+        color: #3B4256
+    }
+
+    .chat__actionInput::-webkit-input-placeholder {
+        color: #76838F
+    }
+
+    .chat__actionSend {
+        width: 20px;
+        height: 20px;
+        cursor: pointer
+    }
+
+    .chat__actionSend._dis {
+        -webkit-filter: grayscale(1);
+        filter: grayscale(1);
+        pointer-events: none
+    }
+
+
+    element.style {
+    }
+
+    .sidebar__listDropItem._notNull .sidebar__listDropItemCounter {
+        color: #fff;
+    }
+
+    .itemCounterChat {
+        background: #144d49;
+        border-radius: 15px;
+        color: white;
+        text-align: center;
+        margin: 0px 0 0 10px;
+        padding: 5px 8px 4px 8px;
+    }
+
+    .itemCounterChatLink {
+        position: absolute;
+        background: white;
+        border-radius: 15px;
+        color: #144d49;
+        text-align: center;
+        padding: 5px 8px 4px 8px;
+        top: 10px;
+        left: 32px;
+    }
+
+</style>
+<script>
+    var user_id = 1;
+    var t = null;
+    var t_name = null;
+    //console.log('id',user_id);
+    var TimerBox;
+
+
+    var listChat = [];
+    var handleChat = function () {
+        console.log('chat');
+
+        getList();
+
+        document.addEventListener("handleChat", (function (t) {
+            switch (t.detail.action) {
+                case"open":
+                    $(".JSchatWindow").fadeIn(300), $(".JSchatList").html("")
+                    getList()
+                    break;
+                case"close":
+                    $(".JSchatWindow").fadeOut(300), setTimeout((function () {
+                        $(".JSchatList").html(""), $(".JSchatBox").html(""), $(".JSchatBox").removeClass("_null"), $(".JSchatMessages").removeClass("_active"), $(".JSchatInput").val(""), $(".JSchatSend").addClass("_dis")
+                    }), 300);
+                    getList();
+                    clearInterval(TimerBox);
+                    break;
+            }
+        })),
+            $(document).on("click", ".JSchatListItem", (function () {
+                t = $(this).attr("data-id");
+                t_name = $(this).attr("data-title");
+
+                //убрать пометку о новом сообщении в чате
+                //$('[chat-id="'+ id +'"]').removeClass('new_chat_post');
+                getMsg(t);
+                TimerBox = setInterval(() => getMsg(t), 5000);
+            })),
+            $(document).on("input", ".JSchatInput", (function () {
+                //console.log($(this).val());
+                $(this).val() ? $(".JSchatSend").removeClass("_dis") : $(".JSchatSend").addClass("_dis")
+            })),
+            $(document).on("keypress", ".JSchatInput", (function (e) {
+                if (e.which == 13 && $(this).val().length > 0) {
+                    sendMsg(t, $(this).val());
+                }
+            })),
+            $(document).on("click", ".JSchatSend", (function () {
+                if ($('.JSchatInput').val().length > 0) {
+                    sendMsg(t, $('.JSchatInput').val());
+                }
+            })),
+            $(document).on("click", ".JSchatAction", (function () {
+                switch ($(this).attr("data-action")) {
+                    case"close":
+                        document.dispatchEvent(new CustomEvent("handleChat", {detail: {action: "close"}}));
+                        break;
+                    case"open":
+                        document.dispatchEvent(new CustomEvent("handleChat", {detail: {action: "open"}}));
+                        break;
+                    case"closeMessages":
+                        getList();
+                        clearInterval(TimerBox);
+                        $(".JSchatMessages").removeClass("_active"), $(".JSchatInput").val(""), $(".JSchatSend").addClass("_dis");
+                        break;
+                }
+            }))
+
+    }
+
+    async function sendMsg(to, msg) {
+        await $.ajax({
+            url: "/messages_ajax/",
+            method: "post",
+            data: {
+                action: 'send',
+                to: to,
+                text: msg,
+                project: window.currentProject
+            },
+            success: function (result) {
+                console.log('произошло добавление своего сообщения');
+                console.log(result);
+
+                $('.JSchatInput').val(null);
+                $('.JSchatInput').val() ? $(".JSchatSend").removeClass("_dis") : $(".JSchatSend").addClass("_dis");
+                getMsg(t);
+            },
+            error: function (q, w, e) {
+                console.log('неуспех');
+            }
+        });
+    }
+
+    async function getMsg(id) {
+        await $.ajax({
+            url: "/messages_ajax/",
+            method: "post",
+            data: {
+                action: 'getMessages',
+                last_id: -1,
+                project: window.currentProject,
+                chat: id
+            },
+            success: function (result) {
+                console.log('произошла загрузка сообщений чата');
+                console.log(result);
+                try {
+                    result = JSON.parse(result);
+                } catch (e) {
+                    return;
+                }
+
+                $(".JSchatCurrentRegion").text(t_name),
+                    $(".JSchatMessages").addClass("_active"), $(".JSchatBox").html(""),
+                    $(".JSchatBox").removeClass("_null"), 0 == result.length && $(".JSchatBox").addClass("_null"),
+                    result.reverse().forEach((async function (t, a) {
+
+                            await $(".JSchatBox").append(
+                                '<div class="chat__message ' + (window.baseUserParams['userId'] == t.author.id ? '_me' : '') + '">' +
+                                '<div class="chat__messageAvatar">' +
+                                '   <img class="chat__messageAvatarImage" src="' + (t.author.avatar ? t.author.avatar : '/static/images/msg_null.png') + '" alt="">' +
+                                '</div>' +
+                                '<p class="chat__messageName">' + (t.author.last_name == null ? t.author.email : t.author.last_name) + '</p>' +
+                                '<div class="chat__messageBox">' +
+                                '<p class="chat__messageContent">' + t.text + '</p>' +
+                                '<p class="chat__messageDate">' + t.date + '</p>' +
+                                '</div>' +
+                                '</div>'
+                            );
+
+                            if (!t.read && window.baseUserParams['userId'] != t.author.id) {
+                                MsgAsRead(t.id);
+                            }
+
+                        }
+                    ))
+                $(".JSchatBox ").animate({scrollTop: $(".JSchatBox").prop('scrollHeight')}, 1000);
+
+            },
+            error: function (q, w, e) {
+                console.log('неуспех');
+            }
+        });
+
+    }
+
+    async function getList() {
+        await $.ajax({
+            url: "/users_ajax/",
+            method: "post",
+            data: {
+                'action': 'getUsers'
+            },
+            success: function (result) {
+                console.log('произошла загрузка списка чатов');
+                console.log(result);
+                listChat = result;
+                getCountMsg();
+            },
+            error: function (q, w, e) {
+                console.log('неуспех');
+            }
+        });
+    }
+
+    async function getCountMsg() {
+        await $.ajax({
+            url: "/users_ajax/",
+            method: "post",
+            data: {
+                'action': 'getUsers'
+            },
+            success: function (result) {
+                console.log('произошла загрузка new msg');
+                var result = JSON.parse(result);
+                console.log(result);
+                listChat = result;
+                let msg = 0;
+                result.forEach(function (item) {
+                    msg = msg + item.msg;
+                })
+                var $link = $('.itemCounterChatLink');
+                $link.html(msg);
+                if (msg) {
+                    $link.show();
+                } else {
+                    $link.hide()
+                }
+                $(".JSchatList").html('');
+                listChat.forEach((function (item, index) {
+                    let count = item.msg;
+                    if (item.last_name) {
+                        var t_title = (item.last_name || '') + ' ' + (item.first_name || '');
+                        $(".JSchatList").append('<li class="JSchatListItem chat__listItem" data-id="' + item.id + '" data-title="' + t_title + '">' +
+                            t_title +
+                            (count ? '<span class="itemCounterChat">' + count + '</span>' : '') +
+                            '</li>')
+                    }
+
+                }));
+            },
+            error: function (q, w, e) {
+                console.log('неуспех');
+            }
+        });
+    }
+
+    async function MsgAsRead(id) {
+        await $.ajax({
+            url: "/messages_ajax/",
+            method: "post",
+            data: {
+                'action': 'setRead',
+                'id': id
+            },
+            success: function (result) {
+                console.log('new msg прочитаны');
+                getList();
+            },
+            error: function (q, w, e) {
+                console.log('неуспех');
+            }
+        });
+    }
+
+    var TimerChat = setInterval(() => getList(), 60000);
+
+    //  api/v1/chat/new-message/mark-as-read/22
+    // api/v1/chat/new-message/count
+    document.addEventListener('DOMContentLoaded', (event) => {
+        handleChat()
+    });
+</script>
+</body>
+</html>

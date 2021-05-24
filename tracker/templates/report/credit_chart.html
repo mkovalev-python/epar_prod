@@ -1,0 +1,51 @@
+{% extends "main/base.html" %}
+{% block header %}
+    <script type="text/javascript" src="/static/js/libs/charts.js"></script>
+{% endblock %}
+{% block content %}
+<script>
+var data = {
+    labels : [{% for event in sums %}'{{ event.date.day }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+    datasets : [
+        {
+            label: "Нам должны",
+            pointColor : "#0bd145",
+            strokeColor : "#0bd145",
+            data : [{% for event in sums %}{{ event.in }}{% if not forloop.last %},{% endif %}{% endfor %}]
+        },
+        {
+            label: "Мы должны",
+            pointColor : "#003060",
+            strokeColor : "#003060",
+            data : [{% for event in sums %}{{ event.out }}{% if not forloop.last %},{% endif %}{% endfor %}]
+        },
+        {
+            label: "Нам оплатили",
+            pointColor : "rgba(63, 255, 0, 0.34)",
+            strokeColor : "rgba(63, 255, 0, 0.34)",
+            data : [{% for event in sums %}{{ event.pin }}{% if not forloop.last %},{% endif %}{% endfor %}]
+        },
+        {
+            label: "Мы оплатили",
+            pointColor : "rgba(0, 255, 232, 0.34)",
+            strokeColor : "rgba(0, 255, 232, 0.34)",
+            data : [{% for event in sums %}{{ event.pout }}{% if not forloop.last %},{% endif %}{% endfor %}]
+        }
+    ]
+}
+$(function(){
+    var canvas = $('#chart').get(0);
+    var ctx = canvas.getContext("2d");
+    new Chart(ctx).Line(data,{
+        'scaleShowLabels':true,
+        'bezierCurve': false,
+        'tooltipEvents': ["mousemove", "touchstart", "touchmove"],
+        'pointDot' : true,
+        'showTooltips': true,
+        'datasetFill' : false
+    });
+});
+
+</script>
+    <canvas id="chart" width="800px" height="600px"></canvas>
+{% endblock %}

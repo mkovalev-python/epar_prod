@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Feedback</title>
+    <link rel="shortcut icon" href="/static/ico/favicon.png"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        .container {
+            height: 100%;
+        }
+
+        #stars-fieldset .form-group {
+            margin-bottom: 40px;
+        }
+
+        #stars-fieldset .star-cb-group {
+          /* remove inline-block whitespace */
+          font-size: 0;
+          /* flip the order so we can use the + and ~ combinators */
+          unicode-bidi: bidi-override;
+          direction: rtl;
+            text-align: start;
+          /* the hidden clearer */
+        }
+        #stars-fieldset .star-cb-group * {
+          font-size: 4rem;
+        }
+        #stars-fieldset .star-cb-group > input {
+          display: none;
+        }
+        #stars-fieldset .star-cb-group > input + label {
+          /* only enough room for the star */
+          display: inline-block;
+          overflow: hidden;
+          text-indent: 9999px;
+          width: 1em;
+          white-space: nowrap;
+          cursor: pointer;
+          margin-bottom: 0;
+        }
+        #stars-fieldset .star-cb-group > input + label:before {
+          display: inline-block;
+          text-indent: -9999px;
+          content: "☆";
+          color: orange;
+          font-family: sans-serif;
+        }
+        #stars-fieldset .star-cb-group > input:checked ~ label:before, #stars-fieldset .star-cb-group > input + label:hover ~ label:before, #stars-fieldset .star-cb-group > input + label:hover:before {
+          content: "★";
+          color: orange;
+          text-shadow: 0 0 1px orange;
+          font-family: sans-serif;
+        }
+        #stars-fieldset .star-cb-group > .star-cb-clear + label {
+          text-indent: -9999px;
+          width: .5em;
+          margin-left: -.5em;
+        }
+        #stars-fieldset .star-cb-group > .star-cb-clear + label:before {
+          width: .5em;
+        }
+        #stars-fieldset .star-cb-group:hover > input + label:before {
+          content: "☆";
+          color: #888;
+          text-shadow: none;
+        }
+        #stars-fieldset .star-cb-group:hover > input + label:hover ~ label:before, #stars-fieldset .star-cb-group:hover > input + label:hover:before {
+          content: "★";
+          color: orange;
+          text-shadow: 0 0 1px orange;
+        }
+        fieldset#stars-fieldset  {
+            border: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="container ">
+    <div class="col-8 mx-auto">
+        <div class="row h-100 py-5">
+            <div class="col-sm-12 my-auto">
+                <h1>{{project.name}}</h1>
+                <h3 class="text-muted">{{client.last_name}} {{client.first_name}}</h3>
+                <br/>
+                {% if request.GET.success %}
+                <div class="alert alert-success">
+                    Thank you!
+                </div>
+                {% else %}
+                <form class="" method="post">
+                    <div class="form-group">
+                        <h4>Evaluate how it went</h4>
+                        <fieldset id="stars-fieldset">
+                            <span class="star-cb-group">
+                              <input type="radio" id="rating-5" name="rating" value="5" /><label for="rating-5">5</label>
+                              <input type="radio" id="rating-4" name="rating" value="4" checked="checked" /><label for="rating-4">4</label>
+                              <input type="radio" id="rating-3" name="rating" value="3" /><label for="rating-3">3</label>
+                              <input type="radio" id="rating-2" name="rating" value="2" /><label for="rating-2">2</label>
+                              <input type="radio" id="rating-1" name="rating" value="1" /><label for="rating-1">1</label>
+                              <input type="radio" id="rating-0" name="rating" value="0" class="star-cb-clear" /><label for="rating-0">0</label>
+                            </span>
+                        </fieldset>
+                    </div>
+                    <div class="form-group">
+                        <h4>What was good?</h4>
+                        <textarea name="notes_was" maxlength="500" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <h4>What could be better?</h4>
+                        <textarea name="notes_do" maxlength="500" class="form-control"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

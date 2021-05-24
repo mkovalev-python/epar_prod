@@ -1,0 +1,77 @@
+.fieldnote {display:block;width:200px;}
+div#wrapper {width:766px; margin:0 auto;font-family:Tahoma, Geneva, sans-serif;}
+
+div.header {overflow:hidden; height:100%; background:url(images/border.png) bottom repeat-x; padding-bottom:10px;}
+div.header-left {float:left; margin-left:15px; color:#222222; font:18px Tahoma, Geneva, sans-serif}
+div.header-left span {color:#0269e0;}
+
+div.header-right {float:right; margin-right:15px; color:#353535}
+div.header-right ul {padding:0px; margin:5px 0 0; list-style:none; display:inline-block; //display: inline; zoom: 1; float:right}
+div.header-right ul li {display:inline; height:18px; float:left; margin:0 0 0 15px; zoom: 1;line-height:18px; font-size:12px}
+div.header-right ul li span {display:block;padding-left:20px;}
+div.header-right ul li.fast span {background:url(images/red.gif) 0px 3px no-repeat;}
+div.header-right ul li.today span {background:url(images/grey.gif) 0px 3px no-repeat;}
+div.header-right ul li.week span {background:url(images/green.gif) 0px 3px no-repeat;}
+
+div.items {margin:0; width:750px;}
+
+div.item {margin:10px 0 0 0; position:relative; z-index:0}
+div.item-top {background:url(images/item-top.png) 0px 0px no-repeat; width:720px; padding:0 15px; height:30px; overflow:hidden;}
+div.item-top-time {float:left; font-size:11px; color:#9e9e9e; line-height:30px; padding-left:20px;}
+div.red {background:url(images/red.gif) 0px 10px no-repeat;}
+div.green {background:url(images/green.gif) 0px 10px no-repeat;}
+div.green-s {background:url(images/green_s.gif) 0px 10px no-repeat;}
+div.yellow {background:url(images/week.png) 0px 10px no-repeat;}
+div.grey {background:url(images/grey.gif) 0px 10px no-repeat;}
+/*div.red {background:url(images/fast.png) 0px 10px no-repeat;} */
+
+div.item-top-icons {float:right; margin-top:9px;}
+div.item-top-icons ul {padding:0px; margin:0px; list-style:none; width:63px; height:13px;}
+div.item-top-icons ul li {padding:0px; margin:0 0 0 8px; list-style:none; display:inline; float:left;}
+
+div.item-top-icons ul li a {padding:0px; margin:0px; list-style:none; float:left; display:inline; text-indent:-999999em}
+
+a.app {background:url(images/icons.png) 0px 0px no-repeat; height:12px; width:13px;}
+a.app:hover {background:url(images/icons.png) 0px -13px no-repeat;}
+
+a.ans {background:url(images/icons.png) -25px 0px no-repeat; height:12px; width:13px}
+a.ans:hover {background:url(images/icons.png) -25px -13px no-repeat;}
+
+a.del {background:url(images/icons.png) -52px 0px no-repeat; height:11px; width:11px;}
+a.del:hover {background:url(images/icons.png) -52px -13px no-repeat;}
+
+div.arr {position:absolute; right:-16px; top:30px; z-index:1}
+div.arr a {display:block; width:16px; height:18px; text-indent:-99999em; float:left}
+div.arr a.down {background:url(images/arr.png) 0px 0px no-repeat;}
+div.arr a.top{background:url(images/arr.png) 0px -18px no-repeat}
+
+div.item-center {background:url(images/item-center.png) repeat-y; width:720px; padding:5px 15px; font:14px/20px Tahoma, Geneva, sans-serif}
+div.item-bottom {background:url(images/item-bottom.png) 0px 0px no-repeat; height:6px; width:750px; font-size:0px; line-height:0px;}
+
+div.textarea {background:url(images/border.png) repeat-x top; padding-top:10px; margin-top:10px; overflow:hidden; height:100%;}
+textarea {background:url(images/textarea.png) 0px 0px no-repeat; width:700px; height:68px; border:0px; resize:none; padding:5px 10px; font:12px/20px Tahoma, Geneva, sans-serif}
+
+input.send {width:111px; height:28px; background:url(images/answer.png) 0px 0px no-repeat; margin:10px 0 0; padding:0px; text-indent:-99999em; border:0px; cursor:pointer; display:block; float:right}
+input.send:hover { background:url(images/answer.png) 0px -28px no-repeat}
+
+div.footer {margin:10px 0 0; padding-top:10px; background:url(images/border.png) repeat-x top; overflow:hidden}
+
+a.arc {width:60px; height:23px; background:url(images/arch.png) 0px 0px no-repeat; display:block; float:left; text-align:center; color:#fff !important; font:12px/23px Tahoma, Geneva, sans-serif; text-decoration:none}
+a.arc:hover {background:url(images/arch.png) 0px -23px no-repeat;}
+
+a.app-all {width:103px; height:23px; background:url(images/app-all.png) 0px 0px no-repeat; display:block; float:right; text-align:left; color:#fff !important; font:12px/23px Tahoma, Geneva, sans-serif; text-decoration:none; padding-left:10px;}
+a.app-all:hover {background:url(images/app-all.png) 0px -23px no-repeat;}
+.starrequired {color:red;}
+ul.projects {
+    margin:0;
+    padding: 10px 0 20px 0;
+}
+ul.projects li a{
+    color:black;
+}
+ul.projects a.selected {
+    font-weight:bold;
+}
+.support-quote-body {
+    font-style: italic;
+}

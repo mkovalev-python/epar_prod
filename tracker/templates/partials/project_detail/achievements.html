@@ -1,0 +1,58 @@
+<div class="achievements-wrapper-big">
+    <h2>Значки</h2>
+    <p>Значки будут публиковаться на странице пользователя, когда он их заработает.</p>
+    <hr />
+  <ul class="achievements-wrapper clearfix">
+
+{#    <p style="padding: 10px 15px 0;">Начисления по достижениям доступны только для исполнителей с аккаунтом PRO при условиях расчета через сервис. Для остальных исполнителей достижения будут просто отображаться в их профиле не принося финансовой выгоды.</p>#}
+    {% for achievement in achievements %}
+        {% if canEdit or achievement.project_relation %}
+          <li class="achievements-item clearfix{% if achievement.project_relation %} active{% endif %} js-achievement">
+            <div class="achievements-item-title-desc-wrapper clearfix">
+                <div class="achievements-item-img"><img src="{{ achievement.smallImageUrl }}" /></div>
+                <div class="achievements-item-text">
+                    <div class="achievements-item-title">{{ achievement.name }}</div>
+                    <div class="achievements-item-desc">{{ achievement.description }}</div>
+                </div>
+            </div>
+            {% if canEdit %}
+{#            <div class="achievements-item-settings">#}
+{#                <div class="col-wrapper">#}
+{#                    <div class="col-3"><input type="text" placeholder="0"#}
+{#                                              {% if not achievement.project_relation %}disabled{% endif %}#}
+{#                                              data-achievement="{{ achievement.id }}"#}
+{#                                              data-action="update_achievement_value"#}
+{#                                              name="value"#}
+{#                                              value="{{ achievement.project_relation.value|default_if_none:'' }}"#}
+{#                                              class="js-ajax-input form-control" /></div>#}
+{#                    <div class="col-7">#}
+{#                        <select class="js-ajax-input form-control"#}
+{#                                {% if not achievement.project_relation %}disabled{% endif %}#}
+{#                                data-achievement="{{ achievement.id }}"#}
+{#                                data-action="update_achievement_type"#}
+{#                                name="type" >#}
+{#                            <option value="fix" {% if achievement.project_relation.type == 'fix' %}selected="selected"{% endif %}>Разовое начисление</option>#}
+{#                            <option value="bet" {% if achievement.project_relation.type == 'bet' %}selected="selected"{% endif %}>Прибавка к ставке по проекту</option>#}
+{#                        </select>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+            <div class="achievements-item-button">
+                <label class="checkbox">
+                    <input type="checkbox" class="js-ajax-input js-select-achievement"
+                           style="float:left"
+                           data-achievement="{{ achievement.id }}"
+                           data-action="update_achievement_exist"
+                           name="exist" value="1" {% if achievement.project_relation %}checked="checked"{% endif %} /> Использовать в проекте
+                </label>
+            </div>
+            {% else %}
+                {% if achievement.project_relation.value %}
+                    <div class="achievements-item-settings"><b>{% if achievement.project_relation.type == 'fix' %}Разовое начисление{% elif achievement.project_relation.type == 'bet' %}Прибавка к ставке по проекту{% endif %}</b>: {{ achievement.project_relation.value|default_if_none:'' }}</div>
+                {% endif %}
+           {% endif %}
+          </li>
+        {% endif %}
+    {% endfor %}
+  </ul>
+</div>

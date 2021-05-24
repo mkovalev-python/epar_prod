@@ -1,0 +1,45 @@
+{% if show_git or not interface.is_git %}
+    <div class="alert alert-{% if interface.check %}success{% else %}danger{% endif %} clearfix alert-dismissible js-interface-block interface-block" role="alert" data-id="{{ interface.id }}">
+
+        {% if canDelete and not interface.is_git %}
+        <button type="button" class="close js-interface-remove" data-dismiss="alert">
+            <span aria-hidden="true"><i class="fa fa-trash"></i></span><span class="sr-only">Close</span>
+        </button>
+    {% endif %}
+        <div class="pull-left">
+            <i class="fa {% if interface.check %}fa-check-circle-o{% else %}fa-exclamation-circle{% endif %} pull-left" style="font-size:64px;"></i>
+        </div>
+        <div class="pull-left">
+            <h4>{{ interface.name }}:</h4>
+            {% if interface.is_git %}
+                git clone {{ interface.git_path }}<br />
+            {% else %}
+                {{ interface.protocol }}://{{ interface.address }}<br />
+            {% endif %}
+            {% if interface.username %}
+            Пользователь: {{ interface.username }} <br />
+            {% endif %}
+            {% if interface.password %}
+                Пароль:
+                <div class="input-group">
+                    <input id="passwordField{{ interface.id }}" type="password" class="form-control" name="password" value="{{ interface.password }}" disabled>
+                    <span class="input-group-btn">
+                        <button class="btn btn-default toggle-password" type="button" data-target="#passwordField{{ interface.id }}">
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                        </button>
+                        <button class="btn btn-default copy-password" type="button" data-target="#passwordField{{ interface.id }}">
+                            <i class="fa fa-clipboard" aria-hidden="true"></i>
+                        </button>
+                    </span>
+                </div>
+            {% endif %}
+            {% if interface.is_git %}
+                <p>
+                    Для доступа к репозиторию используются персональные ключи<br/>
+                    <a href="/wiki/how-to-setup-repository/">Как получить доступ к репозиторию?</a>
+                </p>
+            {% endif %}
+        </div>
+    </div>
+    <br />
+{% endif %}

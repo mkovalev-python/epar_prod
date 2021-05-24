@@ -1,0 +1,10 @@
+<div class="task-message row-fluid show-grid js-taskMessage js-op js-um" style="display: block;">
+    <div class="message">
+        <div class="message-content">
+            <span class="message-info-time">{{ message.created_at }}</span>
+            <a class="message-info-name" href="/user_detail/?id={{ message.author.id }}">{{ message.author.get_full_name }}</a>
+            <span class="message-desc-status js-taskMessageText last">{{ message.text|safe }}</span>
+
+        </div>
+    </div>
+</div>

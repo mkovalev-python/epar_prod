@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0" />
+<script type="text/javascript" src="/static/js/libs/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/libs/html5shiv.js"></script>
+<script type="text/javascript" src="/static/js/libs/jquery.history.min.js"></script>
+<script type="text/javascript" src="/static/js/libs/howler.min.js"></script>
+<script type="text/javascript" src="/static/js/pm/script.js"></script>
+<script type="text/javascript" src="/static/js/pm/main.js"></script>
+<script type="text/javascript" src="/static/js/libs/backbone.js"></script>
+<script type="text/javascript" src="/static/js/libs/backbone.iobind.js"></script>
+<script type="text/javascript" src="/static/js/libs/backbone.iosync.js"></script>
+<script type="text/javascript" src="/static/js/pm/panel.js"></script>
+<script type="text/javascript" src="/static/js/pm/tasks.js"></script>
+<script type="text/javascript" src="/static/js/pm/files.js"></script>
+<script type="text/javascript" src="/static/js/pm/beep.js"></script>
+<script type="text/javascript" src="/static/js/pm/hint.js"></script>
+<script type="text/javascript" src="/static/js/pm/user_dynamics.js"></script>
+<script type="text/javascript" src="/static/js/pm/sock_connector.js"></script>
+<script type="text/javascript" src="/static/js/pm/user-notice.js"></script>
+<script type="text/javascript" src="/static/js/libs/socket.io.js"></script>
+<script type="text/javascript" src="/static/js/pm/current_timer.js"></script>
+<script type="text/javascript" src="/static/js/pm/drowCanvas.js" xmlns="http://www.w3.org/1999/html"></script>
+<link type="text/css" rel="stylesheet" href="/static/css/reset.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/external/imgareaselect-animated.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/external/fancybox.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/external/carousel.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/external/bootstrap-responsive.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/external/bootstrap3.min.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/external/linecons/linecons.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/external/font-awesome.min.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/styles.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/add.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/panel.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/drowCanvas.css" />
+<title></title>
+
+<link rel="shortcut icon" href="/static/ico/favicon.ico" />
+</head>
+<body>
+<header>
+  <div class="header clearfix">
+    <div class="logo"> <a href="/"> <img src="/static/images/logo.png" alt="Экспертная компания" /> </a> </div>
+    <nav class="menu">
+      <ul>
+        <li class=""> <a href="/"> <span aria-hidden="true" class="fa fa-desktop"></span> <span>ГЛАВНАЯ</span> </a> </li>
+        <li class=""> <a href="/calendar/"> <span aria-hidden="true" class="fa fa-calendar-o"></span> <span>КАЛЕНДАРЬ</span> </a> </li>
+        <li class=""> <a href="/milestones/"> <span aria-hidden="true" class="fa fa-bar-chart-o"></span> <span>ЦЕЛИ</span> </a> </li>
+        <li class=""> <a href="/life/"> <span aria-hidden="true" class="fa fa-bolt"></span> <span>АКТИВНОСТЬ</span> </a> </li>
+        <li class=""> <a href="/gantt/"> <span aria-hidden="true" class="fa fa-tasks"></span> <span>ГРАФИК</span> </a> </li>
+        <li class="dropdown notifications"> <a href="#" data-toggle="dropdown" data-target="#" title="Личные сообщения"> <span class="js-notificator fa fa-sun-o "></span><!--<span class="fa fa-sun-o fa-spin"></span>--><b class="js-mes_qty">0</b> </a>
+          <div class="dropdown-menu">
+            <div class="container js-pmessages-list_empty ">Список сообщений пуст</div>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <div class="timer-wrapper clearfix">
+      <div class="timer js-currentTask"> <span> <span class="Time js-mainTimer" >00:01:28</span> &nbsp;&nbsp;<a class="js-play fa fa-pause" ></a>
+        <div class="dropdown-menu timer-popup pause_dialog js-mainTimerPopup" role="menu">
+          <h3 class="js-projectName">Экспертная компания</h3>
+          <hr>
+          <h5><a class="js-parentTaskName" href="/task_detail/?number=740&amp;project=2"> Сделать страницу аччивок </a></h5>
+          <p class="js-description"> </p>
+          <hr>
+          <p class="js-onlystarted">
+            <textarea placeholder="Оставить комментарий" name="comment" class="form-control" rows="3"></textarea>
+          </p>
+          <label class="js-onlystarted checkbox">
+            <input type="checkbox" name="solution" value="Y" >
+            Расчет завершен</label>
+          <a class="js-onlystarted js-stop-timer pause_comment_success btn btn-success">Остановить таймер</a><a class="js-onlystarted js-cancel-timer pause_comment_cancel btn btn-danger">Отменить таймер</a> </div>
+        </span> </div>
+      <div class="user-menu"> <a href="/user_detail/?id=131" class="user-name">Алекс Мышкин</a> <a class="btn btn-danger btn-xs" href="/?logout=Y"><span>Выход<i class="fa fa-power-off"></i></span></a> </div>
+    </div>
+    <!--timer--> 
+    
+  </div>
+  <!--header--> 
+</header>
+<div class="container sub-menu">
+  <div class="row sub-menu_line">
+    <div class="sub-menu_line_section-user col-xs-8"> 
+      <!--<ul class="list-inline">
+                
+                <li>
+                    <a href="/new_task_wizard/" class="new_task js-taskWizard-opener bold">Создать расчет</a>
+                </li>
+                
+                
+                <li><a href="/user_list/" class="users-and-groups">Пользователи</a></li>
+                
+                <li><a href="/files/" class="files">Файлы</a></li>
+                
+            </ul>--> 
+      
+      <a href="/new_task_wizard/" class="js-taskWizard-opener btn btn-default"><i class="fa fa-file"></i><span>&nbsp;Создать расчет</span></a>&nbsp;&nbsp; <a href="/user_list/" class="btn btn-default"><i class="fa fa-users"></i><span>&nbsp;Команда</span></a>&nbsp;&nbsp; <a href="/files/" class="btn btn-default"><i class="fa fa-folder-open"></i><span>&nbsp;Файлы</span></a> </div>
+    <div class="sub-menu_line_section-tracker col-xs-4">
+      <ul class="list-inline navbar-right">
+        <li class="section-tracker_menu_name h5"><span>Проект:</span></li>
+        <li class="projects-list-menu">
+          <div class="dropdown">
+            <button type="button" class="btn btn-link tracker-choose" data-toggle="dropdown">Экспертная компания</button>
+            <ul class="dropdown-menu dropdown-right" role="menu" aria-labelledby="dropdownMenu1">
+              <li id="0" class=""> <a href="?project=0">Все проекты</a> </li>
+              <li id="74" class=""> <a href="?project=74"> complians.ru </a> </li>
+              <li id="137" class=""> <a href="?project=137"> Heliant.ru
+                &nbsp;<b>1</b> </a> </li>
+              <li id="2" class="active"> <a href="?project=2"> Экспертная компания
+                &nbsp;<b>7</b> </a> </li>
+              <li id="117" class=""> <a href="?project=117"> Интернет-магазин текстиля для дома </a> </li>
+              <li id="77" class=""> <a href="?project=77"> Посадочная страница Свадебные платья </a> </li>
+              <li id="124" class=""> <a href="?project=124"> Сайт LVFINANCE </a> </li>
+            </ul>
+            <a href="/project/2/" class="fa fa-cog" title="Параметры проекта"></a> </div>
+        </li>
+        <li class="projects-list-select">
+          <select class="form-control" onchange="document.location.href='/?project='+$(this).val();">
+            <option value="0"> Все проекты </option>
+            <option value="74">complians.ru</option>
+            <option value="137">Heliant.ru</option>
+            <option selected value="2">Экспертная компания</option>
+            <option value="117">Интернет-магазин текстиля для дома</option>
+            <option value="77">Посадочная страница Свадебные платья</option>
+            <option value="124">Сайт LVFINANCE</option>
+          </select>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- /container -->
+
+<hr style="margin-top:0px;">
+<div class="container">
+<script type="text/javascript" src="/widgets/js/user_list/script.js"></script> 
+<script type="text/javascript" src="/static/js/bootstrap/bootstrap-tooltip.js"></script> 
+<script>
+$(function() {
+		$('body').tooltip({
+			selector: "[rel=tooltip]", // можете использовать любой селектор
+			placement: "top" 
+		});
+	});
+</script>
+    <style>
+        .premium-page {font-size: 15px; line-height: 22px; text-align: center; max-width: 900px; margin: 0 auto; padding-bottom: 50px;}
+        .premium-page h2 {
+            font-size: 50px;
+            font-weight: bold;
+            line-height: 50px;
+            margin: 0 0 25px;
+        }
+        .premium-page h3 {
+            font-size: 22px;
+            font-weight: normal;
+            line-height: 30px;
+            margin: 0 0 20px;
+        }
+        .premium-page ul.four {max-width: 900px; margin: 0 auto 40px; display: block;}
+        .premium-page ul.four li {
+            display: block;
+            padding: 0 20px;
+            width: 25%;
+            float: left;
+            font-size: 16px;
+            line-height: 22px;
+            text-align: center;
+        }
+        .premium-page ul.four li img {display: block; margin:0 auto 15px;}
+
+
+        .premium-page ul.two {max-width: 550px; margin: 0 auto 40px; display: block;}
+
+        .premium-page ul.two li {
+            display: block;
+            padding: 0 20px;
+            width: 50%;
+            float: left;
+            font-size: 16px;
+            line-height: 22px;
+            text-align: center;
+        }
+        .premium-page ul.two li img {float: left; width: 100px;}
+
+        .premium-page hr {margin: 40px 0;}
+
+        .green-text {color: #144d49;}
+
+        .premium-img {display: table-cell; vertical-align: middle;}
+        .premium-text {display: table-cell; vertical-align: middle;}
+
+        @media only screen and (max-width : 882px) {
+
+            .premium-page h2 {
+                font-size: 40px;
+                font-weight: bold;
+                line-height: 40px;
+                margin: 0 0 25px;
+            }
+
+            .premium-page h3 {
+                font-size: 18px;
+                font-weight: normal;
+                line-height: 24px;
+                margin: 0 0 20px;
+            }
+
+            .premium-page ul.four {margin-bottom: 0px;}
+            .premium-page ul.four li {
+                width: 50%;
+            }
+
+            .premium-page ul.four li .four-li-text {height: 100px;}
+
+        }
+
+
+        @media only screen and (max-width : 576px) {
+            .premium-page ul.four li {
+                width: 100%;
+            }
+
+            .premium-page ul.four li .four-li-text {height: 100px;}
+
+            .premium-page ul.two {margin-bottom: 0px;}
+            .premium-page ul.two li {
+                padding: 0;
+                width: 100%;
+                float: none;
+                margin-bottom: 20px;
+            }
+
+            .btn-lg {font-size: 16px;}
+
+        }
+    </style>
+<div class="premium-page">
+    <h2>Что такое <span class="green-text">премиум</span> аккаунт?</h2>
+    <h3>Премиум аккаунт дает возможность <b class="green-text">непрерывного роста</b><br>ваших доходов в системе Экспертная компания</h3>
+    <ul class="four clearfix">
+        <li><img src="https://cdn3.iconfinder.com/data/icons/flat-color-icons/504/bullish-128.png"><div class="four-li-text"><b class="green-text">Рейтинг</b><br> добавляющийся к цене вашего часа</div></li>
+        <li><img src="https://cdn0.iconfinder.com/data/icons/flat-color-icons/504/cup.png"><div class="four-li-text"><b class="green-text">Награды</b><br> за достижения по проектам</div></li>
+        <li><img src="https://cdn3.iconfinder.com/data/icons/flat-color-icons/504/assistant-2-128.png"><div class="four-li-text"><b class="green-text">Множество</b><br> задач от менеджеров Экспертная компания</div></li>
+        <li><img src="https://cdn0.iconfinder.com/data/icons/flat-color-icons/504/money_transfer-128.png"><div class="four-li-text"><b class="green-text">+ 10%</b><br> к стоимость вашего часа</div></li>
+    </ul>
+    <p><a href="#" class="btn btn-lg btn-success">Подать заявку на премиум аккаунт</a></p>
+    <hr>
+    <h3>Требования для получения премиум аккаунта</h3>
+    <ul class="two clearfix">
+        <li class="clearfix">
+            <div class="premium-img"><img src="https://cdn0.iconfinder.com/data/icons/flat-color-icons/504/inspection-128.png"></div>
+            <div class="premium-text">Прохождение  технического собеседования</div>
+        </li>
+        <li class="clearfix">
+            <div class="premium-img"><img src="https://cdn4.iconfinder.com/data/icons/flat-color-icons/504/donate-128.png"></div>
+            <div class="premium-text">7% комиссия от заработанных в проекте средств</div>
+        </li>
+    </ul>
+
+ 
+      
+  </div><!--widget-->
+</div><!--container-->
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.js-taskWizard-opener').click(function(ev){
+            ev.preventDefault();
+            var url = $(this).attr('href');
+            $.get(url, function(response){
+                $('body').prepend(response);
+            });
+        });
+    });
+</script> 
+<img src="/static/images/loaders/loader_3.png" alt="Loader" class="loader medium" /> <img src="/static/images/loaders/loader_4.png" alt="Loader" class="loader small" /> <img src="/static/images/loaders/loader_5.png" alt="Loader" class="loader tiny" />
+<iframe id="fileinput" src="" style="display:none;"></iframe>
+<script src="/static/js/bootstrap/bootstrap.min.js"></script> 
+<script src="/static/js/bootstrap/typehead.js"></script> 
+<script src="/static/js/libs/boostrap.growl.js"></script>
+<link type="text/css" rel="stylesheet" href="/static/css/bootstrap-combobox.css" />
+<script type="text/javascript" src="/static/js/bootstrap/bootstrap-combobox.js"></script> 
+<script src="/static/js/libs/jquery.event.outside.min.js"></script> 
+<script src="/static/js/libs/apng-canvas.js"></script> 
+<script src="/static/js/libs/jquery.imgareaselect.min.js"></script> 
+<script src="/static/js/libs/jquery.form.js"></script> 
+<script src="/static/js/libs/jquery.cookie.js"></script> 
+<script src="/static/js/libs/fancybox.js"></script> 
+<!--[if lte IE 7]>
+    <link type="text/css" rel="stylesheet" href="/static/css/external/linecons/linecons-ie7.css" />
+    <script src="/static/js/linecons/lte-ie7.js"></script>
+<![endif]--> 
+
+<!-- Yandex.Metrika counter --><script type="text/javascript">(function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter26252781 = new Ya.Metrika({id:26252781, webvisor:true, clickmap:true, trackLinks:true, accurateTrackBounce:true, trackHash:true}); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks");</script>
+<noscript>
+<div><img src="//mc.yandex.ru/watch/26252781" style="position:absolute; left:-9999px;" alt="" /></div>
+</noscript>
+<!-- /Yandex.Metrika counter --> 
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-12015778-3', 'auto');
+  ga('send', 'pageview');
+
+</script>
+</body>
+</html>

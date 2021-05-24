@@ -1,0 +1,24 @@
+{% load thumbnail jsonify %}
+<div class="clearfix"></div>
+<div class="js-task-discussion task-discussion">
+       <!-- <h2>{{ task.name|safe }}</h2>
+        <p>{{ task.text|safe }}</p>
+    <hr>
+    <div class="clearfix"></div>-->
+    {% include 'partials/taskdraft_task/taskdraft_evaluations.html' with evaluations=evaluations draft=draft task=task user_id=request.user.id only%}
+    <h4 class="uppercase">Обсуждение:</h4>
+    <div class="js-discussion-messages">
+        {% for message in simple_messages %}
+            {% include 'partials/taskdraft_task/taskdraft_task_message.html' %}
+        {% endfor %}
+    </div>
+    <div class="task_add-message form-horizontal clearfix">
+        <form action="/taskdraft/{{ draft.slug }}/{{ task.id }}?is_xhr=1" class="js-send-task-form" method="POST">
+            {% csrf_token %}
+                <p>
+                    <textarea name="task_message" rows="5" class="form-control" placeholder="Напишите сообщение"></textarea>
+                </p>
+                <input type="submit" class="btn btn-success sendTaskMessage js-send-task-submit" value="Добавить сообщение"/>
+        </form>
+    </div>
+</div>

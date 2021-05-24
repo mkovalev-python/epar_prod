@@ -1,0 +1,115 @@
+{% load jsonify thumbnail compressed %}
+{% compressed_js 'life' %}
+<style>
+    .t {
+        color: #0bd145;
+    }
+</style>
+<script type="text/javascript">
+var data = {};
+{% for project in life.projects %}
+data['{{ project.id }}'] = {
+        labels : [{% for event in project.events %}'{{ event.date }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+        datasets : [
+            {
+                fillColor : "#0bd145",
+                strokeColor : "#0bd145",
+                data : [{% for event in project.events %}{{ event.qty }}{% if not forloop.last %},{% endif %}{% endfor %}]
+            }
+        ]
+    };
+{% endfor %}
+$(function() {
+    {% for user in life.users %}
+        {% if user.taskTime %}
+            var timer = new PM_Timer({'seconds':{{ user.taskTime|jsonify|safe }}});
+            timer.container = $('.task_time[data-taskid={{ user.startedTask.id }}]');
+            timer.fill();
+            {% if not user.startedTimer.dateEnd %}timer.start();{% endif %}
+
+            arTimers['{{ user.startedTask.id }}'] = timer;
+        {% endif %}
+    {% endfor %}
+    var curDS = [];
+    {% for project in life.projects %}
+    var canvas = $('#project_graph_{{ project.id }}').get(0);
+    var ctx{{ project.id }} = canvas.getContext("2d");
+    new Chart(ctx{{ project.id }}).Bar(data['{{ project.id }}'],{'responsive': true});
+
+    curDS = data['{{ project.id }}']['datasets'][0]['data'];
+    if (curDS[curDS.length - 1] == 0 && curDS[curDS.length - 2] == 0) {
+        $(canvas).closest('tr').addClass('danger');
+    }else{
+        $(canvas).closest('tr').addClass('success');
+    }
+    {% endfor %}
+});
+</script>
+{#<div class="widget inner activity">#}
+{#    <div class="widget-title clearfix"><h2>Текущая активность</h2></div>#}
+{##}
+{#    <div class="row-fluid user-list">#}
+{#        {% if life.users %}#}
+{#        <div class="container-fluid activity-wrapper">#}
+{#            <div class="col-wrapper activity-header">#}
+{#                <div class="col-2">Пользователь</div>#}
+{#                <div class="col-4">Позиция</div>#}
+{#                <div class="col-2">Плановое время</div>#}
+{#                <div class="col-2">Потраченное время</div>#}
+{#            </div>#}
+{##}
+{#            <script>#}
+{#            </script>#}
+{#            {% for user in life.users %}#}
+{#            <div class="col-wrapper activity-body">#}
+{#                <div class="col-2 activity-avatar">#}
+{#                    <img src="{% if user.profile.avatar %}{{ user.profile.avatarSrc|thumbnail:"30x30" }}{% else %}{{ "/static/images/avatar_unknown.png"|thumbnail:"30x30"}}{% endif %}"#}
+{#                    class="img-thumbnail" width="30px" style="margin-right: 10px;" /><a href="/user_detail/?id={{ user.id }}"><b{% if user.activity == 0 %} style="color: lightgrey;"{% endif %}>{% if user.last_name %}{{ user.last_name }}&nbsp;{{ user.first_name }}{% else %}{{ user.username }}{% endif %}</b></a>#}
+{#                    <div class="progress">#}
+{#                        <div class="progress-bar progress-bar-success" style="width: {{ user.activity }}%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="{{ user.activity }}" role="progressbar">#}
+{#                            <span class="sr-only">{{ user.activity }}% activity</span>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="col-4 activity-task">#}
+{#                    {% if user.startedTask %}#}
+{#                    <a href='/?project={{ user.startedTask.project.id }}'>{{ user.startedTask.project.name }}</a> / {% if user.startedTask.parentTask %}<a href='{{  user.startedTask.parentTask.url }}'>{{  user.startedTask.parentTask.number }}.&nbsp;{{ user.startedTask.parentTask.name }}</a> / {% endif %}<b><a href='{{  user.startedTask.url }}'>{{  user.startedTask.number }}.&nbsp;{{ user.startedTask.name }}</a></b>#}
+{#                    {% endif %}#}
+{#                </div>#}
+{#                <div class="col-2 activity-time"><span class="hidden-label">Плановое время:</span> {% if user.startedTask.planTime  %}{{ user.startedTask.planTime }}{% endif %}</div>#}
+{#                <div class="col-2 activity-time"><span class="hidden-label">Потраченное время:</span> <div class="task_time" data-taskid="{{ user.startedTask.id }}"></div></div>#}
+{#            </div>#}
+{#            {% endfor %}#}
+{#        {% else %}#}
+{#            <p style="text-align: center; color: #666;">За последние 24 часа никто ничем не занимался.</p>#}
+{#        {% endif %}#}
+{#        <p align="center"><a href="?show_all=Y" class="btn btn-success">Показать всех</a></p>#}
+{#        </div>#}
+{#    </div>#}
+{#</div>#}
+
+<div class="widget inner activity">
+    <div class="widget-title clearfix"><h2>Сравнение активности в проектах</h2></div>
+    <div class="row-fluid user-list">
+        <div class="container-fluid activity-wrapper">
+            <div class="col-wrapper activity-header">
+                <div class="col-2">Проект</div>
+                <div class="col-8">Активность</div>
+            </div>
+
+            {% for project in life.projects %}
+            <div class="col-wrapper activity-body">
+                <div class="col-2 activity-avatar">
+                    {% if project.imagePath %}
+                    <img src="{{ project.imagePath|thumbnail:"40x40" }}" class="img-thumbnail" style="margin-right: 10px;" />
+                    {% endif %}
+                    <a href="/?project={{ project.id }}">{{ project.name }}</a>
+                </div>
+                <div class="col-8 activity-graph">
+                    <canvas id="project_graph_{{ project.id }}" width="900px" height="200px"></canvas>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

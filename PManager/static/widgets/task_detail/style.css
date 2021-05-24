@@ -1,0 +1,31 @@
+.task-add-btns, .task_add-message_message-detail {
+    display: none;
+}
+
+.newMessage.active .task-add-btns, .newMessage.active .task_add-message_message-detail {
+    display: block;
+}
+
+textarea[name=task_message] {
+    height: 34px;
+}
+
+.newMessage.active [name=task_message] {
+    height: auto;
+}
+
+.task_add-message_message-detail .checkbox-inline:first-child {
+    padding-left: 0;
+}
+
+.task_add-message_message-detail {
+    margin-bottom: 15px;
+}
+
+.task-file--row {
+    margin: 10px 0;
+}
+
+.task-file--row .img-polaroid {
+    margin: 0;
+}

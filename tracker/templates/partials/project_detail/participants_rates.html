@@ -1,0 +1,67 @@
+{%load jsonify humanize %}
+<div class="nachislenie-bonusov">
+    <h2>Участники проекта</h2>
+    <hr>
+    <ul class="developer-manager-list clearfix" role="tablist">
+        {% for roleName, o in roles.items %}
+        <li {% if forloop.first %}class="active"{% endif %} role="{{ o.role.role.code }}">
+            <a aria-expanded="true" href="#{{ o.role.role.code }}" aria-controls="{{ o.role.role.code }}" data-toggle="tab" class="btn btn-default">{{ roleName }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <div class="tab-content">
+        {% for roleName, o in roles.items %}
+        <div role="tabpanel" class="tab-pane {% if forloop.first %}active{% endif %}" id="{{ o.role.role.code }}" >
+            <p>{{ o.text }}</p>
+            <div class="clearfix user-role-block-wrapper">
+                {% for user in o.users %}
+                <div class="user-role-block js-role-block" {% if user.get_profile.is_outsource %}style="background-color: #ffffea;"{% endif %}>
+                    <div class="avatar">
+                        <a href="/user_detail/?id=1" class="pull-left">
+                            <div class="avatar_container js-avatar-container" data-size="78"
+                                rel='{{ user.profile.avatar_rel|jsonify|safe }}'>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="desc">
+                        <h4>
+                            <a href="#" class="js-remove-role" data-role="{{ user.role_id }}"><i class="fa fa-close"></i></a>
+                            <a href="/user_detail/?id={{ user.id }}">{% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.email }}{% endif %}</a>
+                        </h4>
+                        <div class="col-wrapper">
+
+                            <div class="col-{% if o.role.role.code != 'client' %}3{% else %}6{% endif %}">
+                                {% if user.sum %}
+                                <b>Бонусов:</b>
+                                <div class="bonuses-num"><span class="bonuses-num-text">{{ user.sum|default_if_none:"0"|intcomma }}</span> <span>баллов</span></div>
+                                {% endif %}
+                            </div>
+                            <div class="col-4">
+                                <b class="pseudo-title-to-hide">&nbsp;</b>
+                                {% if request.user.is_superuser %}
+                                    <button class="btn btn-success js-bonus-complete w100" rel="{{ user.role_id }}" data-sum="{{ user.sum|default_if_none:'' }}">Начислить/Списать</button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+        <div role="tabpanel" class="tab-pane" id="developer">2</div>
+    </div>
+
+    <div class="js-user-pay-win hidden">
+        <div class="user-pay-win">
+            <form class='js-send-payment-form'>
+                <input type="hidden" class="js-input-role-id" value=""/>
+                <h3>Количество бонусов: </h3>
+                <p><input type="text" class="js-input-user-sum form-control" value="" /></p>
+                <h3>Комментарий: </h3>
+                <p><input type="text" class="js-input-comment form-control" value="" /></p>
+                <input type="button" class="btn btn-success form-control js-send-payment-button" value="Погасить бонусы" />
+            </form>
+        </div>
+    </div>
+</div>

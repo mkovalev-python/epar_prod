@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone=no">
+    <title>Rubedite Software Development</title>
+    <link rel="stylesheet" href="{% static 'support_page/support_page.css' %}">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
+</head>
+<body class="body">
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li
+                    {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+<div class="JSelemTrans JSpopup body__form _active">
+    <div class="formBox">
+        <form class="formBox__wrapper" action="{{ form_action_url }}" method="post" data-name="Форма обратной связи" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="formBox__title">
+                <h2 class="titleMedium _light">
+                    Напишите письмо
+                    <br><span class="titleMedium__part" style="font-family: 'FirB';"> команде Rubedite</span>
+                </h2>
+            </div>
+            <div class="formBox__layer">
+                <div class="formBox__items _full">
+                    {{ form.name }}
+                </div>
+                <div class="formBox__items _full">
+                    {{ form.phone }}
+                </div>
+                <label class="formBox__confirm">
+                    <div class="formBox__confirmField">
+                        {{ form.priority }}
+                        <img data-src="{% static 'support_page/img/doneWhite.svg' %}" src="{% static 'support_page/img/doneWhite.svg' %}" alt="" class="JSelemTrans formBox__confirmDone">
+                    </div>
+                    <span class="formBox__confirmContent">Блокирующий приоритет</span>
+                </label>
+                <div class="formBox__items _full">
+                    {{ form.link }}
+                </div>
+                <div class="example-2">
+                    <div class="form-group">
+                        {{ form.screenshot }}
+                        <label for="id_screenshot" class="btn btn-tertiary button js-labelFile">
+                            <i class="icon fa fa-check"></i>
+                            <span class="js-fileName">Скриншот</span>
+                        </label>
+                    </div>
+                </div>
+                {#                <div class="example-2">#}
+                {#                    <div class="form-group">#}
+                {#                        <input type="file" name="form_file_11" id="file" class="input-file">#}
+                {#                        <label for="file" class="btn btn-tertiary button js-labelFile">#}
+                {#                            <i class="icon fa fa-check"></i>#}
+                {#                            <span class="js-fileName">Загрузить файл</span>#}
+                {#                        </label>#}
+                {#                    </div>#}
+                {#                </div>#}
+                <div class="error_size_file">Размер файла слишком большой</div>
+                <div class="formBox__items _full">
+                    {{ form.work_actual }}
+                </div>
+                <div class="formBox__items _full">
+                    {{ form.work_should }}
+                </div>
+                <div class="formBox__items _full">
+                    {{ form.details }}
+                </div>
+            </div>
+            <div class="formBox__button">
+                <button class="JSelemTrans button" type="submit">
+                    Отправить
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="body body__success">
+    <div class="formBox__title">
+        <h2 class="titleMedium _light">
+            Ваше сообщение успешно отправлено
+        </h2>
+    </div>
+</div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="{% static "support_page/form.js" %}"></script>

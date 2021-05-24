@@ -1,0 +1,18 @@
+{% extends 'mail_templates/default_template.html' %}
+{% load get_settings %}
+{% block subject %}Новое сообщение от пользователя!{% endblock %}
+
+{% block top_running_title %}
+    <strong>{{ fromUser }}</strong>
+    <br>
+    <a target="_blank" href="mailto:{{ userEmail }}" style="color:#51A351;">{{ userEmail }}</a>
+    <br>{{ date }}
+{% endblock %}
+
+{% block title %}{{ subject }}{% endblock %}
+
+{% block content %}
+    <strong>{{ fromUser }}</strong><br>
+    <a target="_blank" href="mailto:{{ userEmail }}" style="color:#51A351;">{{ userEmail }}</a><br>
+    <p>{{ message }}</p>
+{% endblock %}

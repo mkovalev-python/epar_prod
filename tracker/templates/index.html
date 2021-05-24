@@ -1,0 +1,34 @@
+{% extends "main/base.html" %}
+{% block header %}
+{% endblock %}
+{% block content %}
+    <div class="widgets js-widgets-container">
+        {{ widget_header|safe }}
+        <div class="js-widget-tabs-container">
+            {% for widget in widgets %}
+                <div class="js-widget-tab{% if not activeWidget and not forloop.first or activeWidget and activeWidget != widget.code %} hidden{% endif %}" data-widget="{{ widget.code }}">
+                    {{ widget.html|safe }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            $('.js-widgets-tab').click(function () {
+                $.cookie('ACTIVE_WIDGET', $(this).data('widget'));
+                $('.js-widget-tab[data-widget="' + $(this).data('widget') + '"]').removeClass('hidden').siblings().addClass('hidden');
+                switch ($(this).data('widget')) {
+                    case "tasklist":
+                        widget_tl.open();
+                        break;
+
+                    case "chat":
+                        widget_chat.open();
+                        break;
+                }
+                return false;
+            });
+            $('.js-widget-tab:visible .js-widgets-tab.active').trigger('click');
+        });
+    </script>
+{% endblock %}

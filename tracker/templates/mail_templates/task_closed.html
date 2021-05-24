@@ -1,0 +1,16 @@
+{% extends 'mail_templates/default_template.html' %}
+{% load get_settings %}
+{% block subject %}Расчет завершен{% endblock %}
+
+{% block top_running_title %}
+    <strong>{{ task.author.first_name }} {{ task.author.last_name }}</strong><br>{{ task.dateCreate }}
+{% endblock %}
+
+{% block title %}Работы над задачей завершены!{% endblock %}
+
+{% block content %}
+    <p></p>
+    <p style="font-size:14px; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; line-height:20px; color:#3b3f4a;"><a style="color:#51A351" href="{% get_settings "HTTP_ROOT_URL" %}{{ task.task_url }}">{{ task.name }}</a>!
+        <br />
+    </p>
+{% endblock %}

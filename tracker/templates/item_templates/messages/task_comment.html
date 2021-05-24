@@ -1,0 +1,50 @@
+<!--
+HTML template for message
+#ID#
+#AUTHOR_ID#
+#AVATAR_SRC#
+#AUTHOR_NAME#
+#AUTHOR_LAST_NAME#
+#AUTHOR_USERNAME#
+#DATE_CREATE#
+#TEXT#
+#FILE_LIST#
+#USER_TO_NAME#
+-->
+
+<div class="message">
+        <div class="avatar js-avatarBlock">
+            <a class="pull-left" href="#AUTHOR_URL#"> #AVATAR# </a>
+        </div>
+        <div class="message-content">
+            <div class="message-info js-author-block">
+                <span class="message-info-time">#DATE_CREATE# #HIDDEN_LABEL#</span>
+                <a href="#AUTHOR_URL#" class="message-info-name">#AUTHOR_LAST_NAME# #AUTHOR_NAME#</a>#USER_TO_NAME#
+                <small>#MODIFIED#</small>
+                <span class="message-control">
+                    <a style="display:none;" href="" title="Изменить" class="js-editTaskMessage"><i class="fa fa-edit"></i></a>
+                    <a style="display:none;" href="" title="Удалить" class="js-removeTaskMessage"><i class="fa fa-times-circle"></i></a>
+                </span>
+            </div>
+            <div class="message-desc clearfix">
+                <div class="message-desc-left js-taskMessageText">
+                    <div class="message-desc-message js-messageDetailText">#TEXT#</div>
+                    <!--<i class="fa fa-check-square-o"></i>
+					<i class="fa fa-square-o"></i>-->
+                    <div class="js-filesList">
+
+                    </div>
+                </div>
+                <div class="message-desc-right clearfix">
+                    #TODO_BTN#
+                    #BUG_BTN#
+                     <a class="link js-quote" style="margin-left:5px;" href="#" data-author="#AUTHOR_ID#" rel="#ID#">Цитировать</a>
+                    <!--<a class="link" href="#">Цитировать</a>                 
+                    <a class="link" href="#">Ответить</a>                 
+                    <a class="to-do-button" href="#"><label><input type="checkbox" />To Do</label></a>
+                    <a class="to-do-button checked" href="#"><label><input type="checkbox" />To Do</label></a>-->
+                    #REPLY_BTN#
+                </div>
+            </div>
+        </div>
+    </div>

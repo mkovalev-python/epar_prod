@@ -1,0 +1,28 @@
+<ul class="nav nav-tabs js-excel_lists">
+	{% for sheet in excel %}
+		<li><a href="#{{ forloop.counter }}" role="tab" data-toggle="tab">{{ sheet.name }}</a></li>
+	{% endfor %}
+</ul>
+
+
+<div class="tab-content js-tabs">
+	{% for sheet in excel %}
+		<div class="tab-pane" id="{{ forloop.counter }}">
+			<table class="table table-striped table-condensed table-hover">
+				{% for row in sheet.rows %}
+					<tr>
+						{% for cell in row %}
+							<td>{{ cell }}</td>
+						{% endfor %}
+					</tr>
+				{% endfor %}
+			</table>
+		</div>
+	{% endfor %}
+</div>
+<script>
+	$(document).ready(function() {
+		$('.js-excel_lists').find('li').first().addClass('active');
+		$('.js-tabs').find('div').first().addClass('active')
+	})
+</script>

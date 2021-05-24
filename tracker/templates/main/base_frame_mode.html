@@ -1,0 +1,129 @@
+{% load thumbnail i18n jsonify less get_settings compressed %}{% load url from future %}
+<!DOCTYPE html>
+<html lang="ru" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0"/>
+    {% compressed_js 'base' %}
+    {% compressed_css 'base' %}
+    {% block stylesheets %}{% endblock %}
+    {% block header %}{% endblock %}
+    <title>{% block title %}{{ pageTitle }}{% endblock %}</title>
+    <script type="text/javascript">
+        window.heliardSettings = {
+            "HTTP_ROOT_URL": '{% get_settings "HTTP_ROOT_URL" %}',
+            "SERVER_IP": '{% get_settings "SERVER_IP" %}',
+            "SOCKET_SERVER_ADDRESS": '{% get_settings "SOCKET_SERVER_ADDRESS" %}',
+            'CSRF_TOKEN': $.cookie('csrftoken')
+        };
+        var CURRENT_TASK_VIEW;
+        var CURRENT_TASK_DATA;
+        var arTimers = {};
+        window.backurl = '{{ backurl }}';
+        {% if main.CURRENT_PROJECT %}
+            window.currentProject = {{ main.CURRENT_PROJECT.id }};
+        {% endif %}
+        window.baseUserParams = {
+            'userId':{{ user.id }}
+        };
+
+        WEB_SOCKET_SWF_LOCATION = '/static/WebSocketMain.swf';
+        $(function () {
+            APNG.ifNeeded(function () {
+                $("img.loader").each(function () {
+                    APNG.animateImage(this);
+                });
+            });
+        });
+        {% if user.is_authenticated %}
+            document.mainController = new mainControllerClass({
+                'userId':{{ user.id }},
+                'widgetsData': {}
+            });
+        {% endif %}
+        var oMyCurrentTimer = new PM_Timer({{ userTimer.jsonData|jsonify|safe }});
+        {% if userTimer %}
+            CURRENT_TASK_DATA = {
+                'id':{{ userTimer.task.id }},
+                'started':{{ userTimer.task.started|jsonify }},
+                'closed':{{ userTimer.task.closed|jsonify }},
+                'name':{{ userTimer.task.name|jsonify|safe }},
+                'project': {
+                    'name': {{ userTimer.task.project.name|jsonify|safe }}
+                }
+            };
+
+            {% if userTimer.task.parentTask %}
+                CURRENT_TASK_DATA['parentTask'] = {
+                    'name': {{ userTimer.task.parentTask.name|jsonify|safe }}
+                };
+            {% endif %}
+        {% endif %}
+        var ACCOUNT_TOTAL = {{ account_total|jsonify|safe }};
+    </script>
+    {% block scripts %}{% endblock %}
+    <link rel="shortcut icon" href="/static/ico/favicon.ico"/>
+</head>
+<body style="padding-top: 70px;background: transparent;">
+{# -=========== КОНТЕНТНАЯ ЧАСТЬ ===========- #}
+<div class="container">
+    {% block content %}{% endblock %}
+    <script type="text/javascript">
+        $(function () {
+            {% if current_notice %}
+            var popup = new hintObject({
+                'title': '{{ current_notice.name }}',
+                'text': '{{ current_notice.html|safe }}',
+                'image': '{{ current_notice.src }}',
+                'id': '{{ current_notice.id }}'
+            });
+            popup.show($('{{ current_notice.itemClass }}').get(0));
+            {% endif %}
+
+            $('.js-taskWizard-opener').click(function (ev) {
+                ev.preventDefault();
+                var url = $(this).attr('href');
+                $.get(url, function (response) {
+                    $('body').prepend(response);
+                });
+            });
+
+            var projectInput = $('.js-projects').find('.js-inputProjectList');
+            var projectName = $('.js-itemProjectName');
+
+            projectInput.keyup(function () {
+                var inputVal = $(this).val();
+                projectName.each(function () {
+                    $(this).parents('.projects-item').hide();
+                    var projectItem = $.trim($(this).text());
+                    var projectItemIndexOf = projectItem.toLowerCase().indexOf(inputVal.toLowerCase());
+                    var projectItemIndexOfKeybdConv = projectItem.toLowerCase().indexOf(inputVal.KeybdConv().toLowerCase());
+                    if (projectItemIndexOf != -1 || projectItemIndexOfKeybdConv != -1) {
+                        $(this).parents('.projects-item').show();
+                    }
+                });
+            });
+            $('.js-openProjectList').click(function () {
+                setTimeout(function () {
+                    $('.js-inputProjectList').focus();
+                }, 200);
+            });
+            $.get(
+                '/static/agreement.html',
+                function(data) {
+                    $('.js-agreement').html(data);
+                }
+            );
+        });
+    </script>
+    <img src="/static/images/loaders/loader_3.png" alt="Loader" class="loader medium"/>
+    <img src="/static/images/loaders/loader_4.png" alt="Loader" class="loader small"/>
+    <img src="/static/images/loaders/loader_5.png" alt="Loader" class="loader tiny"/>
+    <iframe id="fileinput" src="" style="display:none;"></iframe>
+    <link type="text/css" rel="stylesheet" href="/static/css/bootstrap-combobox.css"/>
+</div>
+</body>
+</html>

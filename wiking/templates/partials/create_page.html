@@ -1,0 +1,11 @@
+<script>
+window.create_new_page = function(){
+    var page_name = prompt('Введите url страницы','');
+    if (page_name.match(/^[a-zA-Z0-9_\(\)-]+$/)){
+        window.location.href =  page_name;
+    }else{
+        alert('Неверный url страницы');
+    }
+    return false;
+}
+</script>

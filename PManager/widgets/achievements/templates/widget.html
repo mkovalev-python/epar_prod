@@ -1,0 +1,19 @@
+<div class="widget" >
+<h3>Мои достижения</h3>
+  <hr>
+    <div class="achievement-list clearfix">
+        {% for achievement in achievements.achievements %}
+          <div class="achievement-list-item {% if achievement.mine %}active{% endif %}"
+               data-container="body" title="{{ achievement.name }}" data-toggle="popover"
+               data-replacement="bottom" data-content="{{ achievement.description }}" >
+              <span class="achievement-list-item-img"><img src="{{ achievement.smallImageUrl }}" ></span><h3>{{ achievement.name }}</h3></div>
+        {% endfor %}
+    </div>
+</div>
+<script>
+    $(function(){
+        $('.achievement-list-item').click(function(){
+            $(this).toggleClass('activated');
+        }).popover();
+    })
+</script>

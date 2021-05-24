@@ -1,0 +1,23 @@
+{% if evaluations %}
+<h4 class="uppercase">Оценки</h4>
+    {% for evaluation in evaluations %}
+        <div class="task-message row-fluid show-grid js-taskMessage js-op js-um" style="display: block;">
+            <div class="message warning">
+                <div class="message-content">
+                        <a class="message-info-name" href="/user_detail/?id={{ evaluation.user.id }}">{{ evaluation.user.get_full_name }}</a>
+                        <b class="message-desc-status last js-taskMessageText">оценил позицию в {{ evaluation.time|safe }} руб.</b><br/>
+                        <span>Стоимость часа: {{ evaluation.hour_rate }}</span><br/>
+                        <span>Ориентировочная стоимость работ: {{ evaluation.total_cost }}</span><br/>
+                            {% if draft.author.id == user_id %}
+                            <form action="/taskdraft/{{ draft.slug }}/{{ task.id }}/accept-developer" method="POST" class="inline">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{ evaluation.user.id }}" name="user_id"/>
+                                <button class="btn btn-xs btn-success js-accept-developer">Выбрать исполнителем</button>
+                            </form>
+                            {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+<hr>
+{% endif %}
