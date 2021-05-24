@@ -16,6 +16,7 @@ services:
     image: mysql:5.7
     volumes:
       - mysql_data:/var/mysql/
+      - ./db-dump:/docker-entrypoint-initdb.d
     env_file:
       - ./.env.db
   nginx:
@@ -30,7 +31,9 @@ services:
       - ./tracker/media:/usr/src/app/tracker/media
       - ./logs:/usr/src/app/logs
       - ./nginx:/etc/nginx/conf.d
-
+    depends_on:
+      - db
+      - web
 
 
 volumes:
