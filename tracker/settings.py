@@ -230,12 +230,12 @@ AUTH_PROFILE_MODULE = 'PManager.PM_User'
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
 
 # Socket server address
-SOCKET_SERVER_ADDRESS = env('SOCKET_SERVER_ADDRESS', default='127.0.0.1')
+SOCKET_SERVER_ADDRESS = env('SOCKET_SERVER_ADDRESS', default='80.78.244.15')
 
 # Server root url
-SERVER_ROOT_URL = env('SERVER_ROOT_URL', default='127.0.0.1')
-HTTP_ROOT_URL = env('HTTP_ROOT_URL', default='http://127.0.0.1')
-SERVER_IP = env('SERVER_IP', default='127.0.0.1')
+SERVER_ROOT_URL = env('SERVER_ROOT_URL', default='80.78.244.15')
+HTTP_ROOT_URL = env('HTTP_ROOT_URL', default='http://80.78.244.15')
+SERVER_IP = env('SERVER_IP', default='80.78.244.15')
 
 # Site default email url
 SITE_EMAIL = env('SITE_EMAIL')
@@ -255,8 +255,8 @@ SESSION_COOKIE_SECURE = False
 SET_COOKIE = {}
 
 # todo: ADD DESCRIPTION
-SESSION_COOKIE_DOMAIN = '127.0.0.1'
-CSRF_COOKIE_NAME = '127.0.0.1'
+SESSION_COOKIE_DOMAIN = '80.78.244.15'
+CSRF_COOKIE_NAME = '80.78.244.15'
 # ######################### REDIS SETTINGS ##############################
 # REDIS SERVER HOST
 ORDERS_REDIS_HOST = '127.0.0.1'
