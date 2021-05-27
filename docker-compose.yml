@@ -3,7 +3,6 @@ version: '3'
 services:
   web:
     build: ./
-    command: gunicorn tracker.wsgi:application -b 0.0.0.0:8000 --reload
     volumes:
       - ./:/usr/src/app/
     ports:
@@ -12,13 +11,14 @@ services:
       - ./.env
     depends_on:
       - db
+      - redis
   db:
     image: mysql:5.7
-    ports: 
+    ports:
       - 3306:3306
+    command: --wait-timeout=28800
     volumes:
       - mysql_data:/var/mysql/
-      - ./db-dump:/docker-entrypoint-initdb.d
     env_file:
       - ./.env.db
   nginx:

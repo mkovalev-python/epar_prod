@@ -13,6 +13,12 @@ RUN pip install --upgrade pip
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
+COPY ./entrypoint.sh .
+RUN sed -i 's/\r//' ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
+
 # copy project
 COPY . .
+
+ENTRYPOINT ["sh","/usr/src/app/entrypoint.sh"]
 
