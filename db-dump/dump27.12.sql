@@ -16,8 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 SET GLOBAL max_allowed_packet = 1024 * 1024 * 256;
-SELECT @@sql_mode
-SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 --
 -- Table structure for table `PManager_accessinterface`
 --
