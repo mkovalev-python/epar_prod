@@ -230,12 +230,12 @@ AUTH_PROFILE_MODULE = 'PManager.PM_User'
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
 
 # Socket server address
-SOCKET_SERVER_ADDRESS = env('SOCKET_SERVER_ADDRESS', default='80.78.244.15')
+SOCKET_SERVER_ADDRESS = env('SOCKET_SERVER_ADDRESS', default='94.26.245.131')
 
 # Server root url
-SERVER_ROOT_URL = env('SERVER_ROOT_URL', default='80.78.244.15')
-HTTP_ROOT_URL = env('HTTP_ROOT_URL', default='http://80.78.244.15')
-SERVER_IP = env('SERVER_IP', default='80.78.244.15')
+SERVER_ROOT_URL = env('SERVER_ROOT_URL', default='94.26.245.131')
+HTTP_ROOT_URL = env('HTTP_ROOT_URL', default='http://94.26.245.131')
+SERVER_IP = env('SERVER_IP', default='94.26.245.131')
 
 # Site default email url
 SITE_EMAIL = env('SITE_EMAIL')
@@ -255,11 +255,11 @@ SESSION_COOKIE_SECURE = False
 SET_COOKIE = {}
 
 # todo: ADD DESCRIPTION
-SESSION_COOKIE_DOMAIN = '80.78.244.15'
-CSRF_COOKIE_NAME = '80.78.244.15'
+SESSION_COOKIE_DOMAIN = '94.26.245.131'
+CSRF_COOKIE_NAME = '94.26.245.131'
 # ######################### REDIS SETTINGS ##############################
 # REDIS SERVER HOST
-ORDERS_REDIS_HOST = '127.0.0.1'
+ORDERS_REDIS_HOST = 'redis'
 
 # REDIS SERVER PORT
 ORDERS_REDIS_PORT = 6379
@@ -345,7 +345,7 @@ LOGGING = {
     },
     'loggers': {
         'django.request': {
-            'handlers': ['mail_admins'],
+            'handlers': ['file_handler'],
             'level': 'ERROR',
             'propagate': True,
         },

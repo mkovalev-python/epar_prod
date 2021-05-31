@@ -1,0 +1,194 @@
+[31/May/2021 11:35:33] ERROR [django.request:212] Internal Server Error: /admin/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 115, in get_response
+    response = callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python2.7/site-packages/django/contrib/admin/sites.py", line 219, in wrapper
+    return self.admin_view(view, cacheable)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/django/utils/decorators.py", line 91, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/django/views/decorators/cache.py", line 89, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/django/contrib/admin/sites.py", line 196, in inner
+    if not self.has_permission(request):
+  File "/usr/local/lib/python2.7/site-packages/django/contrib/admin/sites.py", line 149, in has_permission
+    return request.user.is_active and request.user.is_staff
+  File "/usr/local/lib/python2.7/site-packages/django/utils/functional.py", line 204, in inner
+    self._setup()
+  File "/usr/local/lib/python2.7/site-packages/django/utils/functional.py", line 270, in _setup
+    self._wrapped = self._setupfunc()
+  File "/usr/local/lib/python2.7/site-packages/django/contrib/auth/middleware.py", line 18, in <lambda>
+    request.user = SimpleLazyObject(lambda: get_user(request))
+  File "/usr/local/lib/python2.7/site-packages/django/contrib/auth/middleware.py", line 10, in get_user
+    request._cached_user = auth.get_user(request)
+  File "/usr/local/lib/python2.7/site-packages/django/contrib/auth/__init__.py", line 136, in get_user
+    user_id = request.session[SESSION_KEY]
+  File "/usr/local/lib/python2.7/site-packages/django/contrib/sessions/backends/base.py", line 46, in __getitem__
+    return self._session[key]
+  File "/usr/local/lib/python2.7/site-packages/django/contrib/sessions/backends/base.py", line 168, in _get_session
+    self._session_cache = self.load()
+  File "/usr/local/lib/python2.7/site-packages/django/contrib/sessions/backends/db.py", line 18, in load
+    expire_date__gt=timezone.now()
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/manager.py", line 143, in get
+    return self.get_query_set().get(*args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 398, in get
+    num = len(clone)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 106, in __len__
+    self._result_cache = list(self.iterator())
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 317, in iterator
+    for row in compiler.results_iter():
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 775, in results_iter
+    for rows in self.execute_sql(MULTI):
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 840, in execute_sql
+    cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/site-packages/django/db/backends/util.py", line 45, in execute
+    sql = self.db.ops.last_executed_query(self.cursor, sql, params)
+  File "/usr/local/lib/python2.7/site-packages/django/db/backends/mysql/base.py", line 243, in last_executed_query
+    return cursor._last_executed.decode('utf-8')
+AttributeError: 'NoneType' object has no attribute 'decode'
+[31/May/2021 11:35:36] ERROR [django.request:212] Internal Server Error: /
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 115, in get_response
+    response = callback(request, *callback_args, **callback_kwargs)
+  File "/usr/src/app/PManager/views.py", line 202, in indexRender
+    for agent in agents:
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 139, in _result_iter
+    self._fill_cache()
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 941, in _fill_cache
+    self._result_cache.append(next(self._iter))
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 317, in iterator
+    for row in compiler.results_iter():
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 775, in results_iter
+    for rows in self.execute_sql(MULTI):
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 840, in execute_sql
+    cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/site-packages/django/db/backends/util.py", line 41, in execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/site-packages/django/db/backends/mysql/base.py", line 130, in execute
+    six.reraise(utils.DatabaseError, utils.DatabaseError(*tuple(e.args)), sys.exc_info()[2])
+  File "/usr/local/lib/python2.7/site-packages/django/db/backends/mysql/base.py", line 120, in execute
+    return self.cursor.execute(query, args)
+  File "/usr/local/lib/python2.7/site-packages/MySQLdb/cursors.py", line 209, in execute
+    res = self._query(query)
+  File "/usr/local/lib/python2.7/site-packages/MySQLdb/cursors.py", line 315, in _query
+    db.query(q)
+  File "/usr/local/lib/python2.7/site-packages/MySQLdb/connections.py", line 239, in query
+    _mysql.connection.query(self, query)
+DatabaseError: (1146, "Table 'tracker.PManager_agent' doesn't exist")
+[31/May/2021 11:51:05] ERROR [django.request:212] Internal Server Error: /task_handler
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 115, in get_response
+    response = callback(request, *callback_args, **callback_kwargs)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 746, in taskListAjax
+    ajax_task_manager.process()
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 1134, in process
+    self.doAction()
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 1138, in doAction
+    self.result = self.__getattribute__('process_' + self.action)()
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 38, in new
+    return fn(*args)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 1422, in process_fastCreate
+    task = self.taskManager.fastCreateAndGetTask(taskInputText)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 943, in fastCreateAndGetTask
+    self.task.systemMessage(u'Добавлено', self.currentUser, 'TASK_CREATE')
+  File "/usr/src/app/PManager/models/tasks.py", line 2027, in systemMessage
+    ).values('user__id')]
+  File "/usr/src/app/PManager/models/tasks.py", line 55, in redisSendLogMessage
+    mess.send()
+  File "/usr/src/app/PManager/classes/server/message.py", line 103, in send
+    self.queue(channel, json.dumps(self.fields))
+  File "/usr/local/lib/python2.7/site-packages/redis/client.py", line 1888, in publish
+    return self.execute_command('PUBLISH', channel, message)
+  File "/usr/local/lib/python2.7/site-packages/redis/client.py", line 565, in execute_command
+    return self.parse_response(connection, command_name, **options)
+  File "/usr/local/lib/python2.7/site-packages/redis/client.py", line 577, in parse_response
+    response = connection.read_response()
+  File "/usr/local/lib/python2.7/site-packages/redis/connection.py", line 574, in read_response
+    raise response
+ResponseError: NOAUTH Authentication required.
+[31/May/2021 12:08:10] ERROR [django.request:212] Internal Server Error: /xls/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 115, in get_response
+    response = callback(request, *callback_args, **callback_kwargs)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 732, in taskListXls
+    test_path = __save_doc_from_task_list(ar)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 432, in __save_doc_from_task_list
+    doc.render(context)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 316, in render
+    xml_src = self.build_xml(context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 271, in build_xml
+    xml = self.render_xml_part(xml, self.docx._part, context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 219, in render_xml_part
+    template = Template(src_xml)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 1031, in __new__
+    return env.from_string(source, template_class=cls)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 941, in from_string
+    return cls.from_code(self, self.compile(source), globals, None)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 628, in compile
+    source = self._parse(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 539, in _parse
+    return Parser(self, source, name, encode_filename(filename)).parse()
+  File "/usr/local/lib/python2.7/site-packages/jinja2/parser.py", line 45, in __init__
+    self.stream = environment._tokenize(source, name, filename, state)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 572, in _tokenize
+    source = self.preprocess(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 565, in preprocess
+    text_type(source),
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xff in position 0: ordinal not in range(128)
+[31/May/2021 12:11:36] ERROR [django.request:212] Internal Server Error: /xls/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 115, in get_response
+    response = callback(request, *callback_args, **callback_kwargs)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 732, in taskListXls
+    test_path = __save_doc_from_task_list(ar)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 432, in __save_doc_from_task_list
+    doc.render(context)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 316, in render
+    xml_src = self.build_xml(context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 271, in build_xml
+    xml = self.render_xml_part(xml, self.docx._part, context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 219, in render_xml_part
+    template = Template(src_xml)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 1031, in __new__
+    return env.from_string(source, template_class=cls)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 941, in from_string
+    return cls.from_code(self, self.compile(source), globals, None)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 628, in compile
+    source = self._parse(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 539, in _parse
+    return Parser(self, source, name, encode_filename(filename)).parse()
+  File "/usr/local/lib/python2.7/site-packages/jinja2/parser.py", line 45, in __init__
+    self.stream = environment._tokenize(source, name, filename, state)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 572, in _tokenize
+    source = self.preprocess(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 565, in preprocess
+    text_type(source),
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xff in position 0: ordinal not in range(128)
+[31/May/2021 12:13:09] ERROR [django.request:212] Internal Server Error: /xls/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 115, in get_response
+    response = callback(request, *callback_args, **callback_kwargs)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 732, in taskListXls
+    test_path = __save_doc_from_task_list(ar)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 432, in __save_doc_from_task_list
+    doc.render(context)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 316, in render
+    xml_src = self.build_xml(context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 271, in build_xml
+    xml = self.render_xml_part(xml, self.docx._part, context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 219, in render_xml_part
+    template = Template(src_xml)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 1031, in __new__
+    return env.from_string(source, template_class=cls)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 941, in from_string
+    return cls.from_code(self, self.compile(source), globals, None)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 628, in compile
+    source = self._parse(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 539, in _parse
+    return Parser(self, source, name, encode_filename(filename)).parse()
+  File "/usr/local/lib/python2.7/site-packages/jinja2/parser.py", line 45, in __init__
+    self.stream = environment._tokenize(source, name, filename, state)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 572, in _tokenize
+    source = self.preprocess(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 565, in preprocess
+    text_type(source),
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xff in position 0: ordinal not in range(128)

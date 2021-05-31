@@ -47,4 +47,4 @@ django-yandex-money
 django-notify
 django-environ
 mock
-
+docxtpl

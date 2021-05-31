@@ -38,6 +38,9 @@ services:
       - web
   redis:
     image: redis
+    volumes:
+      - ./conf_redis:/conf
+    command: redis-server /conf/master.conf
     ports:
       - 6379:6379
 

@@ -528,7 +528,7 @@ class Migration(SchemaMigration):
             ('premium_till', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
             ('paid', self.gf('django.db.models.fields.IntegerField')(default=0, null=True, blank=True)),
             ('specialty', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['PManager.Specialty'], null=True, blank=True)),
-            ('avatar_color', self.gf('django.db.models.fields.CharField')(default='#bcee68', max_length=20, null=True, blank=True)),
+            ('avatar_color', self.gf('django.db.models.fields.CharField')(default='#ab82ff', max_length=20, null=True, blank=True)),
             ('last_activity_date', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
             ('is_outsource', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('is_heliard_manager', self.gf('django.db.models.fields.BooleanField')(default=False)),
@@ -591,7 +591,7 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='notices', to=orm['auth.User'])),
             ('notice', self.gf('django.db.models.fields.related.ForeignKey')(related_name='userNotices', to=orm['PManager.PM_Notice'])),
-            ('date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2021, 5, 30, 0, 0))),
+            ('date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2021, 5, 31, 0, 0))),
         ))
         db.send_create_signal('PManager', ['PM_NoticedUsers'])
 
@@ -1195,7 +1195,7 @@ class Migration(SchemaMigration):
         },
         'PManager.pm_noticedusers': {
             'Meta': {'object_name': 'PM_NoticedUsers'},
-            'date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2021, 5, 30, 0, 0)'}),
+            'date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2021, 5, 31, 0, 0)'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'notice': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'userNotices'", 'to': "orm['PManager.PM_Notice']"}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'notices'", 'to': u"orm['auth.User']"})
@@ -1373,7 +1373,7 @@ class Migration(SchemaMigration):
         'PManager.pm_user': {
             'Meta': {'object_name': 'PM_User'},
             'avatar': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
-            'avatar_color': ('django.db.models.fields.CharField', [], {'default': "'#4169E1'", 'max_length': '20', 'null': 'True', 'blank': 'True'}),
+            'avatar_color': ('django.db.models.fields.CharField', [], {'default': "'#EEE8AA'", 'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'bank': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'bik': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'birthday': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
