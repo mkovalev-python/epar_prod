@@ -430,15 +430,14 @@ def __save_doc_from_task_list(task_list):
     sys.setdefaultencoding('utf-8')
 
     doc = DocxTemplate("./tracker/media/company2.docx")
-    context = {'company_name': task_list,
-               }
+    context = {'company_name': task_list}
     doc.render(context)
     src = "./tracker/media/Report_" + datetime.datetime.now().strftime(
-        "%d_%m_%Y_%H:%M:%S") + ".docx"
+        "%d_%m_%Y_%H:%M") + ".docx"
 
     doc.save(src)
 
-    return "/media/Report_" + datetime.datetime.now().strftime("%d_%m_%Y_%H:%M:%S") + ".docx"
+    return "/media/Report_" + datetime.datetime.now().strftime("%d_%m_%Y_%H:%M") + ".docx"
 
 def __save_xls_tree_from_task_list(task_list, project, user):
     if not project:
@@ -732,8 +731,8 @@ def taskListXls(request):
 
     ar.sort(key=lambda x: '_'.join(reversed([str(y.id) for y in a(x)])))
 
-    # test_path = __save_doc_from_task_list(ar)
-    path = __save_xls_tree_from_task_list(ar, header_values['CURRENT_PROJECT'], request.user)
+    path = __save_doc_from_task_list(ar)
+    # path = __save_xls_tree_from_task_list(ar, header_values['CURRENT_PROJECT'], request.user)
     return HttpResponseRedirect(path)
 
 def taskListAjax(request):
