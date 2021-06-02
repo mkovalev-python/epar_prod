@@ -428,7 +428,7 @@ def __save_doc_from_task_list(task_list):
 
     doc = DocxTemplate("./tracker/media/company2.docx")
     context = {'company_name': "12123"}
-    doc.render(context)
+    doc.render(context.decode('utf-8'))
     src = "./tracker/media/Report_" + datetime.datetime.now().strftime(
         "%d_%m_%Y_%H:%M") + ".docx"
 
