@@ -437,7 +437,7 @@ def __save_doc_from_task_list(task_list):
 
     doc.save(src)
 
-    return "/media/Report_" + datetime.datetime.now().strftime("%d_%m_%Y_%H:%M") + ".docx"
+    return "/protected/media/Report_" + datetime.datetime.now().strftime("%d_%m_%Y_%H:%M") + ".docx"
 
 def __save_xls_tree_from_task_list(task_list, project, user):
     if not project:
