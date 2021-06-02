@@ -57,7 +57,7 @@ def widget(request, headerValues, ar, qargs):
         fileJson.update({
             'src': '/docx/?f=' + str(fileJson['id']) if fileJson['type'] in ['docx', 'xlsx'] else '',
             'resolution': '' if fileObject.isPicture else '',
-            'thumbnail': (thumbnail(str(fileObject), '200x200')) if fileObject.isPicture else ''
+            'thumbnail': protected(thumbnail(str(fileObject), '200x200')) if fileObject.isPicture else ''
         })
         aFiles.append(fileJson)
 
