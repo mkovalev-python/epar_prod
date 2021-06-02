@@ -732,9 +732,9 @@ def taskListXls(request):
 
     ar.sort(key=lambda x: '_'.join(reversed([str(y.id) for y in a(x)])))
 
-    test_path = __save_doc_from_task_list(ar)
-    # path = __save_xls_tree_from_task_list(ar, header_values['CURRENT_PROJECT'], request.user)
-    return HttpResponseRedirect(test_path)
+    # test_path = __save_doc_from_task_list(ar)
+    path = __save_xls_tree_from_task_list(ar, header_values['CURRENT_PROJECT'], request.user)
+    return HttpResponseRedirect(path)
 
 def taskListAjax(request):
     from PManager.models import PM_Files, PM_User_PlanTime, PM_Task_Status
