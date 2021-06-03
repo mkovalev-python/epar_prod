@@ -192,3 +192,345 @@ Traceback (most recent call last):
   File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 565, in preprocess
     text_type(source),
 UnicodeDecodeError: 'ascii' codec can't decode byte 0xff in position 0: ordinal not in range(128)
+[01/Jun/2021 16:19:12] ERROR [django.request:212] Internal Server Error: /xls/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 115, in get_response
+    response = callback(request, *callback_args, **callback_kwargs)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 732, in taskListXls
+    test_path = __save_doc_from_task_list(ar)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 432, in __save_doc_from_task_list
+    doc.render(context)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 316, in render
+    xml_src = self.build_xml(context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 271, in build_xml
+    xml = self.render_xml_part(xml, self.docx._part, context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 219, in render_xml_part
+    template = Template(src_xml)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 1031, in __new__
+    return env.from_string(source, template_class=cls)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 941, in from_string
+    return cls.from_code(self, self.compile(source), globals, None)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 628, in compile
+    source = self._parse(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 539, in _parse
+    return Parser(self, source, name, encode_filename(filename)).parse()
+  File "/usr/local/lib/python2.7/site-packages/jinja2/parser.py", line 45, in __init__
+    self.stream = environment._tokenize(source, name, filename, state)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 572, in _tokenize
+    source = self.preprocess(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 565, in preprocess
+    text_type(source),
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xff in position 0: ordinal not in range(128)
+[01/Jun/2021 18:08:31] ERROR [django.request:212] Internal Server Error: /xls/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 115, in get_response
+    response = callback(request, *callback_args, **callback_kwargs)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 732, in taskListXls
+    test_path = __save_doc_from_task_list(ar)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 432, in __save_doc_from_task_list
+    doc.render(context)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 316, in render
+    xml_src = self.build_xml(context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 271, in build_xml
+    xml = self.render_xml_part(xml, self.docx._part, context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 219, in render_xml_part
+    template = Template(src_xml)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 1031, in __new__
+    return env.from_string(source, template_class=cls)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 941, in from_string
+    return cls.from_code(self, self.compile(source), globals, None)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 628, in compile
+    source = self._parse(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 539, in _parse
+    return Parser(self, source, name, encode_filename(filename)).parse()
+  File "/usr/local/lib/python2.7/site-packages/jinja2/parser.py", line 45, in __init__
+    self.stream = environment._tokenize(source, name, filename, state)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 572, in _tokenize
+    source = self.preprocess(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 565, in preprocess
+    text_type(source),
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xff in position 0: ordinal not in range(128)
+[01/Jun/2021 18:55:14] ERROR [django.request:212] Internal Server Error: /xls/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 115, in get_response
+    response = callback(request, *callback_args, **callback_kwargs)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 735, in taskListXls
+    test_path = __save_doc_from_task_list(ar)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 435, in __save_doc_from_task_list
+    doc.render(context)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 316, in render
+    xml_src = self.build_xml(context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 271, in build_xml
+    xml = self.render_xml_part(xml, self.docx._part, context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 219, in render_xml_part
+    template = Template(src_xml)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 1031, in __new__
+    return env.from_string(source, template_class=cls)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 941, in from_string
+    return cls.from_code(self, self.compile(source), globals, None)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 628, in compile
+    source = self._parse(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 539, in _parse
+    return Parser(self, source, name, encode_filename(filename)).parse()
+  File "/usr/local/lib/python2.7/site-packages/jinja2/parser.py", line 45, in __init__
+    self.stream = environment._tokenize(source, name, filename, state)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 572, in _tokenize
+    source = self.preprocess(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 565, in preprocess
+    text_type(source),
+UnicodeDecodeError: 'utf8' codec can't decode byte 0xff in position 0: invalid start byte
+[02/Jun/2021 11:23:29] ERROR [django.request:212] Internal Server Error: /xls/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 115, in get_response
+    response = callback(request, *callback_args, **callback_kwargs)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 735, in taskListXls
+    test_path = __save_doc_from_task_list(ar)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 435, in __save_doc_from_task_list
+    doc.render(context)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 316, in render
+    xml_src = self.build_xml(context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 271, in build_xml
+    xml = self.render_xml_part(xml, self.docx._part, context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 219, in render_xml_part
+    template = Template(src_xml)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 1031, in __new__
+    return env.from_string(source, template_class=cls)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 941, in from_string
+    return cls.from_code(self, self.compile(source), globals, None)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 628, in compile
+    source = self._parse(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 539, in _parse
+    return Parser(self, source, name, encode_filename(filename)).parse()
+  File "/usr/local/lib/python2.7/site-packages/jinja2/parser.py", line 45, in __init__
+    self.stream = environment._tokenize(source, name, filename, state)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 572, in _tokenize
+    source = self.preprocess(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 565, in preprocess
+    text_type(source),
+UnicodeDecodeError: 'utf8' codec can't decode byte 0xff in position 0: invalid start byte
+[02/Jun/2021 13:38:27] ERROR [django.request:212] Internal Server Error: /xls/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 115, in get_response
+    response = callback(request, *callback_args, **callback_kwargs)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 734, in taskListXls
+    path = __save_doc_from_task_list(ar)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 434, in __save_doc_from_task_list
+    doc.render(context)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 316, in render
+    xml_src = self.build_xml(context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 271, in build_xml
+    xml = self.render_xml_part(xml, self.docx._part, context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 219, in render_xml_part
+    template = Template(src_xml)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 1031, in __new__
+    return env.from_string(source, template_class=cls)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 941, in from_string
+    return cls.from_code(self, self.compile(source), globals, None)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 628, in compile
+    source = self._parse(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 539, in _parse
+    return Parser(self, source, name, encode_filename(filename)).parse()
+  File "/usr/local/lib/python2.7/site-packages/jinja2/parser.py", line 45, in __init__
+    self.stream = environment._tokenize(source, name, filename, state)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 572, in _tokenize
+    source = self.preprocess(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 565, in preprocess
+    text_type(source),
+UnicodeDecodeError: 'utf8' codec can't decode byte 0xff in position 0: invalid start byte
+[02/Jun/2021 13:44:23] ERROR [django.request:212] Internal Server Error: /xls/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 115, in get_response
+    response = callback(request, *callback_args, **callback_kwargs)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 734, in taskListXls
+    path = __save_doc_from_task_list(ar)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 434, in __save_doc_from_task_list
+    doc.render(context.decode('utf-8'))
+AttributeError: 'dict' object has no attribute 'decode'
+[02/Jun/2021 14:02:41] ERROR [django.request:212] Internal Server Error: /xls/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 115, in get_response
+    response = callback(request, *callback_args, **callback_kwargs)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 734, in taskListXls
+    path = __save_doc_from_task_list(ar)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 434, in __save_doc_from_task_list
+    doc.render(context)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 316, in render
+    xml_src = self.build_xml(context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 271, in build_xml
+    xml = self.render_xml_part(xml, self.docx._part, context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 219, in render_xml_part
+    template = Template(src_xml)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 1031, in __new__
+    return env.from_string(source, template_class=cls)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 941, in from_string
+    return cls.from_code(self, self.compile(source), globals, None)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 628, in compile
+    source = self._parse(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 539, in _parse
+    return Parser(self, source, name, encode_filename(filename)).parse()
+  File "/usr/local/lib/python2.7/site-packages/jinja2/parser.py", line 45, in __init__
+    self.stream = environment._tokenize(source, name, filename, state)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 572, in _tokenize
+    source = self.preprocess(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 565, in preprocess
+    text_type(source),
+UnicodeDecodeError: 'utf8' codec can't decode byte 0xff in position 0: invalid start byte
+[02/Jun/2021 14:09:13] ERROR [django.request:212] Internal Server Error: /xls/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 115, in get_response
+    response = callback(request, *callback_args, **callback_kwargs)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 734, in taskListXls
+    path = __save_doc_from_task_list(ar)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 434, in __save_doc_from_task_list
+    doc.render(context, encoding="utf8")
+TypeError: render() got an unexpected keyword argument 'encoding'
+[02/Jun/2021 14:13:38] ERROR [django.request:212] Internal Server Error: /xls/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 115, in get_response
+    response = callback(request, *callback_args, **callback_kwargs)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 731, in taskListXls
+    path = __save_doc_from_task_list(ar)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 431, in __save_doc_from_task_list
+    doc.render(context)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 316, in render
+    xml_src = self.build_xml(context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 271, in build_xml
+    xml = self.render_xml_part(xml, self.docx._part, context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 219, in render_xml_part
+    template = Template(src_xml)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 1031, in __new__
+    return env.from_string(source, template_class=cls)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 941, in from_string
+    return cls.from_code(self, self.compile(source), globals, None)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 628, in compile
+    source = self._parse(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 539, in _parse
+    return Parser(self, source, name, encode_filename(filename)).parse()
+  File "/usr/local/lib/python2.7/site-packages/jinja2/parser.py", line 45, in __init__
+    self.stream = environment._tokenize(source, name, filename, state)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 572, in _tokenize
+    source = self.preprocess(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 565, in preprocess
+    text_type(source),
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xff in position 0: ordinal not in range(128)
+[02/Jun/2021 14:15:11] ERROR [django.request:212] Internal Server Error: /xls/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 115, in get_response
+    response = callback(request, *callback_args, **callback_kwargs)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 731, in taskListXls
+    path = __save_doc_from_task_list(ar)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 431, in __save_doc_from_task_list
+    doc.render(context.decode('utf-8'))
+AttributeError: 'dict' object has no attribute 'decode'
+[02/Jun/2021 14:24:57] ERROR [django.request:212] Internal Server Error: /xls/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 115, in get_response
+    response = callback(request, *callback_args, **callback_kwargs)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 731, in taskListXls
+    path = __save_doc_from_task_list(ar)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 431, in __save_doc_from_task_list
+    doc.render(context)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 316, in render
+    xml_src = self.build_xml(context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 271, in build_xml
+    xml = self.render_xml_part(xml, self.docx._part, context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 219, in render_xml_part
+    template = Template(src_xml)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 1031, in __new__
+    return env.from_string(source, template_class=cls)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 941, in from_string
+    return cls.from_code(self, self.compile(source), globals, None)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 628, in compile
+    source = self._parse(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 539, in _parse
+    return Parser(self, source, name, encode_filename(filename)).parse()
+  File "/usr/local/lib/python2.7/site-packages/jinja2/parser.py", line 45, in __init__
+    self.stream = environment._tokenize(source, name, filename, state)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 572, in _tokenize
+    source = self.preprocess(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 565, in preprocess
+    text_type(source),
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xff in position 0: ordinal not in range(128)
+[02/Jun/2021 14:43:16] ERROR [django.request:212] Internal Server Error: /xls/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 115, in get_response
+    response = callback(request, *callback_args, **callback_kwargs)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 731, in taskListXls
+    path = __save_doc_from_task_list(ar)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 431, in __save_doc_from_task_list
+    doc.render(context).encode( "utf-8" )
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 316, in render
+    xml_src = self.build_xml(context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 271, in build_xml
+    xml = self.render_xml_part(xml, self.docx._part, context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 219, in render_xml_part
+    template = Template(src_xml)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 1031, in __new__
+    return env.from_string(source, template_class=cls)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 941, in from_string
+    return cls.from_code(self, self.compile(source), globals, None)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 628, in compile
+    source = self._parse(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 539, in _parse
+    return Parser(self, source, name, encode_filename(filename)).parse()
+  File "/usr/local/lib/python2.7/site-packages/jinja2/parser.py", line 45, in __init__
+    self.stream = environment._tokenize(source, name, filename, state)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 572, in _tokenize
+    source = self.preprocess(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 565, in preprocess
+    text_type(source),
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xff in position 0: ordinal not in range(128)
+[02/Jun/2021 15:03:49] ERROR [django.request:212] Internal Server Error: /xls/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 115, in get_response
+    response = callback(request, *callback_args, **callback_kwargs)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 731, in taskListXls
+    path = __save_doc_from_task_list(ar)
+  File "/usr/src/app/PManager/viewsExt/tasks.py", line 431, in __save_doc_from_task_list
+    doc.render(context).encode( "utf-8" )
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 316, in render
+    xml_src = self.build_xml(context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 271, in build_xml
+    xml = self.render_xml_part(xml, self.docx._part, context, jinja_env)
+  File "/usr/local/lib/python2.7/site-packages/docxtpl/__init__.py", line 219, in render_xml_part
+    template = Template(src_xml)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 1031, in __new__
+    return env.from_string(source, template_class=cls)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 941, in from_string
+    return cls.from_code(self, self.compile(source), globals, None)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 628, in compile
+    source = self._parse(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 539, in _parse
+    return Parser(self, source, name, encode_filename(filename)).parse()
+  File "/usr/local/lib/python2.7/site-packages/jinja2/parser.py", line 45, in __init__
+    self.stream = environment._tokenize(source, name, filename, state)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 572, in _tokenize
+    source = self.preprocess(source, name, filename)
+  File "/usr/local/lib/python2.7/site-packages/jinja2/environment.py", line 565, in preprocess
+    text_type(source),
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xff in position 0: ordinal not in range(128)
+[03/Jun/2021 12:33:08] ERROR [django.request:212] Internal Server Error: /task_edit/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 115, in get_response
+    response = callback(request, *callback_args, **callback_kwargs)
+  File "/usr/src/app/PManager/views.py", line 283, in indexRender
+    widget = widget.widget(request, headerValues, widgetParams, [])
+  File "/usr/src/app/PManager/widgets/task_edit/widget.py", line 92, in widget
+    task.save()
+  File "/usr/src/app/PManager/models/tasks.py", line 2077, in save
+    super(self.__class__, self).save(*args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/base.py", line 546, in save
+    force_update=force_update, update_fields=update_fields)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/base.py", line 626, in save_base
+    rows = manager.using(using).filter(pk=pk_val)._update(values)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 605, in _update
+    return query.get_compiler(self.db).execute_sql(None)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 1014, in execute_sql
+    cursor = super(SQLUpdateCompiler, self).execute_sql(result_type)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 840, in execute_sql
+    cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/site-packages/django/db/backends/util.py", line 45, in execute
+    sql = self.db.ops.last_executed_query(self.cursor, sql, params)
+  File "/usr/local/lib/python2.7/site-packages/django/db/backends/mysql/base.py", line 243, in last_executed_query
+    return cursor._last_executed.decode('utf-8')
+AttributeError: 'NoneType' object has no attribute 'decode'
