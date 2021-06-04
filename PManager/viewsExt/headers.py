@@ -88,7 +88,7 @@ def initGlobals(request):
             currentUser = request.user
             currentUser.first_name = form.cleaned_data['name']
             currentUser.last_name = form.cleaned_data['last_name']
-            currentUser.password = form.cleaned_data['password']
+            currentUser.set_password(form.cleaned_data['password'])
             currentUser.save()
 
             try:
