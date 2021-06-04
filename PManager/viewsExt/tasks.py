@@ -430,11 +430,11 @@ def __save_doc_from_task_list(task_list):
     context = {'company_name':task_list}
     doc.render(context).encode( "utf-8" )
     src = "./tracker/media/Report_" + datetime.datetime.now().strftime(
-        "%d_%m_%Y_%H:%M") + ".docx"
+        "%d_%m_%Y_%H_%M") + ".docx"
 
     doc.save(src)
 
-    return "/protected/media/Report_" + datetime.datetime.now().strftime("%d_%m_%Y_%H:%M") + ".docx"
+    return "/protected/media/Report_" + datetime.datetime.now().strftime("%d_%m_%Y_%H_%M") + ".docx"
 
 def __save_xls_tree_from_task_list(task_list, project, user):
     if not project:
