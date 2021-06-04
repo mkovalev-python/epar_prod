@@ -26,6 +26,7 @@ DEBUG_TOOLBAR = DEBUG
 # TEMPLATE DEBUG MODE
 TEMPLATE_DEBUG = DEBUG
 
+URL = 'http://'+env('HTTP_ROOT_URL')+ '/accept/'
 # list of admins
 ADMINS = [x.split(':') for x in env.list('DJANGO_ADMINS')]
 #ADMINS = (
@@ -240,6 +241,7 @@ SERVER_IP = env('SERVER_IP', default='94.26.245.131')
 # Site default email url
 SITE_EMAIL = env('SITE_EMAIL')
 ADMIN_EMAIL = env('ADMIN_EMAIL')
+
 INFO_EMAIL = env('INFO_EMAIL')
 NO_REPLY_EMAIL = env('NO_REPLY_EMAIL')
 FEEDBACK_EMAIL = env('FEEDBACK_EMAIL')
@@ -357,12 +359,12 @@ LOGGING = {
 }
 
 # yandex
-#EMAIL_HOST = env('EMAIL_HOST')
-#EMAIL_PORT = env('EMAIL_PORT')
-#EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-#EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-#EMAIL_USE_TLS = env('EMAIL_USE_TLS')
-#EMAIL_USE_SSL = True
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env('EMAIL_PORT')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = env('EMAIL_USE_TLS')
+EMAIL_USE_SSL = True
 #DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='webmaster@localhost')
 
 EMAIL_BACKEND ='django.core.mail.backends.smtp.EmailBackend'
