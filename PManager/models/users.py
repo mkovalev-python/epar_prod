@@ -231,7 +231,6 @@ class PM_User(models.Model):
             if len(login) > 30:
                 login = login[0:login.find('@')]
             user = User.objects.create_user(login, email, password)
-            hash = User.objects.get(username=login).password
             context = {
                 'user_name': ' '.join([user.first_name, user.last_name]),
                 'user_login': login,
@@ -250,29 +249,6 @@ class PM_User(models.Model):
             from tracker.settings import ADMIN_EMAIL
             message.send([ADMIN_EMAIL])
 
-            import smtplib
-            from tracker.settings import EMAIL_HOST,EMAIL_PORT,EMAIL_HOST_PASSWORD,EMAIL_HOST_USER,URL
-
-            server = smtplib.SMTP(host=EMAIL_HOST, port=EMAIL_PORT)
-            server.starttls()
-            server.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
-
-            msg = MIMEMultipart()
-            msg['From'] = EMAIL_HOST_USER
-            msg['To'] = email
-            msg['Subject'] = 'Экспертная компания: сообщество профессионалов. Добро пожаловать!'
-            html = """\
-            <html>
-                <head></head>
-                <body>
-                    <h3>Здравствуйте!</h3><br>
-                        <span>Вы были приглашены в проект, для авторизации активируйте аккаунт по ссылке:</span><br>
-                        <a href=""" + URL + hash + """>Подтвердить аккаунт</a>
-                </body>
-            </html>"""
-            msg.attach(MIMEText(html,'html'))
-            server.sendmail(msg['FROM'],msg['To'], msg.as_string())
-            server.quit()
 
         if not user.is_active:
             user.is_active = True

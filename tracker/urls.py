@@ -138,7 +138,6 @@ urlpatterns = patterns(
     url(r'^credits/$', MainPage.creditReport),
     url(r'^credit_chart/$', MainPage.creditChart),
     url(r'^login/$', MainPage.auth),
-    url(r'^accept/(?P<hash>[a-zA-Z0-9_-]+)', MainPage.acceptUser),
     url(r'^change_password/$', MainPage.changePassword),
     url(r'^add_timer/', add_timer),
     url(r'^kanban/', MainPage.indexRender, {'widgetList': ["kanban"], 'activeMenuItem': 'kanban'}),

@@ -187,15 +187,6 @@ class MainPage:
         return HttpResponse(loader.get_template('main/unauth.html').render(c))
 
     @staticmethod
-    def acceptUser(request):
-        if request.method == 'POST':
-            username = request.POST['username']
-            password = request.POST['password']
-        else:
-            c = RequestContext(request)
-            return HttpResponse(loader.get_template('main/accept.html').render(c))
-
-    @staticmethod
     def indexRender(request, widgetList=None, activeMenuItem=None, widgetParams={}):
 
         host = request.get_host()
