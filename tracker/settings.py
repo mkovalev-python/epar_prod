@@ -368,12 +368,12 @@ EMAIL_USE_SSL = True
 #DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='webmaster@localhost')
 
 EMAIL_BACKEND ='django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'akapar71@gmail.com'
-EMAIL_HOST_PASSWORD = 'Ras101Am1n'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = True
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST_USER = 'akapar71@gmail.com'
+# EMAIL_HOST_PASSWORD = 'Ras101Am1n'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_USE_SSL = True
 
 YANDEX_MONEY_SCID = ''
 YANDEX_MONEY_SHOP_ID = ''
