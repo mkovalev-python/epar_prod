@@ -1,6 +1,6 @@
 #!bin/bash -x
 
-timeout 180
+sleep 180
 #python manage.py collectstatic --noinput
 python manage.py syncdb
 python manage.py schemamigration PManager --init
