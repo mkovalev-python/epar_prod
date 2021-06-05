@@ -152,7 +152,7 @@ PIPELINE_JS = {
         'source_filenames': (
             'widgets/project_graph/widget.js',
         ),
-        'output_filename': 'js_compressed/project_graph.js'
+        # 'output_filename': 'js_compressed/project_graph.js'
     },
     'project_statistic': {
         'source_filenames': (
