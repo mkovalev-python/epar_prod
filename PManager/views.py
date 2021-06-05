@@ -137,7 +137,8 @@ class MainPage:
                     'Экспертная компания: сообщество профессионалов. Ваши регистрационные данные.'
                 )
                 mess.send([user.username])
-                mess.send(['info@tracker.com'])
+                from tracker.settings import ADMIN_EMAIL
+                mess.send([ADMIN_EMAIL])
                 message = 'success'
 
             except User.DoesNotExist:
