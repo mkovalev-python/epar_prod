@@ -1,8 +1,7 @@
 #!bin/bash -x
 
 sleep 120
-apt-get install npm
-npm install -g yuglify
+
 python manage.py collectstatic --noinput
 python manage.py syncdb
 python manage.py schemamigration PManager --init
