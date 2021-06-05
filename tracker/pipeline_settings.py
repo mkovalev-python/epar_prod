@@ -2,16 +2,14 @@
 __author__ = 'Rayleigh'
 
 
-STATICFILES_STORAGE = 'pipeline.storage.PipelineManifestStorage'
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'pipeline.finders.PipelineFinder',
 )
-
-PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.uglifyjs.UglifyJSCompressor'
-
+PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yuglify.YuglifyCompressor'
 
 PIPELINE_JS = {
     'base': {
