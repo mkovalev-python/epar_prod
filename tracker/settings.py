@@ -19,7 +19,7 @@ SITE_ID = 1
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # DEBUG MODE
-DEBUG = True #env('DEBUG')
+DEBUG = env('DEBUG')
 
 DEBUG_TOOLBAR = DEBUG
 
