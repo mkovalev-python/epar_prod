@@ -2,14 +2,18 @@
 __author__ = 'Rayleigh'
 
 
-STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+STATICFILES_STORAGE = 'pipeline.storage.PipelineManifestStorage'
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'pipeline.finders.PipelineFinder',
 )
+
 PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.uglifyjs.UglifyJSCompressor'
+PIPELINE['CSS_COMPRESSOR'] = 'pipeline.compressors.yuglify.YuglifyCompressor'
+PIPELINE['JS_COMPRESSOR'] = 'pipeline.compressors.yuglify.YuglifyCompressor'
+
 PIPELINE_JS = {
     'base': {
         'source_filenames': (
@@ -76,7 +80,7 @@ PIPELINE_JS = {
             'js/fileup/jquery-plugin.js',
             'js/fileup/task-file-upload.js',
         ),
-        'output_filename': 'js/fileup/file_up.js'
+        'output_filename': 'js_compressed/file_up.js'
     },
     'chat': {
         'source_filenames': (
@@ -158,7 +162,7 @@ PIPELINE_JS = {
         'source_filenames': (
             'widgets/project_graph/widget.js',
         ),
-        'output_filename': 'widgets/project_graph/widget.js'
+        'output_filename': 'js_compressed/project_graph.js'
     },
     'project_statistic': {
         'source_filenames': (
