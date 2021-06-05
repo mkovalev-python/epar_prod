@@ -1,7 +1,7 @@
 #!bin/bash -x
 
 sleep 120
-
+npm install -g yuglify
 python manage.py collectstatic --noinput
 python manage.py syncdb
 python manage.py schemamigration PManager --init
