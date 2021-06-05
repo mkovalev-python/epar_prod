@@ -76,7 +76,7 @@ PIPELINE_JS = {
             'js/fileup/jquery-plugin.js',
             'js/fileup/task-file-upload.js',
         ),
-        'output_filename': 'js_compressed/file_up.js'
+        'output_filename': 'js/fileup/file_up.js'
     },
     'chat': {
         'source_filenames': (
