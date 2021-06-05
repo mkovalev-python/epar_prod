@@ -1,7 +1,8 @@
 #!bin/bash -x
 
-sleep 180
-#python manage.py collectstatic --noinput
+sleep 120
+
+python manage.py collectstatic --noinput
 python manage.py syncdb
 python manage.py schemamigration PManager --init
 #python manage.py schemamigration PManager --auto
