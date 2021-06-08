@@ -427,7 +427,7 @@ def __save_doc_from_task_list(task_list):
     from docxtpl import DocxTemplate
     from jinja2 import Environment, FileSystemLoader
 
-    doc = DocxTemplate(r'./tracker/media/company2.docx',encode='utf-8')
+    doc = DocxTemplate(r'./tracker/media/company2.docx')
     context = {'company_name':task_list}
     env = Environment(loader=FileSystemLoader('./tracker/media',encoding='latin-1'))
     doc.render(context, env)
