@@ -426,7 +426,7 @@ def __save_xls_from_task_list(task_list, project, user):
 def __save_doc_from_task_list(task_list):
     from docxtpl import DocxTemplate
 
-    doc = DocxTemplate("./tracker/media/company2.docx")
+    doc = DocxTemplate(r'./tracker/media/company2.docx',encode='utf-8')
     context = {'company_name':task_list}
     doc.render(context)
     src = "./tracker/media/Report_" + datetime.datetime.now().strftime(
