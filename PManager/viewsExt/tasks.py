@@ -425,10 +425,12 @@ def __save_xls_from_task_list(task_list, project, user):
 
 def __save_doc_from_task_list(task_list):
     from docxtpl import DocxTemplate
+    from jinja2 import Environment, FileSystemLoader
 
     doc = DocxTemplate(r'./tracker/media/company2.docx',encode='utf-8')
     context = {'company_name':task_list}
-    doc.render(context)
+    env = Environment(loader=FileSystemLoader('./tracker/media',encoding='latin-1'))
+    doc.render(context, env)
     src = "./tracker/media/Report_" + datetime.datetime.now().strftime(
         "%d_%m_%Y_%H_%M") + ".docx"
 
