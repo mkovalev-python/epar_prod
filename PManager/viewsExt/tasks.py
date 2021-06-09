@@ -424,51 +424,15 @@ def __save_xls_from_task_list(task_list, project, user):
     return file.src
 
 def __save_doc_from_task_list(task_list):
-    from docx import Document
-    from docx.shared import Inches
+    from docxtpl import DocxTemplate
 
-    document = Document()
+    doc = DocxTemplate('./tracker/media/template.docx')
+    context = {'company_name': task_list}
+    doc.render(context)
+    src = "./tracker/media/Report_" + datetime.datetime.now().strftime(
+        "%d_%m_%Y_%H_%M") + ".docx"
 
-    document.add_heading('Document Title', 0)
-
-    p = document.add_paragraph('A plain paragraph having some ')
-    p.add_run('bold').bold = True
-    p.add_run(' and some ')
-    p.add_run('italic.').italic = True
-
-    document.add_heading('Heading, level 1', level=1)
-    document.add_paragraph('Intense quote', style='Intense Quote')
-
-    document.add_paragraph(
-        'first item in unordered list', style='List Bullet'
-    )
-    document.add_paragraph(
-        'first item in ordered list', style='List Number'
-    )
-
-
-    records = (
-        (3, '101', 'Spam'),
-        (7, '422', 'Eggs'),
-        (4, '631', 'Spam, spam, eggs, and spam')
-    )
-
-    table = document.add_table(rows=1, cols=3)
-    hdr_cells = table.rows[0].cells
-    hdr_cells[0].text = 'Qty'
-    hdr_cells[1].text = 'Id'
-    hdr_cells[2].text = 'Desc'
-    for qty, id, desc in records:
-        row_cells = table.add_row().cells
-        row_cells[0].text = str(qty)
-        row_cells[1].text = id
-        row_cells[2].text = desc
-
-    document.add_page_break()
-
-
-    src = "./tracker/media/Report_" + datetime.datetime.now().strftime("%d_%m_%Y_%H_%M") + ".docx"
-    document.save(src)
+    doc.save(src)
 
     return "/protected/media/Report_" + datetime.datetime.now().strftime("%d_%m_%Y_%H_%M") + ".docx"
 
