@@ -30,9 +30,7 @@ from django.core.context_processors import csrf
 FORMAT_TO_INTEGER = 1
 CRITICALLY_THRESHOLD = 0.7
 
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
+
 
 def task_ajax_action(fn):
     def new(*args):
@@ -428,9 +426,13 @@ def __save_xls_from_task_list(task_list, project, user):
 
 def save_doc_from_task_list(task_list):
     from docxtpl import DocxTemplate
+    from cgi import escape
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
 
     doc = DocxTemplate("./tracker/media/template.docx")
-    context = {'company_name': "World company"}
+    context = {'company_name': escape("World company")}
     doc.render(context)
 
     src = "./tracker/media/Report_" + datetime.datetime.now().strftime(
