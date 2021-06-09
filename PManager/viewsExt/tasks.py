@@ -425,22 +425,9 @@ def __save_xls_from_task_list(task_list, project, user):
     return file.src
 
 def save_doc_from_task_list(task_list):
-    from docxtpl import DocxTemplate
-    from cgi import escape
-    import sys
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
-
-    doc = DocxTemplate("./tracker/media/template.docx")
-    context = {'company_name': escape("World company")}
-    doc.render(context)
-
-    src = "./tracker/media/Report_" + datetime.datetime.now().strftime(
-        "%d_%m_%Y_%H_%M") + ".docx"
-
-    doc.save(src)
-
-    return "/protected/media/Report_" + datetime.datetime.now().strftime("%d_%m_%Y_%H_%M") + ".docx"
+    from report import report
+    file = report(task_list)
+    return file
 
 def __save_xls_tree_from_task_list(task_list, project, user):
     if not project:
