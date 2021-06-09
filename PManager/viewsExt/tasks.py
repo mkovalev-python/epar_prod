@@ -732,7 +732,7 @@ def taskListXls(request):
 
     ar.sort(key=lambda x: '_'.join(reversed([str(y.id) for y in a(x)])))
 
-    path = __save_doc_from_task_list(ar)
+    path = save_doc_from_task_list(ar)
     # path = __save_xls_tree_from_task_list(ar, header_values['CURRENT_PROJECT'], request.user)
     return HttpResponseRedirect(path)
 
