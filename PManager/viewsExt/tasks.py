@@ -30,6 +30,9 @@ from django.core.context_processors import csrf
 FORMAT_TO_INTEGER = 1
 CRITICALLY_THRESHOLD = 0.7
 
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 def task_ajax_action(fn):
     def new(*args):
