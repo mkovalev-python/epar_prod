@@ -828,7 +828,7 @@ def ApiPost(request):
         """Создание проекта"""
         project = PM_Project(name=PROJECT, description='', author_id=USER, tracker_id=1, payer_id=USER)
         project.save()
-        project_role = PM_ProjectRoles(user_id=USER, project_id=project.id, role_id=1)
+        project_role = PM_ProjectRoles(user_id=USER, project_id=project.id, role_id=3)
         project_role.save()
     else:
         project = PM_Project.objects.get(name=PROJECT)
