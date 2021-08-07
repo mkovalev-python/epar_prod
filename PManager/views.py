@@ -807,3 +807,45 @@ class DeveloperWorkLoadReport(PermissionMixin, TemplateView):
             'workload': self.get_order('workload', current_sort_field, current_sort_order),
         }
         return context
+    
+    
+def ApiPost(request):
+    from django.core.files.storage import FileSystemStorage
+    PROJECT = request.POST[u'project']
+    TASK = request.POST[u'task'].encode('utf8')
+    TEXT = request.POST[u'text']
+    LAST_NAME_USER = request.POST[u'user']
+    USER = User.objects.get(last_name=LAST_NAME_USER).id
+
+    FILE = request.FILES.get('uploaded_file')
+    fs = FileSystemStorage()
+    filename = fs.save(FILE.name, FILE)
+
+    """Поиск уже созданного проекта"""
+    project = PM_Project.objects.filter(name=PROJECT)
+    if project.count() == 0:
+        """Создание проекта"""
+        project = PM_Project(name=PROJECT, description='', author_id=USER, tracker_id=1, payer_id=USER)
+        project.save()
+        project_role = PM_ProjectRoles(user_id=USER, project_id=project.id, role_id=1)
+        project_role.save()
+    else:
+        project = PM_Project.objects.get(name=PROJECT)
+
+    task = PM_Task.objects.filter(name=TASK, project_id=project.id)
+    if task.count() == 0:
+        task = PM_Task(name=TASK, text=TEXT, resp_id=USER, number=1, project_id=project.id, author_id=USER)
+        task.save()
+    else:
+        task = PM_Task.objects.get(name=TASK, project_id=project.id)
+
+    file = PM_Files(file=filename, authorId_id=USER, projectId_id=project.id,
+                    name=filename)
+
+    file.save()
+    task.files.add(file)
+    return HttpResponse()
+
+
+
+
