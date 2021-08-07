@@ -17,11 +17,12 @@ from django.views.generic import TemplateView
 
 from PManager import widgets
 from PManager.classes.logger.logger import Logger
-from PManager.models import Agent, PM_Milestone, PM_User, PM_MilestoneDevPaymentApproval
+from PManager.models import Agent, PM_Milestone, PM_User, PM_MilestoneDevPaymentApproval, PM_ProjectRoles, PM_Files
 from PManager.models import Credit
 from PManager.password_validation import make_random_password
 from PManager.models import Feedback, PM_Project, PM_Notice, PM_Timer, PM_User_Achievement, PM_Task_Message, \
     Fee, Agreement
+
 from PManager.models import PM_Task
 from PManager.services.mind.task_mind_core import TaskMind
 from PManager.viewsExt import headers
