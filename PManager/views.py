@@ -835,7 +835,7 @@ def ApiPost(request):
 
     task = PM_Task.objects.filter(name=TASK, project_id=project.id)
     if task.count() == 0:
-        task = PM_Task(name=TASK, text=TEXT, status_id=3 resp_id=USER, number=1, project_id=project.id, author_id=USER)
+        task = PM_Task(name=TASK, text=TEXT, status_id=3, resp_id=USER, number=1, project_id=project.id, author_id=USER)
         task.save()
     else:
         task = PM_Task.objects.get(name=TASK, project_id=project.id)
