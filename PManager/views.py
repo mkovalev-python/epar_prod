@@ -810,9 +810,44 @@ class DeveloperWorkLoadReport(PermissionMixin, TemplateView):
         return context
     
     
-def ApiPost(request):
+def ApiPostTask(request):
+    PROJECT = request.POST[u'project'].split('.docx')[0]
+    TASK = request.POST[u'task'].encode('utf8')
+    TEXT = request.POST[u'text']
+    LAST_NAME_USER = request.POST[u'user']
+    USER = User.objects.get(last_name=LAST_NAME_USER).id
+
+    """Поиск уже созданного проекта"""
+    project = PM_Project.objects.filter(name=PROJECT)
+    if project.count() == 0:
+        """Создание проекта"""
+        project = PM_Project(name=PROJECT, description='', author_id=USER, tracker_id=1, payer_id=USER,
+                             settings='{"color_name_yellow": "\u0421\u043f\u043e\u0440\u043d\u044b\u0435 '
+                                      '\u043f\u0443\u043d\u043a\u0442\u044b", "color_name_red": '
+                                      '"\u041e\u0431\u043e\u0440\u0443\u0434\u043e\u0432\u0430\u043d\u0438\u0435", '
+                                      '"use_colors_in_kanban": "1", "color_name_purple": "", "color_name_blue": '
+                                      '"\u0412\u0441\u044f \u0430\u0440\u0435\u043d\u0434\u0430", "color_name_grey": '
+                                      '"", "color_name_orange": "", "save": '
+                                      '"\u041f\u0440\u0438\u043c\u0435\u043d\u0438\u0442\u044c", "client_comission": '
+                                      '"", "color_name_green": ""}',
+                             )
+        project.save()
+        project_role = PM_ProjectRoles(user_id=USER, project_id=project.id, role_id=1)
+        project_role.save()
+    else:
+        project = PM_Project.objects.get(name=PROJECT)
+
+    task = PM_Task.objects.filter(name=TASK, project_id=project.id)
+    if task.count() == 0:
+        task = PM_Task(name=TASK, text=TEXT, resp_id=USER, number=1, project_id=project.id, author_id=USER)
+        task.save()
+
+    return HttpResponse()
+
+
+def ApiPostFile(request):
     from django.core.files.storage import FileSystemStorage
-    PROJECT = request.POST[u'project']
+    PROJECT = request.POST[u'project'].split('.docx')[0]
     TASK = request.POST[u'task'].encode('utf8')
     TEXT = request.POST[u'text']
     LAST_NAME_USER = request.POST[u'user']
@@ -822,23 +857,8 @@ def ApiPost(request):
     fs = FileSystemStorage()
     filename = fs.save(FILE.name, FILE)
 
-    """Поиск уже созданного проекта"""
-    project = PM_Project.objects.filter(name=PROJECT)
-    if project.count() == 0:
-        """Создание проекта"""
-        project = PM_Project(name=PROJECT, description='', author_id=USER, tracker_id=1, payer_id=USER)
-        project.save()
-        project_role = PM_ProjectRoles(user_id=USER, project_id=project.id, role_id=3)
-        project_role.save()
-    else:
-        project = PM_Project.objects.get(name=PROJECT)
-
-    task = PM_Task.objects.filter(name=TASK, project_id=project.id)
-    if task.count() == 0:
-        task = PM_Task(name=TASK, text=TEXT, status_id=3, resp_id=USER, number=1, project_id=project.id, author_id=USER)
-        task.save()
-    else:
-        task = PM_Task.objects.get(name=TASK, project_id=project.id)
+    project = PM_Project.objects.get(name=PROJECT)
+    task = PM_Task.objects.get(name=TASK, project_id=project.id)
 
     file = PM_Files(file=filename, authorId_id=USER, projectId_id=project.id,
                     name=filename)
@@ -846,7 +866,3 @@ def ApiPost(request):
     file.save()
     task.files.add(file)
     return HttpResponse()
-
-
-
-
