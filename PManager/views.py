@@ -832,7 +832,7 @@ def ApiPostTask(request):
                                       '"", "color_name_green": ""}',
                              )
         project.save()
-        project_role = PM_ProjectRoles(user_id=USER, project_id=project.id, role_id=1)
+        project_role = PM_ProjectRoles(user_id=USER, project_id=project.id, role_id=3)
         project_role.save()
     else:
         project = PM_Project.objects.get(name=PROJECT)
