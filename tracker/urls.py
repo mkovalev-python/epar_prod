@@ -7,8 +7,8 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.shortcuts import HttpResponse
-
-from PManager.views import MainPage, Brains, add_timer, PaymentReport, MilestonesReport, DeveloperWorkLoadReport, ApiPost
+from PManager.views import MainPage, Brains, add_timer, PaymentReport, MilestonesReport, DeveloperWorkLoadReport, \
+    ApiPostTask,ApiPostFile
 from PManager.viewsExt.assets import protected_file, stat_excel
 from PManager.viewsExt.file_view import docxView
 from PManager.viewsExt.files import fileSave, ajaxFilesResponder, AjaxFileUploader, DeleteUploadedFile, AjaxAddFile, \
@@ -161,7 +161,8 @@ urlpatterns = patterns(
     url(r'^wiki/', include('wiking.urls')),
     url(r'^rules/', include('company_rules.urls')),
     url(r'^support_form/', include('support_page.urls', namespace='support_page')),
-    url(r'^api-post/', ApiPost)
+    url(r'^api-past-file/', ApiPostFile),
+    url(r'^api-create-task/', ApiPostTask)
 )
 
 urlpatterns += staticfiles_urlpatterns()
