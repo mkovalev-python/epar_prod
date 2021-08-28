@@ -812,8 +812,7 @@ class DeveloperWorkLoadReport(PermissionMixin, TemplateView):
     
 def ApiPostTask(request):
     PROJECT = request.POST[u'project'].split('.docx')[0]
-    TASK = request.POST[u'task'].encode('utf8')
-    TEXT = request.POST[u'text']
+    TASK = json.loads(request.POST['task'].encode('utf-8'))
     LAST_NAME_USER = request.POST[u'user']
     USER = User.objects.get(last_name=LAST_NAME_USER).id
 
@@ -832,18 +831,66 @@ def ApiPostTask(request):
                                       '"", "color_name_green": ""}',
                              )
         project.save()
-        project_role = PM_ProjectRoles(user_id=USER, project_id=project.id, role_id=3)
+        project_role = PM_ProjectRoles(user_id=USER, project_id=project.id, role_id=2)
+        project_role.save()
+        project_role = PM_ProjectRoles(user_id=2, project_id=project.id, role_id=3)
         project_role.save()
     else:
         project = PM_Project.objects.get(name=PROJECT)
-
-    task = PM_Task.objects.filter(name=TASK, project_id=project.id)
-    if task.count() == 0:
-        task = PM_Task(name=TASK, text=TEXT, status_id=3, resp_id=USER, number=1, project_id=project.id, author_id=USER)
-        task.save()
-
+    for task in TASK:
+        if task.__len__() == 1:
+            for task_1 in task[u'H1']:
+                task1 = PM_Task(name=task_1, resp_id=USER, number=1, project_id=project.id, author_id=USER)
+                task1.save()
+        elif task.__len__() == 2:
+            for task_1 in task[u'H1']:
+                task1 = PM_Task(name=task_1, resp_id=USER, number=1, project_id=project.id, author_id=USER)
+                task1.save()
+            try:
+                for task_2 in task[u'H2']:
+                    task2 = PM_Task(name=task_2, parentTask_id=task1.id, resp_id=USER, number=1, project_id=project.id, author_id=USER)
+                    task2.save()
+            except KeyError:
+                for task_2 in task[u'H3']:
+                    task2 = PM_Task(name=task_2, parentTask_id=task1.id, resp_id=USER, number=1, project_id=project.id, author_id=USER)
+                    task2.save()
+        elif task.__len__() == 3:
+            for task_1 in task[u'H1']:
+                task1 = PM_Task(name=task_1, resp_id=USER, number=1, project_id=project.id, author_id=USER)
+                task1.save()
+            for task_2 in task[u'H2']:
+                task2 = PM_Task(name=task_2, parentTask_id=task1.id, resp_id=USER, number=1, project_id=project.id, author_id=USER)
+                task2.save()
+            for task_3 in task[u'H3']:
+                task3 = PM_Task(name=task_3, parentTask_id=task2.id, resp_id=USER, number=1, project_id=project.id, author_id=USER)
+                task3.save()
+        elif task.__len__() == 4:
+            for task_1 in task[u'H1']:
+                task1 = PM_Task(name=task_1, resp_id=USER, number=1, project_id=project.id, author_id=USER)
+                task1.save()
+            for task_2 in task[u'H2']:
+                task2 = PM_Task(name=task_2, parentTask_id=task1.id, resp_id=USER, number=1, project_id=project.id, author_id=USER)
+                task2.save()
+            for task_3 in task[u'H3']:
+                task3 = PM_Task(name=task_3, parentTask_id=task2.id, resp_id=USER, number=1, project_id=project.id, author_id=USER)
+                task3.save()
+            for task_4 in task[u'H4']:
+                task4 = PM_Task(name=task_4, parentTask_id=task3.id, resp_id=USER, number=1, project_id=project.id, author_id=USER)
+                task4.save()
     return HttpResponse()
 
+def ApiPostText(request):
+    PROJECT = request.POST[u'project'].split('.docx')[0]
+    TASK = json.loads(request.POST['task'].encode('utf-8'))
+    LAST_NAME_USER = request.POST[u'user']
+    USER = User.objects.get(last_name=LAST_NAME_USER).id
+    TEXT = request.POST[u'text']
+
+    project = PM_Project.objects.get(name=PROJECT)
+    task = PM_Task.objects.get(name=TASK, resp_id=USER, project_id=project.id, author_id=USER)
+    task.text = TEXT
+    task.save()
+    return HttpResponse()
 
 def ApiPostFile(request):
     from django.core.files.storage import FileSystemStorage
