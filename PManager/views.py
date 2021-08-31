@@ -876,7 +876,7 @@ def ApiPostTask(request):
 
 def ApiPostText(request):
     PROJECT = request.POST[u'project'].split('.docx')[0]
-    TASK = json.loads(request.POST['task'].encode('utf-8'))
+    TASK = request.POST['task'].encode('utf-8')
     LAST_NAME_USER = request.POST[u'user']
     USER = User.objects.get(last_name=LAST_NAME_USER).id
     TEXT = request.POST[u'text']
