@@ -15,13 +15,13 @@
 
 
 .user-header-stat-line {margin-bottom: 30px;}
-.user-header-stat-line:last-child {margin-bottom: 0px;}
-.user-header-stat-line-icon {float: left; width: 15%; text-align: left;}
+.user-header-stat-line:last-child {margin-bottom: 5px;}
+.user-header-stat-line-icon {float: left; width: 12%; text-align: left;}
 .user-header-stat-line-icon i {font-size: 4vw;}
 .user-header-stat-line-item {float: left; width: 28.333%; white-space: nowrap;}
 .user-header-stat-line-item.two-items {width: 42.5%;}
-.user-header-stat-line-item-title {display: block; font-size: 0.8vw; margin-bottom: 7px; margin-top: -2px; text-transform: uppercase;}
-.user-header-stat-line-item-text {display: inline-block; font-size: 2.8vw;}
+.user-header-stat-line-item-title {display: block; font-size: 0.4vw; margin-bottom: 7px; margin-top: -2px; text-transform: uppercase;}
+.user-header-stat-line-item-text {display: inline-block; font-size: 2.2vw;}
 .user-header-stat-line-item-text-desc {font-size: 13px; font-weight: normal;}
 .user-header-stat-line-item-text-separator {font-size: 15px;}
 
