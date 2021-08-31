@@ -812,6 +812,7 @@ class DeveloperWorkLoadReport(PermissionMixin, TemplateView):
     
     
 def ApiPostTask(request):
+    from django.core.files.storage import FileSystemStorage
     PROJECT = request.POST[u'project'].split('.docx')[0]
     TASK = json.loads(request.POST['task'].encode('utf-8'))
     LAST_NAME_USER = request.POST[u'user']
