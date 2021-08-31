@@ -890,7 +890,7 @@ def ApiPostText(request):
 def ApiPostFile(request):
     from django.core.files.storage import FileSystemStorage
     PROJECT = request.POST[u'project'].split('.docx')[0]
-    TASK = request.POST[u'task'].encode('utf8')
+    TASK = request.POST[u'task']
     TEXT = request.POST[u'text']
     LAST_NAME_USER = request.POST[u'user']
     USER = User.objects.get(last_name=LAST_NAME_USER).id
