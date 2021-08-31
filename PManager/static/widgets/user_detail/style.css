@@ -15,11 +15,11 @@
 
 
 .user-header-stat-line {margin-bottom: 30px;}
-.user-header-stat-line:last-child {margin-bottom: 5px;}
+.user-header-stat-line:last-child {margin-bottom: 2px;}
 .user-header-stat-line-icon {float: left; width: 12%; text-align: left; margin-right: 4px;}
 .user-header-stat-line-icon i {font-size: 3vw;}
 .user-header-stat-line-item {float: left; width: 28.333%; white-space: nowrap;}
-.user-header-stat-line-item.two-items {width: 42.5%;}
+.user-header-stat-line-item.two-items {width: 42.5%;margin-right: 4px;}
 .user-header-stat-line-item-title {display: block; font-size: 0.5vw; margin-bottom: 7px; margin-top: -2px; text-transform: uppercase;}
 .user-header-stat-line-item-text {display: inline-block; font-size: 2.2vw;}
 .user-header-stat-line-item-text-desc {font-size: 13px; font-weight: normal;}
