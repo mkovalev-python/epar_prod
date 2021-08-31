@@ -816,6 +816,9 @@ def ApiPostTask(request):
     TASK = json.loads(request.POST['task'].encode('utf-8'))
     LAST_NAME_USER = request.POST[u'user']
     USER = User.objects.get(last_name=LAST_NAME_USER).id
+    FILE = request.FILES.get('uploaded_file')
+    fs = FileSystemStorage()
+    filename = fs.save(FILE.name, FILE)
 
     """Поиск уже созданного проекта"""
     project = PM_Project.objects.filter(name=PROJECT)
@@ -839,6 +842,11 @@ def ApiPostTask(request):
     else:
         project = PM_Project.objects.get(name=PROJECT)
         
+    file = PM_Files(file=filename, authorId_id=USER, projectId_id=project.id,
+                    name=filename)
+
+    file.save()
+    
     for el in TASK:
         if el.__len__() == 1:
             task_name = TASK[el][0]
