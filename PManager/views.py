@@ -841,36 +841,36 @@ def ApiPostTask(request):
         
     for el in TASK:
         if el.__len__() == 1:
-            task_name = TASK[el]
-            task1 = PM_Task.objects.create(name=task_name, resp_id=USER, number=1, project_id=project.id,
+            task_name = TASK[el][0]
+            task1 = PM_Task.objects.create(name=task_name, text=TASK[el][1], resp_id=USER, number=1, project_id=project.id,
                                            author_id=USER)
 
     for el in TASK:
         if el.__len__() == 2:
-            task_name = TASK[el]
-            parentTask = PM_Task.objects.get(name=TASK[el[:1]], resp_id=USER, project_id=project.id, author_id=USER)
-            task2 = PM_Task.objects.create(name=task_name, resp_id=USER, parentTask=parentTask, number=1,
+            task_name = TASK[el][0]
+            parentTask = PM_Task.objects.get(name=TASK[el[:1][0]], resp_id=USER, project_id=project.id, author_id=USER)
+            task2 = PM_Task.objects.create(name=task_name, text=TASK[el][1], resp_id=USER, parentTask=parentTask, number=1,
                                            project_id=project.id, author_id=USER)
 
     for el in TASK:
         if el.__len__() == 3:
-            task_name = TASK[el]
-            parentTask = PM_Task.objects.get(name=TASK[el[:2]], resp_id=USER, project_id=project.id, author_id=USER)
-            task3 = PM_Task.objects.create(name=task_name, resp_id=USER, parentTask=parentTask, number=1,
+            task_name = TASK[el][0]
+            parentTask = PM_Task.objects.get(name=TASK[el[:2][0]], resp_id=USER, project_id=project.id, author_id=USER)
+            task3 = PM_Task.objects.create(name=task_name, text=TASK[el][1], resp_id=USER, parentTask=parentTask, number=1,
                                            project_id=project.id, author_id=USER)
 
     for el in TASK:
         if el.__len__() == 4:
-            task_name = TASK[el]
-            parentTask = PM_Task.objects.get(name=TASK[el[:3]], resp_id=USER, project_id=project.id, author_id=USER)
-            task4 = PM_Task.objects.create(name=task_name, resp_id=USER, parentTask=parentTask, number=1,
+            task_name = TASK[el][0]
+            parentTask = PM_Task.objects.get(name=TASK[el[:3][0]], resp_id=USER, project_id=project.id, author_id=USER)
+            task4 = PM_Task.objects.create(name=task_name, text=TASK[el][1], resp_id=USER, parentTask=parentTask, number=1,
                                            project_id=project.id, author_id=USER)
 
     for el in TASK:
         if el.__len__() == 5:
-            task_name = TASK[el]
-            parentTask = PM_Task.objects.get(name=TASK[el[:4]], resp_id=USER, project_id=project.id, author_id=USER)
-            task5 = PM_Task.objects.create(name=task_name, resp_id=USER, parentTask=parentTask, number=1,
+            task_name = TASK[el][0]
+            parentTask = PM_Task.objects.get(name=TASK[el[:4][0]], resp_id=USER, project_id=project.id, author_id=USER)
+            task5 = PM_Task.objects.create(name=task_name, text=TASK[el][1], resp_id=USER, parentTask=parentTask, number=1,
                                            project_id=project.id, author_id=USER)
     return HttpResponse()
 
