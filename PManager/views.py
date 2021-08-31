@@ -838,7 +838,8 @@ def ApiPostTask(request):
         project_role.save()
     else:
         project = PM_Project.objects.get(name=PROJECT)
-        for el in TASK:
+        
+    for el in TASK:
         if el.__len__() == 1:
             task_name = TASK[el]
             task1 = PM_Task.objects.create(name=task_name, resp_id=USER, number=1, project_id=project.id,
