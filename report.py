@@ -9,7 +9,7 @@ def report(tree_tasks):
     reload(sys)
     sys.setdefaultencoding('utf-8')
 
-    doc = DocxTemplate("./tracker/media/template(1).docx")
+    doc = DocxTemplate("./tracker/media/template (1).docx")
     context = {'company_name': "World company"}
     context = {'company_name': escape("World company")}
     print(context)
