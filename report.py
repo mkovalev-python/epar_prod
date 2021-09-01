@@ -2,32 +2,18 @@ import datetime
 from docxtpl import DocxTemplate
 
 def report(tree_tasks):
-    from docx import Document
+    from docxtpl import DocxTemplate
+    from cgi import escape
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
 
-    def add(prefix):
-        document.add_paragraph(
-            el.name, style=prefix
-        )
-        document.add_paragraph(el.text)
-        document.add_paragraph(el.text_eo)
-        document.add_paragraph(el.text_ro)
+    doc = DocxTemplate("./tracker/media/template.docx")
+    context = {'company_name': "World company"}
+    context = {'company_name': escape("World company")}
+    doc.render(context)
 
-    document = Document()
-
-    for el in tree_tasks:
-        if el.prefix == '1':
-            add('List Number')
-        if el.prefix == '11':
-            add('List Number')
-        if el.prefix == '111':
-            add('List Number')
-        if el.prefix == '1111':
-            add('List Number')
-        if el.prefix == '11111':
-            add('List Number')
-
-    document.add_page_break()
-    src = "./tracker/media/Report_" + datetime.datetime.now().strftime("%d_%m_%Y_%H_%M") + ".docx"
-    document.save(src)
-
+    src = "./tracker/media/Report_" + datetime.datetime.now().strftime(
+        "%d_%m_%Y_%H_%M") + ".docx"
+    doc.save(src)
     return "/protected/media/Report_" + datetime.datetime.now().strftime("%d_%m_%Y_%H_%M") + ".docx"
