@@ -10,8 +10,7 @@ def report(tree_tasks):
     sys.setdefaultencoding('utf-8')
 
     doc = DocxTemplate("./tracker/media/template (1).docx")
-    context = {u'company_name': u"World company"}
-    print(context)
+    context = {'company_name': "World company"}
     doc.render(context)
 
     src = "./tracker/media/Report_" + datetime.datetime.now().strftime(
