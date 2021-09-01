@@ -12,7 +12,8 @@ def report(tree_tasks):
     doc = DocxTemplate("./tracker/media/template.docx")
     context = {'company_name': "World company"}
     context = {'company_name': escape("World company")}
-    doc.render(context.encode('utf-8'))
+    print(context)
+    doc.render(context)
 
     src = "./tracker/media/Report_" + datetime.datetime.now().strftime(
         "%d_%m_%Y_%H_%M") + ".docx"
