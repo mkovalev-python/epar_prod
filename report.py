@@ -2,6 +2,7 @@ import datetime
 from docxtpl import DocxTemplate
 
 def report(tree_tasks):
+    import requests as requests
     from django.core.files.base import ContentFile, File
     from django.core.files.storage import default_storage
     list_task = []
