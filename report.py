@@ -26,10 +26,10 @@ def report(tree_tasks):
     jinja_env.filters['my_filterB'] = my_filterB
 
 
-    context = {'company_name': ' Hello', 'base_value_float': 1.5}
+    context = {'company_name': 'Hello'}
 
     tpl = DocxTemplate("./tracker/media/template (1).docx")
-    tpl.render(context, jinja_env)
+    tpl.render(context.decode('utf-8'), jinja_env)
 
     src = "./tracker/media/Report_" + datetime.datetime.now().strftime(
         "%d_%m_%Y_%H_%M") + ".docx"
