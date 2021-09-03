@@ -5,7 +5,7 @@ def report(tree_tasks):
     from django.core.files.base import ContentFile, File
     from django.core.files.storage import default_storage
     list_task = []
-    for _ in task_list:
+    for _ in tree_tasks:
         list_task.append(
             {'name': _.name, 'text': _.text, 'text_eo': _.text_eo, 'prefix':_.prefix,
              'text_ro': _.text_ro})
