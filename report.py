@@ -29,6 +29,7 @@ def report(tree_tasks):
     context = {'company_name': 'Hello'}
     print(context)
     tpl = DocxTemplate("./tracker/media/template (1).docx")
+    print(tpl.docx.element.xml)
     tpl.render(context, jinja_env)
 
     src = "./tracker/media/Report_" + datetime.datetime.now().strftime(
