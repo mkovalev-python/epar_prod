@@ -8,24 +8,6 @@ def report(tree_tasks):
 
     jinja_env = jinja2.Environment()
 
-
-    # to create new filters, first create functions that accept the value to filter
-    # as first argument, and filter parameters as next arguments
-    def my_filterA(value, my_string_arg):
-        return_value = value + ' ' + my_string_arg
-        return return_value
-
-
-    def my_filterB(value, my_float_arg):
-        return_value = value + my_float_arg
-        return return_value
-
-
-    # Then, declare them to jinja like this :
-    jinja_env.filters['my_filterA'] = my_filterA
-    jinja_env.filters['my_filterB'] = my_filterB
-
-
     context = {'company_name': 'Hello'}
     print(context)
     tpl = DocxTemplate("./tracker/media/template (1).docx")
