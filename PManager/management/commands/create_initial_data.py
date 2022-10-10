@@ -10,10 +10,10 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         site = Site.objects.create(domain='example.com', name='example.com')
         user = User.objects.create_superuser("admin", "admin@example.com", "admin")
-        tracker = PM_tracker(
-            name="Tracker", code="Tracker", description="Tracker", admin=user, logo=None
-        )
-        tracker.save()
-        role1 = PM_Role.objects.create(code='manager', name='manager', tracker=tracker)
-        role2 = PM_Role.objects.create(code='guest', name='guest', tracker=tracker)
-        role3 = PM_Role.objects.create(code='employee', name='employee', tracker=tracker)
+        # tracker = PM_tracker(
+        #     name="Tracker", code="Tracker", description="Tracker", admin=user, logo=None
+        # )
+        # tracker.save()
+        # role1 = PM_Role.objects.create(code='manager', name='manager', tracker=tracker)
+        # role2 = PM_Role.objects.create(code='guest', name='guest', tracker=tracker)
+        # role3 = PM_Role.objects.create(code='employee', name='employee', tracker=tracker)
