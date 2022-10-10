@@ -332,7 +332,7 @@ class PM_User(models.Model):
     def setRole(self, roleCode, project):
         if self.user and project and roleCode:
             try:
-                clientRole = PM_Role.objects.get(code=roleCode, tracker=headers.TRACKER)
+                clientRole = PM_Role.objects.get_or_create(code=roleCode, tracker=headers.TRACKER)[0]
             except PM_Role.DoesNotExist:
                 return False
 
