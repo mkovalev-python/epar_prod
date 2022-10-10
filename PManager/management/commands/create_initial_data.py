@@ -16,7 +16,3 @@ class Command(BaseCommand):
         role1 = PM_roles.objects.create(code='manager', name='manager', tracker=tracker)
         role2 = PM_roles.objects.create(code='guest', name='guest', tracker=tracker)
         role3 = PM_roles.objects.create(code='employee', name='employee', tracker=tracker)
-        
-        self.stdout.write(
-            self.style.SUCCESS(f"Начальные данные созданы")
-        )
