@@ -12,7 +12,7 @@ def report(tree_tasks):
             {'name': _.name, 'text': _.text, 'text_eo': _.text_eo, 'prefix':_.prefix,
              'text_ro': _.text_ro})
     response = requests.get(
-        "http://94.26.245.131:4000/report/",
+        "http://95.163.242.133:4000/report/",
         data={'data': json.dumps(list_task)},
         verify=False)
     if response.status_code == 200:
